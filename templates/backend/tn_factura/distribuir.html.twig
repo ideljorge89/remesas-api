@@ -1,0 +1,145 @@
+{% extends 'base_backend.html.twig' %}
+{% trans_default_domain 'AppBundle' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        label.remesas:hover{
+            cursor: pointer;
+        }
+    </style>
+{% endblock %}
+{% block breadcrumb %}
+    <div class="col-lg-12">
+        <h2>{{ 'backend.user_menu.administrator.facutra.dist'|trans({},'FOSUserBundle') }}</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="{{ path('homepage_backend') }}"><i
+                            class="fa fa-home"></i> {{ 'backend.user_menu.breadcrumb.home'|trans({},'FOSUserBundle') }}
+                </a>
+            </li>
+            <li class="">
+                {{ 'backend.user_menu.administrator.nomencladores.title'|trans({},'FOSUserBundle') }}
+            </li>
+            <li class="active">
+                <strong>{{ 'backend.user_menu.administrator.facutra.dist'|trans({},'FOSUserBundle') }}</strong>
+            </li>
+        </ol>
+    </div>
+{% endblock %}
+{% block body %}
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox">
+                <div class="ibox-content">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div id='table' class="table-responsive">
+                                <table class="footable footable-paging footable-paging-center  footable-paging-center  table table-stripped table-hover  toggle-arrow-tiny"
+                                       data-paging-size="100" data-paging="true" data-filtering="true"
+                                       data-sorting="true">
+                                    <thead>
+                                    <tr>
+                                        <th data-sort-ignore="true">{{ 'backend.factura.table.orden'|trans }}</th>
+                                        <th data-sort-ignore="true">{{ 'backend.factura.table.emisor'|trans }}</th>
+                                        <th data-sort-ignore="true">{{ 'backend.factura.table.destinatario'|trans }}</th>
+                                        <th data-sort-ignore="true">{{ 'backend.factura.table.remesas'|trans }}</th>
+                                        <th>{{ 'backend.factura.table.total'|trans }}</th>
+                                        <th>{{ 'backend.factura.table.fecha'|trans }}</th>
+                                        <th data-sort-ignore="true">{{ 'backend.factura.table.creador'|trans }}</th>
+                                        <th data-sort-ignore="true">{{ 'backend.factura.table.estado'|trans }}</th>
+                                        <th class="text-right"
+                                            data-sort-ignore="true">{{ 'backend.comun.table.actions' | trans }}</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for factura in tn_facturas %}
+                                        <tr>
+                                            <td>{{ factura.noFactura }}</td>
+                                            <td>{{ factura.emisor.nombre~" "~factura.emisor.apellidos }}</td>
+                                            <td>
+                                                {% for remesa in factura.remesas %}
+                                                    {% if remesa.entregada %}
+                                                        {{ remesa.destinatario }} <i class="fa fa-check" style="color: #1AB394" data-toggle="tooltip" title="Entregada"></i><br>
+                                                    {% else %}
+                                                        {{ remesa.destinatario }}<br>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </td>
+                                            <td>
+                                                {% set badge = findAsignacionZona(factura) %}
+                                                <a href="{{ path('admin_factura_detalles_remesas',{'token':factura.token}) }}"
+                                                   data-target='#modal-form' data-toggle="tooltip"
+                                                   title="{{ 'backend.factura.table.total_remesas'| transchoice(factura.remesas | length) }}">
+                                                        <label class="remesas label label-{{ badge }}">{{ factura.remesas | length }}</label>
+                                                    {{ badge != 'danger' ? '<i class="fa fa-car"></i>'}}
+                                                </a>
+                                            </td>
+                                            <td>{{ factura.importe | number_format(2, '.', ',') }} {{ factura.moneda }}</td>
+                                            <td>{{ factura.created | date('d/m/Y') }}</td>
+                                            <td align="center">
+                                                {% if factura.agente is not null or factura.agencia is not null %}
+                                                    {% if factura.agente is not null %}
+                                                        {% if factura.agente.usuario is not null %}
+                                                            <a data-placement="top"
+                                                               title="Agente {{ factura.agente }}"
+                                                               data-toggle="tooltip" data-target='#modal-form'
+                                                               href="{{ path('home_users_show', {'token': factura.agente.usuario.token }) }}">
+                                                                <i class="fa fa-user-circle"></i>
+                                                            </a>
+                                                        {% endif %}
+                                                    {% else %}
+                                                        {% if factura.agencia.usuario is not null %}
+                                                            <a data-placement="top"
+                                                               title="Agencia {{ factura.agencia }}"
+                                                               data-toggle="tooltip" data-target='#modal-form'
+                                                               href="{{ path('home_users_show', {'token': factura.agencia.usuario.token }) }}">
+                                                                <i class="fa fa-user-circle"></i>
+                                                            </a>
+                                                        {% endif %}
+                                                    {% endif %}
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                <div id="state_factura_{{ factura.id }}">
+                                                    {% if factura.estado.codigo == '01' %}
+                                                        <span class="label label-info">Pendiente</span>
+                                                    {% elseif factura.estado.codigo == '02' %}
+                                                        <span class="label label-warning">Aprobada</span>
+                                                    {% elseif factura.estado.codigo == '03' %}
+                                                        <span class="label label-primary">Distribución</span>
+                                                    {% elseif factura.estado.codigo == '04' %}
+                                                        <span class="label label-success">Entregada</span>
+                                                    {% else %}
+                                                        <span class="label label-danger">Cancelada</span>
+                                                    {% endif %}
+                                                </div>
+                                            </td>
+                                            <td class="text-right">
+                                                <a class="btn btn-success btn-xs" data-toggle="tooltip"
+                                                   title="Distribuir remesas"
+                                                   href="{{ path('admin_distribucion_factura', {'token': factura.token }) }}"><i
+                                                            class="fa fa-car"></i></a>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        $(function () {
+            dataLink()
+        });
+    </script>
+{% endblock %}

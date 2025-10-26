@@ -1,0 +1,109 @@
+stof_doctrine_extensions:
+    default_locale: "es"
+    translation_fallback: true
+    # Only used if you activated the Uploadable extension
+    uploadable:
+        # Default file path: This is one of the three ways you can configure the path for the Uploadable extension
+        default_file_path:       '%kernel.project_dir%/%web_dir%/uploads'
+
+        # Mime type guesser class: Optional. By default, we provide an adapter for the one present in the HttpFoundation component of Symfony
+        mime_type_guesser_class: Stof\DoctrineExtensionsBundle\Uploadable\MimeTypeGuesserAdapter
+
+        # Default file info class implementing FileInfoInterface: Optional. By default we provide a class which is prepared to receive an UploadedFile instance.
+        default_file_info_class: Stof\DoctrineExtensionsBundle\Uploadable\UploadedFileInfo
+    orm:
+        default:
+          softdeleteable: true
+          uploadable: true
+          translatable: true
+          loggable: true
+          blameable: true
+
+doctrine:
+    orm:
+        entity_managers:
+            default:
+                mappings:
+                    gedmo_translatable:
+                        type: annotation
+                        prefix: Gedmo\Translatable\Entity
+                        dir: "%kernel.root_dir%/../vendor/gedmo/doctrine-extensions/lib/Gedmo/Translatable/Entity"
+                        alias: GedmoTranslatable # this one is optional and will default to the name set for the mapping
+                        is_bundle: false
+                    gedmo_translator:
+                        type: annotation
+                        prefix: Gedmo\Translator\Entity
+                        dir: "%kernel.root_dir%/../vendor/gedmo/doctrine-extensions/lib/Gedmo/Translator/Entity"
+                        alias: GedmoTranslator # this one is optional and will default to the name set for the mapping
+                        is_bundle: false
+                    gedmo_loggable:
+                        type: annotation
+                        prefix: Gedmo\Loggable\Entity
+                        dir: "%kernel.root_dir%/../vendor/gedmo/doctrine-extensions/lib/Gedmo/Loggable/Entity"
+                        alias: GedmoLoggable # this one is optional and will default to the name set for the mapping
+                        is_bundle: false
+                    gedmo_tree:
+                        type: annotation
+                        prefix: Gedmo\Tree\Entity
+                        dir: "%kernel.root_dir%/../vendor/gedmo/doctrine-extensions/lib/Gedmo/Tree/Entity"
+                        alias: GedmoTree # this one is optional and will default to the name set for the mapping
+                        is_bundle: false
+                filters:
+                    softdeleteable:
+                        class: Gedmo\SoftDeleteable\Filter\SoftDeleteableFilter
+                        enabled: true
+
+services:
+      # Doctrine Extension listeners to handle behaviors
+      gedmo.listener.tree:
+          class: Gedmo\Tree\TreeListener
+          tags:
+              - { name: doctrine.event_subscriber, connection: default }
+          calls:
+              - [ setAnnotationReader, [ '@annotation_reader' ] ]
+
+      gedmo.listener.translatable:
+          class: Gedmo\Translatable\TranslatableListener
+          tags:
+              - { name: doctrine.event_subscriber, connection: default }
+          calls:
+              - [ setAnnotationReader, [ '@annotation_reader' ] ]
+              - [ setDefaultLocale, [ "%locale%" ] ]
+              - [ setTranslatableLocale, [ "%locale%" ] ]
+              - [ setTranslationFallback, [ true ] ]
+              - [ setPersistDefaultLocaleTranslation, [ true ] ]
+
+      gedmo.listener.timestampable:
+          class: Gedmo\Timestampable\TimestampableListener
+          tags:
+              - { name: doctrine.event_subscriber, connection: default }
+          calls:
+              - [ setAnnotationReader, [ '@annotation_reader' ] ]
+
+      gedmo.listener.sluggable:
+          class: Gedmo\Sluggable\SluggableListener
+          tags:
+              - { name: doctrine.event_subscriber, connection: default }
+          calls:
+              - [ setAnnotationReader, [ '@annotation_reader' ] ]
+
+      gedmo.listener.sortable:
+          class: Gedmo\Sortable\SortableListener
+          tags:
+              - { name: doctrine.event_subscriber, connection: default }
+          calls:
+              - [ setAnnotationReader, [ '@annotation_reader' ] ]
+
+      gedmo.listener.ip_traceable:
+          class: Gedmo\IpTraceable\IpTraceableListener
+          tags:
+              - { name: doctrine.event_subscriber, connection: default }
+          calls:
+              - [ setAnnotationReader, [ '@annotation_reader' ] ]
+
+      gedmo.listener.uploadable:
+          class: Gedmo\Uploadable\UploadableListener
+          tags:
+              - { name: doctrine.event_subscriber, connection: default }
+          calls:
+              - [ setAnnotationReader, [ '@annotation_reader' ] ]

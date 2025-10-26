@@ -1,0 +1,89 @@
+{% trans_default_domain 'AppBundle' %}
+<div class="panel-default">
+    <div class="panel-heading">
+        <label class="label label-primary">Modificar fecha contable Transferencia {{ tnTransferencia.codigo }}</label>
+    </div>
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="col-sm-12 well well-sm">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <label>{{ 'backend.transferencia.table.codigo'|trans }}
+                                : </label> {{ tnTransferencia.codigo }}
+                            <br>
+                            <label>{{ 'backend.transferencia.table.estado'|trans }}
+                                : </label> {% if tnTransferencia.estado.codigo == '01' %}
+                                <span class="label label-info">Pendiente</span>
+                            {% elseif tnTransferencia.estado.codigo == '02' %}
+                                <span class="label label-primary">Enviada</span>
+                            {% else %}
+                                <span class="label label-danger">Cancelada</span>
+                            {% endif %}
+                            <br>
+                            <label>Fecha Contable: </label>
+                            {{ tnTransferencia.fechaContable | date('d-m-Y') }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="col-sm-12 well well-sm">
+                    <input type="text" name="fechaContable" id="fechaContable" class="form-control"/>
+                    <input type="hidden" id="valueFecha" value="{{ tnTransferencia.fechaContable | date('d-m-Y') }}"/>
+                    <br/>
+
+                    <div class="">
+                        <div class="">
+                            <button id="btn_submit" class="btn btn-primary pull-right" type="button"
+                                    data-transferencia="{{ tnTransferencia.id }}"><i
+                                        class="fa fa-save"></i> {{ 'backend.comun.table.save'|trans }}
+                            </button>
+                            <div style="clear:both"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $('#fechaContable').datepicker({
+            todayBtn: "linked",
+            keyboardNavigation: false,
+            forceParse: false,
+            calendarWeeks: true,
+            autoclose: true,
+            endDate: 'today',
+            format: "dd-mm-yyyy"
+        });
+        $('#fechaContable').datepicker('setDate', $('#valueFecha').val());
+
+        dataLink();
+
+        $('#btn_submit').click(function () {
+            var div_contable = $('#date_contable_' + $(this).attr('data-transferencia'));
+            var transferencia = $(this).attr('data-transferencia');
+            var fecha = $('#fechaContable').val();
+            $.post('{{ url('admin_transferencia_change_fecha_contable_ajax') }}', {
+                transferencia: transferencia,
+                fechaContable: fecha
+            }, function (data) {
+                if (data.success) {
+                    div_contable.html(data.div_content);
+
+                    dataLink();
+
+                    showToastr('success', 'Fecha contable', data.msg);
+
+                    $("#modal-form").modal("hide");
+                }
+            });
+        });
+    });
+</script>
+
+
+

@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}NmGrupoPagoTransf{% endblock %}
+
+{% block body %}
+    <h1>NmGrupoPagoTransf</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ nm_grupo_pago_transf.id }}</td>
+            </tr>
+            <tr>
+                <th>Nombre</th>
+                <td>{{ nm_grupo_pago_transf.nombre }}</td>
+            </tr>
+            <tr>
+                <th>Porcentaje</th>
+                <td>{{ nm_grupo_pago_transf.porcentaje }}</td>
+            </tr>
+            <tr>
+                <th>Created</th>
+                <td>{{ nm_grupo_pago_transf.created ? nm_grupo_pago_transf.created|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>Updated</th>
+                <td>{{ nm_grupo_pago_transf.updated ? nm_grupo_pago_transf.updated|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>Enabled</th>
+                <td>{{ nm_grupo_pago_transf.enabled ? 'Yes' : 'No' }}</td>
+            </tr>
+            <tr>
+                <th>Token</th>
+                <td>{{ nm_grupo_pago_transf.token }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('nm_grupo_pago_transf_index') }}">back to list</a>
+
+    <a href="{{ path('nm_grupo_pago_transf_edit', {'id': nm_grupo_pago_transf.id}) }}">edit</a>
+
+    {{ include('nm_grupo_pago_transf/_delete_form.html.twig') }}
+{% endblock %}

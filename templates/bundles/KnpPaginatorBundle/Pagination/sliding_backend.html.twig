@@ -1,0 +1,39 @@
+{# default Sliding pagination control implementation #}
+
+{% if pageCount > 1 %}
+    <div class="btn-group">
+
+        {% if first is defined and current != first %}
+            <a href="{{ path(route, query|merge({(pageParameterName): first})) }}" class="btn btn-white"><i class="fa fa-angle-double-left"></i> </a>
+{#            <li><a href="{{ path(route, query|merge({(pageParameterName): first})) }}">&lt;&lt;</a></li>#}
+        {% endif %}
+
+        {% if previous is defined %}
+            <a class="btn btn-white" href="{{ path(route, query|merge({(pageParameterName): previous})) }}" ><i class="fa fa-angle-left"></i></a>
+            {#<li><a class="pagination-btn" href="{{ path(route, query|merge({(pageParameterName): previous})) }}">&lt;</a></li>#}
+        {% endif %}
+
+
+        {% for page in pagesInRange %}
+            {% if page != current %}
+                <a href="{{ path(route, query|merge({(pageParameterName): page})) }}" class="btn btn-white">{{ page }}</a>
+                {#<li><a href="{{ path(route, query|merge({(pageParameterName): page})) }}">{{ page }}</a></li>#}
+            {% else %}
+                <a class="btn btn-white active">{{ page }}</a>
+                {#<li class="active"><a href="current">{{ page }}</a></li>#}
+            {% endif %}
+
+        {% endfor %}
+
+        {% if next is defined %}
+            <a href="{{ path(route, query|merge({(pageParameterName): next})) }}" class="btn btn-white"><i class="fa fa-angle-right"></i> </a>
+
+            {#<li><a class="pagination-btn" href="{{ path(route, query|merge({(pageParameterName): next})) }}">&gt;</a></li>#}
+        {% endif %}
+
+        {% if last is defined and current != last %}
+            <a href="{{ path(route, query|merge({(pageParameterName): last})) }}" class="btn btn-white"><i class="fa fa-angle-double-right "></i> </a>
+            {#<li><a class="pagination-btn" href="{{ path(route, query|merge({(pageParameterName): last})) }}">&gt;&gt;</a></li>#}
+        {% endif %}
+    </div>
+{% endif %}

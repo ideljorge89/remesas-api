@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit NmGrupoPagoTransfAgente{% endblock %}
+
+{% block body %}
+    <h1>Edit NmGrupoPagoTransfAgente</h1>
+
+    {{ include('nm_grupo_pago_transf_agente/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('nm_grupo_pago_transf_agente_index') }}">back to list</a>
+
+    {{ include('nm_grupo_pago_transf_agente/_delete_form.html.twig') }}
+{% endblock %}

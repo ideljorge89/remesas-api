@@ -1,0 +1,453 @@
+{% trans_default_domain 'FOSUserBundle' %}
+{% extends "@FOSUser/layout.html.twig" %}
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('assets/frontend/js/plugins/cropper/crop-avatar/css/main.css') }}"/>
+    <link href="{{ asset('assets/frontend/css/cropper/cropper.min.css') }}" rel="stylesheet">
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('assets/frontend/js/plugins/intl-tel-input/intlTelInput.css') }}"
+          type="text/css">
+    <link rel="stylesheet" type="text/css" href="{{ asset('bundles/stflagiconcss/css/flag-icon.min.css') }}" />
+    <style>
+        .chosen-container.chosen-container-single {
+            background-color: #fff;
+            border: medium none;
+            border-radius: 1px;
+            box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1), 1px 0 5px rgba(0, 0, 0, 0.03) inset;
+            font-size: 14px;
+            font-weight: 400;
+            height: inherit;
+            outline: medium none !important;
+            padding: 8px 0 8px 12px;
+            transition: all 0.3s ease 0s;
+            width: 100%;
+        }
+
+        .chosen-container.chosen-container-single > a.chosen-single {
+            background: transparent none repeat scroll 0 0;
+            border: 0 none;
+            border-radius: 0;
+            box-shadow: none !important;
+        }
+
+        .chosen-container.chosen-container-single > .chosen-drop {
+            border: medium none;
+        !important;
+        }
+        .intl-tel-input {
+            display: inherit;
+            position: relative;
+        }
+        .radio-inline, .checkbox-inline {
+            padding-left: 0px;
+        }
+        .mark-circle.right-top {
+            background-color: #be3b6d;
+            color: #fff;
+            cursor: default;
+            right: -22px;
+            top: -27px;
+        }
+        .mark-circle {
+            border-radius: 50%;
+            box-shadow: 1px 1px 8px rgba(0, 0, 0, 0.07);
+            height: 50px;
+            line-height: 53px;
+            position: absolute;
+            text-align: center;
+            width: 50px;
+            z-index: 5;
+        }
+        .flag-icon{
+            margin-right: 5px;
+        }
+        @media (max-width: 991px) {
+            .avatar-btns .btn-group {
+                margin-bottom: 10px;
+            }
+        }
+        @media (max-width: 767px) {
+            .avatar-btns .btn-group {
+                display: none;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block breadcrumbs %}
+    <ol class="breadcrumb">
+        <li><a href="{{ path('homepage') }}">{{ 'frontend.breadcrumb.home'|trans({},'messages') }}</a></li>
+        <li class="active">{{ 'profile.edit.edit_title'|trans }}</li>
+    </ol>
+{% endblock %}
+
+{% block fos_user_content %}
+    {#<div class="title">
+        <h1>{{ 'profile.edit.edit_title'|trans({'%name%':app.user.profile.name}) }}</h1>
+    </div>#}
+    <!--end title-->
+    <div class="row">
+    <div class="col-md-3">
+        <div id="collapsible-sidebar" class="sidebar">
+            <div class="box filter">
+                <i data-toggle="collapsible-sidebar" class="collapsible-toggle fa fa-chevron-down"></i>
+                <h2>
+                    {{ 'profile.edit.edit_title'|trans }}
+                </h2>
+                <ul class="links" id="accordion">
+                    <li class="active" id="about_us">
+                        <a href="{{ path('fos_user_profile_edit') }}" class="about_us_menu">
+                            {{ 'profile.edit.edit_title'|trans }}
+                        </a>
+                    </li>
+                    <li class="" id="terms_us">
+                        <a href="{{ path('fos_user_change_password') }}" class="terms_menu">
+                            {{ 'change_password.title'|trans }}
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <!--end filter-->
+        </div>
+        <!--end sidebar-->
+    </div>
+    <div class="col-md-9">
+    <form id="{{ form.vars.id }}" class="labels-uppercase"
+          action="{{ path('fos_user_profile_edit') }}"  method="POST">
+    {{ form_row(form._token) }}
+    {% if form_errors(form) %}
+        <div class="alert-danger" role="alert">
+            <span class="fa fa-exclamation" aria-hidden="true"></span>
+            <span class="sr-only">Error:</span>
+            {{ form_errors(form) | striptags }}
+        </div>
+    {% endif %}
+    <div class="row">
+        <!--Profile Picture-->
+        <div class="col-md-3 col-sm-3">
+            <section>
+                <h3>{{ 'profile.edit.profile_avatar'|trans }}</h3>
+                {{ include('@FOSUser/Profile/edit_avatar_frontend.html.twig',{'form':form}) }}
+            </section>
+        </div>
+        <!--end col-md-3-->
+        <!--Contact Info-->
+        <div class="col-md-9 col-sm-9">
+            <section>
+                <h3>{{ 'profile.edit.personal_info'|trans }}</h3>
+
+                <div class="row">
+                    <div class="col-md-6 col-sm-6">
+                        <div class="form-group">
+                            <label class="">{{ form_label(form.profile.name) | striptags }}
+                                <sup>*</sup>
+                            </label>
+                            {{ form_widget(form.profile.name, { 'attr': {'class': 'form-control'} }) }}
+                            {% if form_errors(form.profile.name) %}
+                                <div class="alert-danger" role="alert">
+                                                <span class="fa fa-exclamation"
+                                                      aria-hidden="true"></span>
+                                    <span class="sr-only">Error:</span>
+                                    {{ form_errors(form.profile.name) | striptags }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        <!--end form-group-->
+                    </div>
+                    <!--end col-md-3-->
+                    <div class="col-md-6 col-sm-6">
+                        <div class="form-group">
+                            <label class="">
+                                {{ form_label(form.email) | striptags }} <sup>*</sup>
+                            </label>
+                            {{ form_widget(form.email, { 'attr': {'class': 'form-control'} }) }}
+                            {% if form_errors(form.email) %}
+                                <div class="alert-danger" role="alert">
+                                                <span class="fa fa-exclamation"
+                                                      aria-hidden="true"></span>
+                                    <span class="sr-only">Error:</span>
+                                    {{ form_errors(form.email) | striptags }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        <!--end form-group-->
+                    </div>
+                    <!--end col-md-3-->
+                    <div class="col-md-6 col-sm-6">
+                        <div class="form-group">
+                            <label class="">{{ form_label(form.profile.phone) | striptags }}
+                            </label>
+                            {{ form_widget(form.profile.phone, { 'attr': {'class': 'form-control'} }) }}
+                            {{ form_widget(form.profile.phone_hidden) }}
+                            {% if form_errors(form.profile.phone) %}
+                                <div class="alert-danger" role="alert">
+                                                <span class="fa fa-exclamation"
+                                                      aria-hidden="true"></span>
+                                    <span class="sr-only">Error:</span>
+                                    {{ form_errors(form.profile.phone) | striptags }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        <!--end form-group-->
+                    </div>
+                    <!--end col-md-3-->
+                    <div class="col-md-6 col-sm-6">
+                        <div class="form-group">
+                            <label class="">{{ form_label(form.profile.pasaporte) | striptags }}</label>
+                            {{ form_widget(form.profile.pasaporte, { 'attr': {'class': 'form-control'} }) }}
+                            {% if form_errors(form.profile.pasaporte) %}
+                                <div class="alert-danger" role="alert">
+                                                <span class="fa fa-exclamation"
+                                                      aria-hidden="true"></span>
+                                    <span class="sr-only">Error:</span>
+                                    {{ form_errors(form.profile.pasaporte) | striptags }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        <!--end form-group-->
+                    </div>
+                    <!--end col-md-3-->
+                </div>
+            </section>
+            <section>
+                <h3>{{ 'form.factura_info'|trans }}</h3>
+
+                <div class="row">
+                    <div class="col-md-6 col-sm-6">
+                        <div class="form-group">
+                            <label class="">{{ form_label(form.profile.contactPerson) | striptags }}
+                            </label>
+                            {{ form_widget(form.profile.contactPerson, { 'attr': {'class': 'form-control'} }) }}
+                            {% if form_errors(form.profile.contactPerson) %}
+                                <div class="alert-danger" role="alert">
+                                                <span class="fa fa-exclamation"
+                                                      aria-hidden="true"></span>
+                                    <span class="sr-only">Error:</span>
+                                    {{ form_errors(form.profile.contactPerson) | striptags }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        <!--end form-group-->
+                    </div>
+                    <div class="col-md-6 col-sm-6">
+                        <div class="form-group">
+                            <label class="">{{ form_label(form.profile.cif) | striptags }}
+                            </label>
+                            {{ form_widget(form.profile.cif, { 'attr': {'class': 'form-control'} }) }}
+                            {% if form_errors(form.profile.cif) %}
+                                <div class="alert-danger" role="alert">
+                                                <span class="fa fa-exclamation"
+                                                      aria-hidden="true"></span>
+                                    <span class="sr-only">Error:</span>
+                                    {{ form_errors(form.profile.cif) | striptags }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        <!--end form-group-->
+                    </div>
+                    <div class="col-md-6 col-sm-6">
+                        <div class="form-group">
+                            <label class="">{{ form_label(form.profile.direccion) | striptags }}
+                            </label>
+                            {{ form_widget(form.profile.direccion, { 'attr': {'class': 'form-control'} }) }}
+                            {% if form_errors(form.profile.direccion) %}
+                                <div class="alert-danger" role="alert">
+                                                <span class="fa fa-exclamation"
+                                                      aria-hidden="true"></span>
+                                    <span class="sr-only">Error:</span>
+                                    {{ form_errors(form.profile.direccion) | striptags }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        <!--end form-group-->
+                    </div>
+                    <div class="col-md-6 col-sm-6">
+                        <div class="form-group">
+                            <label class="">{{ form_label(form.profile.codigoPostal) | striptags }}
+                            </label>
+                            {{ form_widget(form.profile.codigoPostal, { 'attr': {'class': 'form-control'} }) }}
+                            {% if form_errors(form.profile.codigoPostal) %}
+                                <div class="alert-danger" role="alert">
+                                                <span class="fa fa-exclamation"
+                                                      aria-hidden="true"></span>
+                                    <span class="sr-only">Error:</span>
+                                    {{ form_errors(form.profile.codigoPostal) | striptags }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        <!--end form-group-->
+                    </div>
+                    <div class="col-md-6 col-sm-6">
+                        <div class="form-group">
+                            <label class="">{{ form_label(form.profile.ciudad) | striptags }}
+                            </label>
+                            {{ form_widget(form.profile.ciudad, { 'attr': {'class': 'form-control'} }) }}
+                            {% if form_errors(form.profile.ciudad) %}
+                                <div class="alert-danger" role="alert">
+                                                <span class="fa fa-exclamation"
+                                                      aria-hidden="true"></span>
+                                    <span class="sr-only">Error:</span>
+                                    {{ form_errors(form.profile.ciudad) | striptags }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        <!--end form-group-->
+                    </div>
+                    <div class="col-md-6 col-sm-6">
+                        <div class="form-group">
+                            <label class="">{{ form_label(form.profile.pais) | striptags }}</label>
+                            {{ form_widget(form.profile.pais, { 'attr': {'class': 'form-control', 'placeholder' : ('form.pais.title' | trans)} }) }}
+                            {% if form_errors(form.profile.pais) %}
+                                <div class="alert-danger" role="alert">
+                                                <span class="fa fa-exclamation"
+                                                      aria-hidden="true"></span>
+                                    <span class="sr-only">Error:</span>
+                                    {{ form_errors(form.profile.pais) | striptags }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        <!--end form-group-->
+                    </div>
+                </div>
+            </section>
+        </div>
+        <!--end col-md-6-->
+    </div>
+    <div class="form-group pull-right">
+        <button class="btn btn-primary btn-rounded" type="submit">
+            <i class="fa fa-save"></i>  {{ 'profile.edit.submit'|trans }}
+        </button>
+        <a href="{{ path('fos_user_profile_show') }}" class="btn btn-primary btn-rounded btn-framed"
+           type="submit">
+            <i class="fa fa-times"></i>  {{ 'profile.edit.back_to_profile'|trans }}
+        </a>
+    </div>
+    </form>
+
+    </div>
+    <!--Password-->
+    </div>
+    <div class="modal fade " id="avatar-modal-{{ form.filePath.vars.id }}" aria-hidden="true"
+         aria-labelledby="avatar-modal-label"
+         role="dialog" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button class="close" data-dismiss="modal" type="button">&times;</button>
+                    <h4 class="modal-title"
+                        id="avatar-modal-label">{{ 'tabs_traduccion.change_photo'|trans({},'AppBundle') }}</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="avatar-body">
+                        <form class="avatar-form avatar-form-{{ form.filePath.vars.id }}"
+                              action="{{ url('app_photo_crop_frontend',{'avatar':true}) }}"
+                              enctype="multipart/form-data" method="post">
+
+                            <!-- Upload image and data -->
+                            <div class="avatar-upload" style="margin-bottom: -30px;">
+                                <input class="avatar-src" name="avatar_src" type="hidden">
+                                <input class="avatar-data" name="avatar_data" type="hidden">
+
+                                <div class="input">
+                                    <input class="avatar-input" accept="image/*" id="avatarInput{{ form.filePath.vars.id }}"
+                                           name="avatar_file" type="file"
+                                           style="width:180.5px;background-color: #ab0058;border-radius: 5px;height: 30px;padding-top: 40px;cursor:pointer;margin-left:15px;">
+                                    <label for="avatarInput{{ form.filePath.vars.id }}"
+                                           style="width:180.5px;color: white;margin-left: 30px;position: relative;top: -30px;">{{ 'tabs_traduccion.select_photo'|trans({},'AppBundle') }}</label>
+                                </div>
+
+                            </div>
+
+                            <!-- Crop and preview -->
+                            <div class="row">
+                                <div class="col-md-9">
+                                    <div class="avatar-wrapper"></div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="avatar-preview preview-lg"></div>
+                                    <div class="avatar-preview preview-md" style="border-radius: 50%;"></div>
+                                    <div class="avatar-preview preview-sm"></div>
+                                </div>
+                            </div>
+                            <div class="row avatar-btns">
+                                <div class="col-md-10">
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-primary" data-method="rotate"
+                                                data-option="-90"
+                                                title="Rotate -90 degrees">{{ 'tabs_traduccion.rotate_photo_left'|trans({},'AppBundle') }}</button>
+                                        <button type="button" class="btn btn-primary" data-method="rotate"
+                                                data-option="-15">-15deg
+                                        </button>
+                                        <button type="button" class="btn btn-primary" data-method="rotate"
+                                                data-option="-30">-30deg
+                                        </button>
+                                        <button type="button" class="btn btn-primary" data-method="rotate"
+                                                data-option="-45">-45deg
+                                        </button>
+                                    </div>
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-primary" data-method="rotate"
+                                                data-option="90"
+                                                title="Rotate 90 degrees">{{ 'tabs_traduccion.rotate_photo_right'|trans({},'AppBundle') }}</button>
+                                        <button type="button" class="btn btn-primary" data-method="rotate"
+                                                data-option="15">15deg
+                                        </button>
+                                        <button type="button" class="btn btn-primary" data-method="rotate"
+                                                data-option="30">30deg
+                                        </button>
+                                        <button type="button" class="btn btn-primary" data-method="rotate"
+                                                data-option="45">45deg
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <button class="btn btn-primary btn-block avatar-save" type="submit">
+                                        <i class="fa fa-save"></i>  {{ 'tabs_traduccion.accept'|trans({},'AppBundle') }}
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock fos_user_content %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script src="{{ asset('assets/backend/js/plugins/cropper/cropper.js') }}"></script>
+    <script src="{{ asset('assets/backend/js/plugins/cropper/jquery-cropper.js') }}"></script>
+    <script type="application/javascript"
+            src="{{ asset('assets/backend/js/plugins/cropper/crop-avatar/js/main.js') }}"></script>
+    <script src="{{ asset('assets/frontend/js/plugins/intl-tel-input/intlTelInput.js') }}"></script>
+    <script src="{{ asset('assets/comun/jquery/chosen/ImageSelect.jquery.js') }}"></script>
+    <script>
+        $(function () {
+            $("#{{ form.profile.phone.vars.id }}").intlTelInput({
+                initialCountry: "auto",
+                geoIpLookup: function (callback) {
+                    $.get('https://ipinfo.io', function () {
+                    }, "jsonp").always(function (resp) {
+                        var countryCode = (resp && resp.country) ? resp.country : "";
+                        callback(countryCode);
+                    });
+                },
+                utilsScript: "{{ asset('assets/frontend/js/plugins/intl-tel-input/utils.js') }}" // just for formatting/placeholders etc
+            });
+
+            $("#{{ form.vars.id }}").on('submit', function (event) {
+                $("#{{ form.profile.phone_hidden.vars.id }}").val($("#{{ form.profile.phone.vars.id }}").intlTelInput("getNumber"));
+                $(this).submit();
+            });
+
+            $("#{{ form.profile.pais.vars.id }}").chosen({
+                width:'100%'
+            });
+
+            return new $.fn.CropAvatar($('#crop-avatar{{ form.filePath.vars.id }}'), 1);
+        })
+        ;
+    </script>
+{% endblock %}

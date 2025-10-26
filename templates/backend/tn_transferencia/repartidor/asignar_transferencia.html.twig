@@ -1,0 +1,262 @@
+{% extends 'base_backend.html.twig' %}
+{% trans_default_domain 'AppBundle' %}
+
+ {% set transferencias = form.transferencias.children %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        i#checkAll:hover {
+            cursor: pointer;
+            color: green;
+        }
+
+        i#checkAll {
+            margin-left: 8px;
+        }
+    </style>
+{% endblock %}
+{% block breadcrumb %}
+    <div class="col-lg-12">
+        <h2>{{ 'backend.user_menu.administrator.transferencia.title'|trans({},'FOSUserBundle') }}</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="{{ path('homepage_backend') }}"><i
+                            class="fa fa-home"></i> {{ 'backend.user_menu.breadcrumb.home'|trans({},'FOSUserBundle') }}
+                </a>
+            </li>
+            <li class="">
+                {{ 'backend.user_menu.administrator.nomencladores.title'|trans({},'FOSUserBundle') }}
+            </li>
+            <li class="active">
+                <strong>{{ 'backend.user_menu.administrator.transferencia.report.asignar'|trans({},'FOSUserBundle') }}</strong>
+            </li>
+        </ol>
+    </div>
+{% endblock %}
+{% block body %}
+    {#<div class="row">#}
+        {#<div class="col-lg-12">#}
+            {#<div class="ibox advanced-filter filter-show">#}
+                {#<div class="ibox-content m-b-sm border-bottom">#}
+                    {#{{ form_start(formSearch,{'attr':{#}
+                        {#'id':formSearch.vars.id,#}
+                        {#'action': path('tn_transferencia_repartidores_pendientes_repartir')#}
+                    {#}}) }}#}
+
+                    {#{{ form_widget(formSearch._token) }}#}
+                    {#{% if form_errors(formSearch) %}#}
+                        {#<div class="alert alert-danger" role="alert">#}
+                            {#<button type="button" class="close" data-dismiss="alert" aria-hidden="true">#}
+                                {#&times;#}
+                            {#</button>#}
+                            {#<span class="fa fa-exclamation"#}
+                                  {#aria-hidden="true"></span>#}
+                            {#<span class="sr-only">Error:</span>#}
+                            {#{{ form_errors(formSearch) | striptags }}#}
+                        {#</div>#}
+                    {#{% endif %}#}
+                    {#<div class="row">#}
+                        {#<div class="col-sm-3">#}
+                            {#<div class="form-group">#}
+                                {#{{ form_widget(formSearch.codigo,{'attr':{'class':'form-control'}}) }}#}
+                            {#</div>#}
+                        {#</div>#}
+                        {#<div class="col-sm-3">#}
+                            {#<div class="form-group">#}
+                                {#<div class="input-group">#}
+                                    {#{{ form_widget(formSearch.tarejta,{'attr':{'class':'form-control'}}) }}#}
+                                    {#<span class="input-group-addon" data-toggle="tooltip" data-placement="bottom"#}
+                                          {#title="Número de la tarjeta que quiere buscar"><i#}
+                                                {#class="fa fa-info-circle" style="color: red"></i></span>#}
+                                {#</div>#}
+                            {#</div>#}
+                        {#</div>#}
+                        {#<div class="col-sm-3">#}
+                            {#<div class="form-group">#}
+                                {#<div class="input-group">#}
+                                    {#{{ form_widget(formSearch.titular,{'attr':{'class':'form-control'}}) }}#}
+                                    {#<span class="input-group-addon" data-toggle="tooltip" data-placement="bottom"#}
+                                          {#title="Nombre del titular o destinatario de la trasferencia"><i#}
+                                                {#class="fa fa-info-circle" style="color: red"></i></span>#}
+                                {#</div>#}
+                            {#</div>#}
+                        {#</div>#}
+                        {#<div class="col-sm-3">#}
+                            {#<div class="form-group">#}
+                                {#{{ form_widget(formSearch.nota,{'attr':{'class':'form-control'}}) }}#}
+                            {#</div>#}
+                        {#</div>#}
+                    {#</div>#}
+                    {#<div class="row">#}
+                        {#<div class="col-sm-3">#}
+                            {#<div class="input-daterange input-group">#}
+                                {#{{ form_widget(formSearch.fechaInicio,{#}
+                                    {#'attr':{#}
+                                        {#'class':'form-control', 'placeholder': "Fecha inicio"#}
+                                    {#}#}
+                                {#}) }}#}
+                                {#<span class="input-group-addon"><i class="fa fa-calendar"></i></span>#}
+                                {#{{ form_widget(formSearch.fechaFin,{#}
+                                    {#'attr':{#}
+                                        {#'class':'form-control', 'placeholder': "Fecha fin"#}
+                                    {#}#}
+                                {#}) }}#}
+                            {#</div>#}
+                        {#</div>#}
+                        {#<div class="col-sm-3">#}
+                            {#<div class="form-group">#}
+                                {#{{ form_widget(formSearch.agencia,{'attr':{'class':'form-control', 'data-placeholder': "Agencias"}}) }}#}
+                            {#</div>#}
+                        {#</div>#}
+                        {#<div class="col-sm-3">#}
+                            {#<div class="form-group">#}
+                                {#{{ form_widget(formSearch.agente,{'attr':{'class':'form-control', 'data-placeholder': "Agentes"}}) }}#}
+                            {#</div>#}
+                        {#</div>#}
+                        {#<div class="col-sm-3">#}
+                            {#<div class="form-group">#}
+                                {#<button type=submit class="btn btn-primary pull-right" data-toggle="tooltip"#}
+                                        {#title="Filtrar datos" data-placement="left" type="button"><i#}
+                                            {#class="fa fa-search"></i></button>#}
+                            {#</div>#}
+                        {#</div>#}
+                    {#</div>#}
+                    {#</form>#}
+                {#</div>#}
+            {#</div>#}
+        {#</div>#}
+    {#</div>#}
+    <div class="row">
+        <div class="col-md-12 col-xs-12">
+            <div class="ibox">
+                {{ form_start(form,{'attr':{
+                    'id':form.vars.id,
+                    'action': path('tn_transferencia_repartidores_pendientes_repartir')
+                }}) }}
+
+                <div class="ibox-title">
+                    <h5>
+                        {{ 'backend.transferencia.asignar.repartidor' | trans | upper }}
+                        <small> {{ form_label(form.transferencias)|striptags }} </small>
+                        <label for="totaltes" class="badge badge-danger">SIN ASIGNAR AHORA {{ pagina }} DE UN TOTAL
+                            DE {{ total }}</label>
+                    </h5>
+                </div>
+                <div class="ibox-content">
+                    <div class="row">
+                        <div class="col-md-12">
+                            {% if form_errors(form.transferencias) %}
+                                <div class="alert alert-danger" role="alert">
+                                    <button type="button" class="close" data-dismiss="alert"
+                                            aria-hidden="true">&times;
+                                    </button>
+                                    <span class="fa fa-exclamation"
+                                          aria-hidden="true"></span>
+                                    <span class="sr-only">Error:</span>
+                                    {{ form_errors(form.transferencias) | striptags }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div id='table' class="col-md-12 col-xs-12 table-responsive">
+                            <table class="footable footable-paging footable-paging-center  footable-paging-center  table table-stripped table-hover  toggle-arrow-tiny"
+                                   data-paging-size="100" data-paging="true" data-filtering="true"
+                                   data-sorting="false">
+                                <thead>
+                                <tr>
+                                    <th data-sort-ignore="true" {{ is_granted("ROLE_SUPER_ADMIN") ? "width='12%'" }}>{{ 'backend.transferencia.table.codigo'|trans }}</th>
+                                    <th data-sort-ignore="true">{{ 'backend.transferencia.table.emisor'|trans }}</th>
+                                    <th data-sort-ignore="true">{{ 'backend.transferencia.table.titular'|trans }}</th>
+                                    <th data-sort-ignore="true">{{ 'backend.transferencia.table.tarjeta'|trans }}</th>
+                                    <th>{{ 'backend.transferencia.table.total'|trans }}</th>
+                                    <th>{{ 'backend.transferencia.table.fecha'|trans }}</th>
+                                    <th>{{ 'backend.transferencia.table.repartidor'|trans }}</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for choice in transferencias %}
+                                    {% set transferencia = choice.vars.value %}
+                                    <tr>
+                                        <td>{{ transferencia.codigo }}</td>
+                                        <td>{{ transferencia.emisor ? transferencia.emisor : '-' }}</td>
+                                        <td>{{ transferencia.titularTarjeta }}</td>
+                                        <td>{{ transferencia.numeroTarjeta }}</td>
+                                        <td>{{ transferencia.importe | number_format(2, '.', ',') }} {{ transferencia.moneda }}</td>
+                                        <td>{{ transferencia.created | date('d/m/Y') }}</td>
+                                        <td>
+                                            {{ form_widget(choice.repartidor,{'attr':{
+                                                'class':'form-control'
+                                            }}) }}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="col-md-12 col-xs-12">
+                            {% if transferencias |length > 0 %}
+                                <button type="submit" class="btn btn-warning pull-right">
+                                    <i class="fa fa-check-square-o"></i>
+                                    {{ 'backend.transferencia.asignar.btn' | trans }}
+                                </button>
+                            {% else %}
+                                <button type="submit" class="btn btn-warning pull-right disabled" disabled>
+                                    <i class="fa fa-check-square-o"></i>
+                                    {{ 'backend.transferencia.asignar.btn' | trans }}
+                                </button>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {{ form_widget(form._token) }}
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        $(function () {
+
+            // $('.input-daterange').datepicker({
+            //     keyboardNavigation: false,
+            //     forceParse: false,
+            //     autoclose: true,
+            //     format: "dd-mm-yyyy",
+            //     todayBtn: true,
+            //     language: 'es',
+            //     endDate: 'today',
+            //     todayHighlight: true,
+            // }).on('keypress paste', function (e) {
+            //     e.preventDefault();
+            //     return false;
+            // });
+
+            $("#{{ form.vars.id }}").validate({
+                ignore: '',
+                rules: {
+                    {% for choice in transferencias %}
+                    "{{ choice.repartidor.vars.full_name }}": {
+                        required: false
+                    },
+                    {% endfor %}
+                },
+                submitHandler: function (form) {
+                    form.submit();
+                },
+                errorPlacement: function (error, element) {
+                    if ($(element).data('error-to'))
+                        error.insertAfter($($(element).data('error-to')))
+                    else {
+                        error.insertAfter(element)
+                        error.insertAfter(element.closest('.input-group'))
+                    }
+                }
+            });
+
+            dataLink();
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,571 @@
+{% extends 'base_backend.html.twig' %}
+{% trans_default_domain 'AppBundle' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .filter-hidden {
+            display: none;
+        }
+
+        .filter-show {
+            display: block;
+        }
+
+        .titular:hover {
+            cursor: pointer;
+            color: blue;
+        }
+    </style>
+{% endblock %}
+
+{% block breadcrumb %}
+    <div class="col-lg-12">
+        <h2>{{ 'backend.user_menu.administrator.transferencia.add'|trans({},'FOSUserBundle') }}</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="{{ path('homepage_backend') }}"><i
+                            class="fa fa-home"></i> {{ 'backend.user_menu.breadcrumb.home'|trans({},'FOSUserBundle') }}
+                </a>
+            </li>
+            <li class="">
+                {{ 'backend.user_menu.administrator.nomencladores.title'|trans({},'FOSUserBundle') }}
+            </li>
+            <li class="active">
+                <strong>{{ 'backend.user_menu.administrator.transferencia.add'|trans({},'FOSUserBundle') }}</strong>
+            </li>
+        </ol>
+    </div>
+{% endblock %}
+
+{% block body %}
+    <div class="ibox">
+        {{ form_start(form,{
+            'attr':{
+                'id': form.vars.id,
+                'class':'form',
+                'novalidate':'novalidate'
+            }}) }}
+
+        {{ form_widget(form._token) }}
+        <div class="ibox-title">
+            <div class="pull-right" style="margin-top: -7px">
+                {% if app.user.auth %}
+                    {{ form_widget(form.auth,{'attr':{'class':'form-control js-switch', 'checked': 'checked' }}) }} AUTH
+                {% endif %}
+            </div>
+        </div>
+        <div class="ibox-content">
+            {{ include('backend/tn_transferencia/_form.html.twig') }}
+        </div>
+    </div>
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        $(function () {
+
+            {% if app.user and is_granted("ROLE_SUPER_ADMIN") %}
+            $({{ form.agente.vars.id }}).change(function (e) {
+                if ($(this).val() != '') {
+                    var option = $(this).find('option:selected');
+                    var porcentaje = $(option).data('porciento');
+                    if (option) {
+                        var porcentaje = $(option).data('porciento');
+                        //Quitando la seleccion de la agencia, solo puede ser 1 de los 2.
+                        var agencia = $('#{{ form.agencia.vars.id }}');
+                        var seltd = $('#{{ form.agencia.vars.id }} option:selected');
+                        seltd.removeAttr('selected');
+                        agencia.find('option:first').attr('selected', 'selected');
+                        agencia.trigger("chosen:updated");
+                    }
+                    if($({{ form.titularTarjeta.vars.id }}).val() != ''){
+                        compareDestinatarios($({{ form.titularTarjeta.vars.id }}).val());
+                    }
+                }
+            });
+
+            $({{ form.agencia.vars.id }}).change(function (e) {
+                if ($(this).val() != '') {
+                    var option = $(this).find('option:selected');
+                    var porcentaje = $(option).data('porciento');
+                    if (option) {
+                        var porcentaje = $(option).data('porciento');
+                        //Quitando la seleccion de la agente, solo puede ser 1 de los 2.
+                        var agente = $('#{{ form.agente.vars.id }}');
+                        var seltd = $('#{{ form.agente.vars.id }} option:selected');
+                        seltd.removeAttr('selected');
+                        agente.find('option:first').attr('selected', 'selected');
+                        agente.trigger("chosen:updated");
+                    }
+                    if($({{ form.titularTarjeta.vars.id }}).val() != ''){
+                        compareDestinatarios($({{ form.titularTarjeta.vars.id }}).val());
+                    }
+                }
+            });
+            {% endif %}
+
+            $('#tn_transferencia_auth').change(function (ev) {
+                if (!$(this).is(':checked')) {
+                    showToastr('warning', 'Cálculo de precios', 'Se desactivó el cálculo automático de precio, se registrarán los valores que intruduzca de forma manual.');
+                }
+            });
+
+            $({{ form.titularTarjeta.vars.id }}).keypress(function () {
+                compareDestinatarios($(this).val());
+            });
+
+            function compareDestinatarios(val) {
+                if (val.length > 3) {
+                    {% if app.user and is_granted("ROLE_SUPER_ADMIN") %}
+                    if ($('#tn_transferencia_agencia').val() != '') {
+                        loadDestinatarios($('#tn_transferencia_agencia option:selected').val(), 'Agencia', val);
+                    }
+                    if ($('#tn_transferencia_agente').val() != '') {
+                        loadDestinatarios($('#tn_transferencia_agente option:selected').val(), 'Agencia', val);
+                    }
+                    {% elseif app.user and is_granted("ROLE_AGENCIA") %}
+                    if ($('#tn_transferencia_agente').val() != '') {
+                        loadDestinatarios($('#tn_transferencia_agente option:selected').val(), 'Agencia', val);
+                    } else {
+                        var user = {{ app.user.agencia.id }}
+                            loadDestinatarios(user, 'Agencia', val);
+                    }
+                    {% elseif app.user and is_granted("ROLE_AGENTE") %}
+                    var user = {{ app.user.agente.id }}
+                        loadDestinatarios(user, 'Agente', val);
+                    {% endif %}
+                }
+            }
+
+            function loadDestinatarios(usuario, type, titular) {
+                $("#destinatarios").load("{{ url('tn_transferencia_destinatarios_usuario') }}", {
+                    user: usuario,
+                    type: type,
+                    titular: titular
+                }, function (a) {
+                });
+            }
+
+            var config = {
+                '.chosen-select': {},
+                '.chosen-select-deselect': {allow_single_deselect: true},
+                '.chosen-select-no-single': {disable_search_threshold: 10},
+                '.chosen-select-no-results': {no_results_text: 'Oops, nothing found!'},
+                '.chosen-select-width': {width: "95%"}
+            };
+
+            for (var selector in config) {
+                $(selector).chosen(config[selector]);
+            }
+
+
+            $({{ form.numeroTarjeta.vars.id }}).inputmask({"mask": "9999 9999 9999 9999"});
+
+
+            {% if app.user.auth %}
+            $('#tn_transferencia_agente').change(function () {
+                $('#{{ form.importe.vars.id }}').trigger('change');
+            });
+
+            $('#tn_transferencia_agencia').change(function () {
+                $('#{{ form.importe.vars.id }}').trigger('change');
+            });
+
+            function checksMoneda() {
+                if ($('#{{ form.moneda.vars.id }}').val() == "") {
+                    $('#{{ form.totalCobrar.vars.id }}').val(0);
+                    $('#{{ form.totalCobrar.vars.id }}').attr('readOnly', true);
+                    $('#{{ form.importe.vars.id }}').val(0);
+                    $('#{{ form.importe.vars.id }}').attr('readOnly', true);
+                } else {
+                    $('#{{ form.totalCobrar.vars.id }}').val(0);
+                    $('#{{ form.totalCobrar.vars.id }}').attr('readOnly', false);
+                    $('#{{ form.importe.vars.id }}').val(0);
+                    $('#{{ form.importe.vars.id }}').attr('readOnly', false);
+                }
+            }
+
+            function checksMonedaReload() {
+                if ($('#{{ form.moneda.vars.id }}').val() == "") {
+                    $('#{{ form.totalCobrar.vars.id }}').val(0);
+                    $('#{{ form.totalCobrar.vars.id }}').attr('readOnly', true);
+                    $('#{{ form.importe.vars.id }}').val(0);
+                    $('#{{ form.importe.vars.id }}').attr('readOnly', true);
+                }
+            }
+
+            checksMonedaReload();
+
+            $('#{{ form.moneda.vars.id }}').change(function () {
+                if ($(this).val() != "") {
+                    checksMoneda();
+                } else {
+                    checksMoneda();
+                }
+            });
+
+            $('#{{ form.totalCobrar.vars.id }}').change(function () {
+                if ($('#tn_transferencia_auth').is(':checked') && $('#{{ form.moneda.vars.id }}').val() != '') {
+                    if ($(this).val() != "" && $(this).val() > 0) {
+                        //Tasa de cambio con respecto a la moneda contable.
+                        var tasa = parseFloat($('#{{ form.moneda.vars.id }} option:selected').data('tasa'));
+
+                        {% if is_granted("ROLE_SUPER_ADMIN") %}
+                        if ($('#tn_transferencia_agente option:selected').val() != undefined && $('#tn_transferencia_agente option:selected').val() != "") {
+                            var type = $('#tn_transferencia_agente option:selected').data('type');
+
+                            //Obteniendo porciento operacion
+                            $.post("{{ url('admin_agente_transferencia_porciento_operacion_ajax') }}", {
+                                idAgente: $('#tn_transferencia_agente option:selected').val(),
+                                idMoneda: $('#{{ form.moneda.vars.id }}').val()
+                            }, function (data) {
+                                if (data.success == true) {
+                                    var porciento = parseInt(data.valor);
+                                } else {
+                                    var porciento = parseInt($('#tn_transferencia_agente option:selected').data('porciento'));
+                                }
+
+                                if (type == 'porciento') {
+                                    var total = parseInt($('#{{ form.totalCobrar.vars.id }}').val());
+                                    if (total < 100) { //Si el total de las remesas es menor que 100, se calcula en base a 100
+                                        var temp = parseInt((100 * porciento) / 100);
+                                    } else {
+                                        var temp = parseInt((total * porciento) / 100);
+                                    }
+
+                                    var importe = (total - temp) * tasa;
+                                    $('#{{ form.importe.vars.id }}').val(importe);
+                                } else {
+                                    var total = parseInt($('#{{ form.totalCobrar.vars.id }}').val());
+                                    var importe = parseInt(total - porciento) * tasa;
+                                    $('#{{ form.importe.vars.id }}').val(importe);
+                                }
+                            });
+                        } else if ($('#tn_transferencia_agencia option:selected').val() != undefined && $('#tn_transferencia_agencia option:selected').val() != "") {
+                            var type = $('#tn_transferencia_agencia option:selected').data('type');
+
+                            //Obteniendo porciento operacion
+                            $.post("{{ url('admin_agencia_transferencia_porciento_operacion_ajax') }}", {
+                                idAgencia: $('#tn_transferencia_agencia option:selected').val(),
+                                idMoneda: $('#{{ form.moneda.vars.id }}').val()
+                            }, function (data) {
+                                if (data.success == true) {
+                                    var porciento = parseInt(data.valor);
+                                } else {
+                                    var porciento = parseInt($('#tn_transferencia_agencia option:selected').data('porciento'));
+                                }
+
+                                if (type == 'porciento') {
+                                    var total = parseInt($('#{{ form.totalCobrar.vars.id }}').val());
+                                    if (total < 100) { //Si el total de las remesas es menor que 100, se calcula en base a 100
+                                        var temp = parseInt((100 * porciento) / 100);
+                                    } else {
+                                        var temp = parseInt((total * porciento) / 100);
+                                    }
+
+                                    var importe = (total - temp) * tasa;
+                                    $('#{{ form.importe.vars.id }}').val(importe);
+                                } else {
+                                    var total = parseInt($('#{{ form.totalCobrar.vars.id }}').val());
+                                    var importe = parseInt(total - porciento) * tasa;
+                                    $('#{{ form.importe.vars.id }}').val(importe);
+                                }
+                            });
+                        } else {
+                            var type = 'porciento';
+                            var porciento = {{ percentUser() }};
+
+                            if (type == 'porciento') {
+                                var total = parseInt($('#{{ form.totalCobrar.vars.id }}').val());
+                                if (total < 100) { //Si el total de las remesas es menor que 100, se calcula en base a 100
+                                    var temp = parseInt((100 * porciento) / 100);
+                                } else {
+                                    var temp = parseInt((total * porciento) / 100);
+                                }
+
+                                var importe = (total - temp) * tasa;
+                                $('#{{ form.importe.vars.id }}').val(importe);
+                            } else {
+                                var total = parseInt($('#{{ form.totalCobrar.vars.id }}').val());
+                                var importe = parseInt(total - porciento) * tasa;
+                                $('#{{ form.importe.vars.id }}').val(importe);
+                            }
+                        }
+                        {% else %}
+                        var minimo = parseFloat($('#{{ form.moneda.vars.id }} option:selected').data('minimo'));
+                        var maximo = parseFloat($('#{{ form.moneda.vars.id }} option:selected').data('maximo'));
+                        var multiplo = parseInt($('#{{ form.moneda.vars.id }} option:selected').data('multiplo'));
+
+
+                        if ($('#tn_transferencia_agente option:selected').val() != undefined && $('#tn_transferencia_agente option:selected').val() != "") {
+                            //Obteniendo porciento operacion
+                            $.post("{{ url('admin_agente_transferencia_porciento_operacion_ajax') }}", {
+                                idAgente: $('#tn_transferencia_agente option:selected').val(),
+                                idMoneda: $('#{{ form.moneda.vars.id }}').val()
+                            }, function (data) {
+                                if (data.success == true) {
+                                    var porciento = parseInt(data.valor);
+                                } else {
+                                    var porciento = parseInt($('#tn_transferencia_agente option:selected').data('porciento'));
+                                }
+                                var type = $('#tn_transferencia_agente option:selected').data('type');
+
+                                if (type == 'porciento') {
+                                    var total = parseInt($('#{{ form.totalCobrar.vars.id }}').val());
+                                    if (total < 100) { //Si el total de las remesas es menor que 100, se calcula en base a 100
+                                        var temp = parseInt((100 * porciento) / 100);
+                                    } else {
+                                        var temp = parseInt((total * porciento) / 100);
+                                    }
+
+                                    var importe = parseInt((total - temp) * tasa);
+                                    $('#{{ form.importe.vars.id }}').val(importe);
+                                } else {
+                                    var total = parseInt($('#{{ form.totalCobrar.vars.id }}').val());
+                                    var importe = parseInt(total - porciento) * tasa;
+                                    $('#{{ form.importe.vars.id }}').val(importe);
+                                }
+
+                                if (importe < minimo || importe > maximo || importe % multiplo != 0) {
+                                    if (importe > maximo) {
+                                        $('#{{ form.totalCobrar.vars.id }}').val(0);
+                                        $('#{{ form.importe.vars.id }}').val(maximo);
+                                    } else {
+                                        $('#{{ form.totalCobrar.vars.id }}').val(0);
+                                        $('#{{ form.importe.vars.id }}').val(minimo);
+                                    }
+                                    $('#{{ form.importe.vars.id }}').trigger('change');
+                                    showToastr('warning', 'Monto mínimo', 'El total a entregar en la moneda seleccionada debe estar entre ' + minimo + ' y ' + maximo + ' y ser múltiplo de ' + multiplo);
+                                }
+                            });
+                        } else {
+                            var porciento = parseInt($('#{{ form.moneda.vars.id }} option:selected').data('porciento'));
+
+                            var total = parseInt($('#{{ form.totalCobrar.vars.id }}').val());
+                            if (total < 100) { //Si el total de las remesas es menor que 100, se calcula en base a 100
+                                var temp = parseInt((100 * porciento) / 100);
+                            } else {
+                                var temp = parseInt((total * porciento) / 100);
+                            }
+
+                            var importe = (total - temp) * tasa;
+                            $('#{{ form.importe.vars.id }}').val(importe);
+
+                            if (importe < minimo || importe > maximo || importe % multiplo != 0) {
+                                if (importe > maximo) {
+                                    $('#{{ form.totalCobrar.vars.id }}').val(0);
+                                    $('#{{ form.importe.vars.id }}').val(maximo);
+                                } else {
+                                    $('#{{ form.totalCobrar.vars.id }}').val(0);
+                                    $('#{{ form.importe.vars.id }}').val(minimo);
+                                }
+                                $('#{{ form.importe.vars.id }}').trigger('change');
+                                showToastr('warning', 'Monto mínimo', 'El total a entregar en la moneda seleccionada debe estar entre ' + minimo + ' y ' + maximo + ' y ser múltiplo de ' + multiplo);
+                            }
+                        }
+                        {% endif %}
+                    }
+                }
+            });
+
+            $('#{{ form.importe.vars.id }}').change(function () {
+                if ($('#tn_transferencia_auth').is(':checked') && $('#{{ form.moneda.vars.id }}').val() != '') {
+                    if ($(this).val() != "" && $(this).val() > 0) {
+
+                        {% if is_granted("ROLE_SUPER_ADMIN") %}
+                        //Tasa de cambio con respecto a la moneda contable.
+                        var tasa = parseFloat($('#{{ form.moneda.vars.id }} option:selected').data('tasa'));
+
+                        if ($('#tn_transferencia_agente option:selected').val() != undefined && $('#tn_transferencia_agente option:selected').val() != "") {
+                            var type = $('#tn_transferencia_agente option:selected').data('type');
+
+                            //Obteniendo porciento operacion
+                            $.post("{{ url('admin_agente_transferencia_porciento_operacion_ajax') }}", {
+                                idAgente: $('#tn_transferencia_agente option:selected').val(),
+                                idMoneda: $('#{{ form.moneda.vars.id }}').val()
+                            }, function (data) {
+                                if (data.success == true) {
+                                    var porciento = parseInt(data.valor);
+                                } else {
+                                    var porciento = parseInt($('#tn_transferencia_agente option:selected').data('porciento'));
+                                }
+
+                                if (type == 'porciento') {
+                                    //Diviendo entre la tasa para encontrar el importe según la moneda.
+                                    var total = parseInt(parseInt($('#{{ form.totalCobrar.vars.id }}').val()) / tasa);
+                                    if (total < 100) { //Si el total de las remesas es menor que 100, se calcula en base a 100
+                                        var temp = parseInt((100 * porciento) / 100);
+                                    } else {
+                                        var temp = parseInt((total * porciento) / 100);
+                                    }
+                                    var importe = total + temp;
+                                    $('#{{ form.totalCobrar.vars.id }}').val(importe);
+                                } else {
+                                    var total = parseInt(parseInt($('#{{ form.totalCobrar.vars.id }}').val()) / tasa);
+                                    var importe = parseInt(total + porciento);
+                                    $('#{{ form.totalCobrar.vars.id }}').val(importe);
+                                }
+                            });
+
+                        } else if ($('#tn_transferencia_agencia option:selected').val() != undefined && $('#tn_transferencia_agencia option:selected').val() != "") {
+                            var type = $('#tn_transferencia_agencia option:selected').data('type');
+                            //Obteniendo porciento operacion
+                            $.post("{{ url('admin_agencia_transferencia_porciento_operacion_ajax') }}", {
+                                idAgencia: $('#tn_transferencia_agencia option:selected').val(),
+                                idMoneda: $('#{{ form.moneda.vars.id }}').val()
+                            }, function (data) {
+                                if (data.success == true) {
+                                    var porciento = parseInt(data.valor);
+                                } else {
+                                    var porciento = parseInt($('#tn_transferencia_agencia option:selected').data('porciento'));
+                                }
+
+                                if (type == 'porciento') {
+                                    //Diviendo entre la tasa para encontrar el importe según la moneda.
+                                    var total = parseInt(parseInt($('#{{ form.importe.vars.id }}').val()) / tasa);
+                                    if (total < 100) { //Si el total de las remesas es menor que 100, se calcula en base a 100
+                                        var temp = parseInt((100 * porciento) / 100);
+                                    } else {
+                                        var temp = parseInt((total * porciento) / 100);
+                                    }
+                                    var importe = total + temp;
+                                    $('#{{ form.totalCobrar.vars.id }}').val(importe);
+                                } else {
+                                    var total = parseInt(parseInt($('#{{ form.importe.vars.id }}').val()) / tasa);
+                                    var importe = parseInt(total + porciento);
+                                    $('#{{ form.totalCobrar.vars.id }}').val(importe);
+                                }
+                            });
+                        } else {
+                            var type = 'porciento';
+                            var porciento = {{ percentUser() }};
+
+                            if (type == 'porciento') {
+                                //Diviendo entre la tasa para encontrar el importe según la moneda.
+                                var total = parseInt(parseInt($('#{{ form.importe.vars.id }}').val()) / tasa);
+                                if (total < 100) { //Si el total de las remesas es menor que 100, se calcula en base a 100
+                                    var temp = parseInt((100 * porciento) / 100);
+                                } else {
+                                    var temp = parseInt((total * porciento) / 100);
+                                }
+                                var importe = total + temp;
+                                $('#{{ form.totalCobrar.vars.id }}').val(importe);
+                            } else {
+                                var total = parseInt(parseInt($('#{{ form.importe.vars.id }}').val()) / tasa);
+                                var importe = parseInt(total + porciento);
+                                $('#{{ form.totalCobrar.vars.id }}').val(importe);
+                            }
+                        }
+                        {% else %}
+                        var minimo = parseFloat($('#{{ form.moneda.vars.id }} option:selected').data('minimo'));
+                        var maximo = parseFloat($('#{{ form.moneda.vars.id }} option:selected').data('maximo'));
+                        var multiplo = parseInt($('#{{ form.moneda.vars.id }} option:selected').data('multiplo'));
+
+                        if ($(this).val() >= minimo && $(this).val() <= maximo && $(this).val() % multiplo == 0) {
+                            //Tasa de cambio con respecto a la moneda contable.
+                            var tasa = parseFloat($('#{{ form.moneda.vars.id }} option:selected').data('tasa'));
+
+                            if ($('#tn_transferencia_agente option:selected').val() != undefined && $('#tn_transferencia_agente option:selected').val() != "") {
+                                var type = $('#tn_transferencia_agente option:selected').data('type');
+                                //Obteniendo porciento operacion
+                                $.post("{{ url('admin_agente_transferencia_porciento_operacion_ajax') }}", {
+                                    idAgente: $('#tn_transferencia_agente option:selected').val(),
+                                    idMoneda: $('#{{ form.moneda.vars.id }}').val()
+                                }, function (data) {
+                                    if (data.success) {
+                                        var porciento = parseInt(data.valor);
+                                    } else {
+                                        var porciento = parseInt($('#tn_transferencia_agente option:selected').data('porciento'));
+                                    }
+                                    if (type == 'porciento') {
+                                        //Diviendo entre la tasa para encontrar el importe según la moneda.
+                                        var total = parseInt(parseInt($('#{{ form.importe.vars.id }}').val()) / tasa);
+                                        if (total < 100) { //Si el total de las remesas es menor que 100, se calcula en base a 100
+                                            var temp = parseInt((100 * porciento) / 100);
+                                        } else {
+                                            var temp = parseInt((total * porciento) / 100);
+                                        }
+                                        var importe = total + temp;
+                                        $('#{{ form.totalCobrar.vars.id }}').val(importe);
+                                    } else {
+                                        var total = parseInt(parseInt($('#{{ form.importe.vars.id }}').val()) / tasa);
+                                        var importe = parseInt(total + porciento);
+                                        $('#{{ form.totalCobrar.vars.id }}').val(importe);
+                                    }
+                                });
+                            } else {
+                                var porciento = parseInt($('#{{ form.moneda.vars.id }} option:selected').data('porciento'));
+                                //Diviendo entre la tasa para encontrar el importe según la moneda.
+                                var total = parseInt(parseInt($(this).val()) / tasa);
+                                if (total < 100) { //Si el total de las remesas es menor que 100, se calcula en base a 100
+                                    var temp = parseInt((100 * porciento) / 100);
+                                } else {
+                                    var temp = parseInt((total * porciento) / 100);
+                                }
+                                var importe = total + temp;
+                                $('#{{ form.totalCobrar.vars.id }}').val(importe);
+                            }
+
+                        } else {
+                            if ($(this).val() > maximo) {
+                                $(this).val(maximo);
+                                $('#{{ form.totalCobrar.vars.id }}').val(0)
+                            } else {
+                                $(this).val(minimo);
+                                $('#{{ form.totalCobrar.vars.id }}').val(0)
+                            }
+                            $(this).trigger('change');
+                            showToastr('warning', 'Monto mínimo', 'El total a entregar en la moneda seleccionada debe estar entre ' + minimo + ' y ' + maximo + ' y ser múltiplo de ' + multiplo);
+                        }
+                        {% endif %}
+                    }
+                }
+            });
+
+            $("#{{ form.vars.id }}").validate({
+                rules: {
+                    '{{ form.titularTarjeta.vars.full_name }}': {
+                        required: true
+                    },
+                    '{{ form.phone.vars.full_name }}': {
+                        required: true,
+                        number: true
+                    },
+                    '{{ form.numeroTarjeta.vars.full_name }}': {
+                        required: true,
+                        minlength: 19,
+                        maxlength: 19,
+                    },
+                    '{{ form.importe.vars.full_name }}': {
+                        required: true,
+                        number: true
+                    },
+                    '{{ form.totalCobrar.vars.full_name }}': {
+                        required: true,
+                        number: true
+                    }
+                }
+            });
+            {% else %}
+            $("#{{ form.vars.id }}").validate({
+                rules: {
+                    '{{ form.titularTarjeta.vars.full_name }}': {
+                        required: true
+                    },
+                    '{{ form.numeroTarjeta.vars.full_name }}': {
+                        required: true,
+                        minlength: 19,
+                        maxlength: 19
+                    },
+                    '{{ form.importe.vars.full_name }}': {
+                        required: true,
+                        number: true
+                    }
+                }
+            });
+            {% endif %}
+        });
+
+    </script>
+{% endblock %}

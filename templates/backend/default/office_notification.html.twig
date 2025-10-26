@@ -1,0 +1,27 @@
+
+Team Cubacation,
+
+Debajo se detallan un conjunto de reservas con fecha de inicio mayor a la fecha actual,
+que tienen vinculación con una oficina de renta la cual ha sido desactivada o eliminada:
+
+Oficina: {{ office.location.nombre ~ ' - '~ office.compania.nombre}}
+
+Listado de las reservas afectadas:
+
+======================================================================================
+
+{% for reserva in reservas %}
+        -----------------------------------------------------------------------------
+        Reservación de coche
+        -----------------------------------------------------------------------------
+        Código de la reserva: {{ reserva['codigo']}}
+        Estado actual: {{ reserva['estado']}}
+        Fecha/hora de recogida: {{ reserva['fechaRecogida'] | date('d/m/Y')~" @ "~ reserva['horaRecogida'] | date('H:i') }}
+        Lugar recogida: {{ reserva['pick_office'] }}
+        Lugar de entrega: {{ reserva['drop_office'] }}
+
+{% endfor %}
+
+=====================================================================================
+
+Correo generado automáticamente por la web.

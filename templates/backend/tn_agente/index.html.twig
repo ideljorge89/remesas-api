@@ -1,0 +1,113 @@
+{% extends 'base_backend.html.twig' %}
+{% trans_default_domain 'AppBundle' %}
+
+{% block breadcrumb %}
+    <div class="col-lg-12">
+        <h2>{{ 'backend.user_menu.administrator.nomencladores.agente.title'|trans({},'FOSUserBundle') }}</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="{{ path('homepage_backend') }}"><i
+                            class="fa fa-home"></i> {{ 'backend.user_menu.breadcrumb.home'|trans({},'FOSUserBundle') }}
+                </a>
+            </li>
+            <li class="">
+                {{ 'backend.user_menu.administrator.nomencladores.title'|trans({},'FOSUserBundle') }}
+            </li>
+            <li class="active">
+                <strong>{{ 'backend.user_menu.administrator.nomencladores.agente.title'|trans({},'FOSUserBundle') }}</strong>
+            </li>
+        </ol>
+    </div>
+{% endblock %}
+{% block body %}
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox">
+                <div class="ibox-content">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <a class="btn btn-primary pull-right" href="{{ path('tn_agente_new') }}">
+                                <i class="fa fa-plus"></i>
+                                {{ 'backend.user_menu.administrator.nomencladores.agente.add'|trans({},'FOSUserBundle') }}
+                            </a>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div id='table' class="table-responsive">
+                                <table class="footable footable-paging footable-paging-center  footable-paging-center  table table-stripped table-hover  toggle-arrow-tiny"
+                                       data-paging-size="50" data-paging="true" data-filtering="true"
+                                       data-sorting="true">
+                                    <thead>
+                                    <tr>
+                                        <th>{{ 'backend.agente.table.nombre'|trans }}</th>
+                                        <th data-breakpoints="all">{{ 'backend.agente.table.email'|trans }}</th>
+                                        <th data-breakpoints="all">{{ 'backend.agente.table.telefono'|trans }}</th>
+                                        <th>{{ 'backend.agente.table.enabled'|trans }}</th>
+                                        <th data-breakpoints="all">{{ 'backend.agente.table.agencia'|trans }}</th>
+                                        <th>{{ 'backend.agente.table.tipo'|trans }}</th>
+                                        <th>{{ 'backend.agente.table.grupo'|trans }}</th>
+                                        <th>{{ 'backend.agente.table.grupo_tranf'|trans }}</th>
+                                        <th data-breakpoints="all">{{ 'backend.agente.table.direccion'|trans }}</th>
+                                        <th data-breakpoints="all">{{ 'backend.agente.table.zip'|trans }}</th>
+                                        <th data-breakpoints="all">{{ 'backend.agente.table.created'|trans }}</th>
+                                        <th data-breakpoints="all">{{ 'backend.agente.table.updated'|trans }}</th>
+                                        <th class="text-right"
+                                            data-sort-ignore="true">{{ 'backend.comun.table.actions'|trans }}</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for agente in tn_agentes %}
+                                        <tr>
+                                            <td>{{ agente.nombre }}</td>
+                                            <td>{{ agente.email }}</td>
+                                            <td>{{ agente.phone }}</td>
+                                            <td>{{ agente.enabled==true?'<i class="fa fa-check-square-o"></i>':'<i class="fa fa-square-o"></i>' }}</td>
+                                            <td>{{ agente.agencia ?  agente.agencia.nombre }}</td>
+                                            <td>
+                                                {% if agente.tipoAgente == "Externo" %}
+                                                    <label class="label label-warning"
+                                                           for="Tipo Agente">{{ agente.tipoAgente }}</label>
+                                                {% else %}
+                                                    <label class="label label-danger"
+                                                           for="Tipo Agente">{{ agente.tipoAgente }}</label>
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                <ul style="list-style-type: square; position: relative; margin-left: 0; padding-left: 0">
+                                                    {% for grupo in agente.gruposPago %}
+                                                        <li>{{ grupo }}</li>
+                                                    {% endfor %}
+                                                </ul>
+                                            </td>
+                                            <td>
+                                                <ul style="list-style-type: square; position: relative; margin-left: 0; padding-left: 0">
+                                                    {% for grupo in agente.gruposPagoTransferencias %}
+                                                        <li>{{ grupo }}</li>
+                                                    {% endfor %}
+                                                </ul>
+                                            </td>
+                                            <td>
+                                                {{ agente.dirLine1~", "~(agente.dirLine2 ? agente.dirLine2~", ")~(agente.dirLine3 ? agente.dirLine3~", ")~agente.city~", "~(agente.state | state )~", "~(agente.country | country) }}
+                                            </td>
+                                            <td>{{ agente.zip ? agente.zip }}</td>
+                                            <td>{{ agente.created ? agente.created|date('Y-m-d') : '' }}</td>
+                                            <td>{{ agente.updated ? agente.updated|date('Y-m-d') : '' }}</td>
+                                            <td class="text-right">
+                                                <a class="btn btn-warning btn-xs"
+                                                   href="{{ path('tn_agente_edit', {'token': agente.token}) }}"><i
+                                                            class="fa fa-pencil-square-o"></i></a>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+{% endblock %}

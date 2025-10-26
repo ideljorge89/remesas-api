@@ -1,0 +1,251 @@
+{% extends 'base_backend.html.twig' %}
+{% trans_default_domain 'AppBundle' %}
+{% block stylesheets %}
+    <link href="{{ asset('assets/backend/css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css') }}"
+          rel="stylesheet">
+    <link href="{{ asset('assets/backend/css/plugins/ladda/ladda-themeless.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('assets/backend/css/plugins/summernote/summernote.css') }}" rel="stylesheet">
+    <link href="{{ asset('assets/backend/css/plugins/summernote/summernote-bs3.css') }}" rel="stylesheet">
+    {{ parent() }}
+    <style>
+        .note-editable {
+            border: 2px solid #f5f5f5;
+
+        }
+    </style>
+{% endblock %}
+{% block breadcrumb %}
+    <div class="col-lg-12">
+        <h2>{{ 'backend.user_menu.administrator.users.title'|trans({},'FOSUserBundle') }}</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="{{ path('homepage_backend') }}"><i
+                            class="fa fa-home"></i> {{ 'backend.user_menu.breadcrumb.home'|trans({},'FOSUserBundle') }}
+                </a>
+            </li>
+            <li class="active">
+                <strong>{{ 'backend.user_menu.administrator.users.title'|trans({},'FOSUserBundle') }}</strong>
+            </li>
+        </ol>
+    </div>
+{% endblock %}
+{% block body %}
+    <div class="row">
+        <div class="col-lg-12">
+            {{ form_start(form,{'attr':{'action':path('users-search'),'id':'form' }}) }}
+
+            <div class="ibox-content">
+                <div class="panel-body">
+                    <div class="input-group">
+                        {{ form_widget(form.search,{'attr':{'class':'form-control m-b-xs' }}) }}
+                        <span class="input-group-btn">
+                            <button type=submit class="btn btn-primary" type="button"><i class="fa fa-search"></i> Buscar
+                            </button>
+                        </span>
+                    </div>
+                    <label id="form_search-error" class="error" for="form_search"
+                           style="display: none;">{{ 'form_search.required'|trans }}</label>
+                    <br>
+                    {% for option in form.options %}
+                        <div class="checkbox checkbox-success checkbox-inline">
+                            {{ form_widget(option) }}
+                            <label for="{{ option.vars.id }}"> {{ form_label(option)|striptags }} </label>
+                        </div>
+                    {% endfor %}
+                    <br>
+                    <label id="form[options][]-error" class="error" for="form[options][]"
+                           style="display: none;">{{ 'form_search.required'|trans }}</label>
+                </div>
+            </div>
+            {{ form_end(form) }}
+
+            <div class="ibox">
+                <div class="ibox-content">
+                    <div id='table' class="table-responsive">
+                        <table class="table table-stripped table-hover  toggle-arrow-tiny" data-paging-size="50"
+                               data-paging="true" data-filtering="true" data-sorting="true">
+                            <thead>
+                            <tr>
+                                <th>{{ 'backend.users.table.type'|trans }}</th>
+                                <th>{{ 'backend.users.table.username'|trans }}</th>
+                                <th>{{ 'backend.users.table.tipo'|trans }}</th>
+                                <th>{{ 'backend.users.table.email'|trans }}</th>
+                                <th>{{ 'backend.users.table.avatar'|trans }}</th>
+                                <th class="text-right"
+                                    data-sort-ignore="true">{{ 'backend.comun.table.actions'|trans }}</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for tnUser in tnUsers %}
+                                <tr>
+                                    <td>
+                                        {% if tnUser.hasRole('ROLE_SUPER_ADMIN') %}
+                                            <span class="label label-success">{{ 'backend.user_menu.type.super_administrator'|trans({},'FOSUserBundle') }}</span>
+                                        {% elseif  tnUser.hasRole('ROLE_AGENCIA') %}
+                                            <span class="label label-warning">{{ 'backend.user_menu.type.agencia'|trans({},'FOSUserBundle') }}</span>
+                                        {% elseif  tnUser.hasRole('ROLE_AGENTE') %}
+                                            <span class="label label-primary">{{ 'backend.user_menu.type.agente'|trans({},'FOSUserBundle') }}</span>
+                                        {% elseif  tnUser.hasRole('ROLE_DISTRIBUIDOR') %}
+                                            <span class="label label-danger">{{ 'backend.user_menu.type.distribuidor'|trans({},'FOSUserBundle') }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ tnUser.username }}</td>
+                                    <td>
+                                        {% if  tnUser.hasRole('ROLE_AGENCIA') %}
+                                            {{ tnUser.agencia }}
+                                        {% elseif  tnUser.hasRole('ROLE_AGENTE') %}
+                                            {{ tnUser.agente }}
+                                        {% elseif  tnUser.hasRole('ROLE_DISTRIBUIDOR') %}
+                                            {{ tnUser.distribuidor }}
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {{ tnUser.email }}
+
+                                    </td>
+                                    <td class="text-center">
+                                        <div style="width: 45px; overflow: hidden;">
+                                            {% set foto = asset('assets/backend/img/profile_small.png') %}
+                                            {% if tnUser.avatar!='' %}
+                                                {% set foto = tnUser.avatar %}
+                                                <img style="width: 30px;border-radius: 4px;" alt="" src="{{ foto }}">
+                                            {% elseif tnUser.filePath !='' %}
+                                                <img style="width: 30px;border-radius: 4px;" alt="" src="{{ asset(tnUser.filePath) }}">
+                                            {% endif %}
+                                        </div>
+                                    </td>
+                                    <td class="text-right  tooltip-demo m-t-md">
+                                        {% if not tnUser.isSuperAdmin %}
+
+                                            {% set delete_form=delete_forms[loop.index0] %}
+                                            {{ form_start(delete_form) }}
+                                            <div class="">
+                                                <a class="btn btn-sm btn-outline btn-info " data-placement="top"
+                                                   data-toggle="tooltip" data-target='#modal-form'
+                                                   href="{{ path('home_users_show', { 'token': tnUser.token }) }}"
+                                                   title="{{ 'backend.comun.table.show'|trans }}"><i
+                                                            class="fa fa-eye"></i></a>
+                                                <a class=" btn btn-sm btn-outline  btn-warning " data-placement="top"
+                                                   data-toggle="tooltip"
+                                                   href="{{ path('home_users_edit', { 'token': tnUser.token }) }}"
+                                                   title="{{ 'backend.comun.table.edit'|trans }}"><i
+                                                            class="fa fa-pencil"></i></a>
+                                                <a type="submit" data-placement="top" data-toggle="tooltip"
+                                                   class="btn btn-sm btn-danger btn-outline  delete_form"
+                                                   title="{{ 'backend.comun.table.delete'|trans }}"><i
+                                                            class="fa fa-trash "></i></a>
+                                            </div>
+                                            {{ form_widget(delete_form) }}
+                                            {{ form_rest(delete_form) }}
+                                            {{ form_end(delete_form) }}
+                                            </form>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                            <tfoot>
+                            <tr>
+                                <td colspan="9">
+                                    <div class="pagination-bar text-center">
+
+                                    </div>
+                                    <div class="pagination pull-right">{{ knp_pagination_render(tnUsers,'@KnpPaginator/Pagination/sliding_backend.html.twig') }}</div>
+                                </td>
+                            </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                    {#<a class="btn-success btn" href="{{ path('home_users_new') }}"><i class="fa fa-plus-square"></i> {{ 'users.new_user'|trans }}</a>#}
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    <!-- FooTable -->
+
+    <script src="{{ asset('assets/backend/js/plugins/ladda/spin.min.js') }}"></script>
+    <script src="{{ asset('assets/backend/js/plugins/ladda/ladda.min.js') }}"></script>
+    <script src="{{ asset('assets/backend/js/plugins/ladda/ladda.jquery.min.js') }}"></script>
+    <script src="{{ asset('assets/backend/js/plugins/summernote/summernote.min.js') }}"></script>
+    <script src="{{ asset('assets/backend/js/plugins/form/jquery.form.min.js') }}"></script>
+    <script src="{{ asset('assets/backend/js/plugins/validate/jquery.validate.min.js') }}"></script>
+    <script src="{{ asset('assets/backend/js/plugins/validate/messages_es.js') }}"></script>
+
+    <!-- Page-Level Scripts -->
+    <script>
+        $(document).ready(function () {
+            function ready1() {
+                $('.delete_form').click(function ($event) {
+                    $event.preventDefault();
+                    var obj = $(this);
+                    swal({
+                        title: "{{ 'backend.comun.table.messages.delete_confirm_question'|trans({},'AppBundle') }}",
+                        text: "{{ 'backend.comun.table.messages.delete_confirm_sub_text'|trans({},'AppBundle') }}",
+                        type: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#DD6B55",
+                        confirmButtonText: "{{ 'backend.comun.table.yes'|trans({},'AppBundle') }}",
+                        cancelButtonText: "{{ 'backend.comun.table.no'|trans({},'AppBundle') }}",
+                        closeOnConfirm: true
+                    }, function (confirmed) {
+                        if (confirmed)
+                            $(obj).closest('form').submit();
+                    });
+                });
+            }
+
+            $('.chosen-select').chosen({
+                allow_single_deselect: true
+            });
+
+            $('#{{ form.vars.id }}').on('submit', function (e) {
+                e.preventDefault(); // <-- important
+
+                if ($(this).valid()) {
+                    $(this).ajaxSubmit({
+                        target: '#table',
+                        success: function () {
+                            ready1()
+                            $("a[data-target=#modal-form]").click(function (ev) {
+                                ev.preventDefault();
+                                var target = $(this).attr("href");
+
+                                // load the url and show modal on success
+                                $("#modal-form .modal-content").load(target, function () {
+                                    $("#modal-form").modal("show");
+                                });
+                            })
+                        }
+                    });
+                } else {
+                    swal({
+                        html: true,
+                        title: 'Datos incompletos',
+                        text: 'Revise los datos para realizar la b&uacute;squeda',
+                        type: 'error'
+                    })
+                }
+
+
+            });
+            ready1()
+            $("#{{ form.vars.id }}").validate({
+                rules: {
+                    'form[options][]': {
+                        required: true
+                    }
+                },
+                messages: {
+                    'form[options][]': {
+                        required: "Debe chequear al menos una casilla"
+                    }
+                }
+            });
+        });
+    </script>
+{% endblock %}

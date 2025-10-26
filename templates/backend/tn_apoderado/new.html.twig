@@ -1,0 +1,55 @@
+{% extends 'base_backend.html.twig' %}
+{% trans_default_domain 'AppBundle' %}
+
+{% block breadcrumb %}
+    <div class="col-lg-12">
+        <h2>{{ 'backend.user_menu.administrator.nomencladores.apoderado.add'|trans({},'FOSUserBundle') }}</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="{{ path('homepage_backend') }}"><i
+                            class="fa fa-home"></i> {{ 'backend.user_menu.breadcrumb.home'|trans({},'FOSUserBundle') }}
+                </a>
+            </li>
+            <li class="">
+                {{ 'backend.user_menu.administrator.nomencladores.title'|trans({},'FOSUserBundle') }}
+            </li>
+            <li class="active">
+                <strong>{{ 'backend.user_menu.administrator.nomencladores.apoderado.add'|trans({},'FOSUserBundle') }}</strong>
+            </li>
+        </ol>
+    </div>
+{% endblock %}
+
+{% block body %}
+    <div class="ibox">
+        <div class="ibox-title">
+            <h5>
+                <small></small>
+            </h5>
+        </div>
+        <div class="ibox-content">
+            {{ include('backend/tn_apoderado/_form.html.twig') }}
+        </div>
+    </div>
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        $(function () {
+            $("#{{ form.vars.id }}").validate({
+                rules: {
+                    '{{ form.nombre.vars.full_name }}': {
+                        required: true
+                    },
+                    '{{ form.agencia.vars.full_name }}': {
+                        required: true,
+                    },
+                    '{{ form.subordinadas.vars.full_name }}': {
+                        required: true,
+                    },
+                }
+            });
+        });
+
+    </script>
+{% endblock %}

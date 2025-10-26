@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}NmGrupoPago{% endblock %}
+
+{% block body %}
+    <h1>NmGrupoPago</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ nm_grupo_pago.id }}</td>
+            </tr>
+            <tr>
+                <th>Nombre</th>
+                <td>{{ nm_grupo_pago.nombre }}</td>
+            </tr>
+            <tr>
+                <th>Porcentaje</th>
+                <td>{{ nm_grupo_pago.porcentaje }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('nm_grupo_pago_index') }}">back to list</a>
+
+    <a href="{{ path('nm_grupo_pago_edit', {'id': nm_grupo_pago.id}) }}">edit</a>
+
+    {{ include('nm_grupo_pago/_delete_form.html.twig') }}
+{% endblock %}

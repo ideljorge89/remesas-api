@@ -1,0 +1,269 @@
+{% extends 'backend/includes/sidebar.html.twig' %}
+{% block tipo_usuario %}
+    {{ 'backend.user_menu.type.agencia'|trans({},'FOSUserBundle') }}
+{% endblock %}
+{% block tipo_home %}
+    <li class="{{ route in ['homepage_backend'] ? 'active' }}">
+        <a href="{{ path('homepage_backend') }}"><i
+                    class="fa fa-home"></i>
+            {{ 'backend.user_menu.admin_home'|trans({},'FOSUserBundle') }}
+        </a>
+    </li>
+
+{% endblock %}
+{% block sidebar_menu %}
+
+    <li class="{{ route in ['homepage_backend'] ? 'active' }}">
+        <a href="{{ path('homepage_backend') }}">
+            <i class="fa fa-home"></i>
+            <span class="nav-label">{{ 'backend.user_menu.admin_board'|trans({},'FOSUserBundle') }}</span>
+        </a>
+    </li>
+
+    {#Menú de los Facturas#}
+    <li class="{{ route in ['tn_factura_index','tn_factura_new', 'tn_factura_edit'] ? 'active' }}">
+        <a href="#"><i class="fa fa-th-large fa-dollar"></i>
+            <span class="nav-label">{{ 'backend.user_menu.administrator.facutra.title'|trans({},'FOSUserBundle') }}</span>
+            <span class="fa arrow"></span>
+        </a>
+        <ul class="nav nav-second-level collapse {{ route in ['tn_factura_index','tn_factura_new', 'tn_factura_edit'] ? 'in' }}">
+            <li class="{{ route in ['tn_factura_new'] ? 'active' }}">
+                <a href="{{ path('tn_factura_new') }}">
+                    <i class="fa fa-plus"></i> {{ 'backend.user_menu.administrator.facutra.add'|trans({},'FOSUserBundle') }}
+                </a></li>
+            <li class="{{ route in ['tn_factura_index', 'tn_factura_edit'] ? 'active' }}">
+                <a href="{{ path('tn_factura_index') }}">
+                    <i class="fa fa-dollar"></i> {{ 'backend.user_menu.administrator.facutra.list'|trans({},'FOSUserBundle') }}
+                </a>
+            </li>
+
+        </ul>
+    </li>
+
+    {#Menú de los transferencias #}
+    <li class="{{ route in ['tn_transferencia_index', 'tn_transferencia_new' , 'tn_transferencia_edit', 'reportes_agencia_costos_transferencias', 'reportes_agencia_agentes_transferencias'] ? 'active' }}">
+        <a href="#"><i class="fa fa-th-large fa-credit-card-alt"></i>
+            <span class="nav-label">{{ 'backend.user_menu.administrator.transferencia.title'|trans({},'FOSUserBundle') }}</span>
+            <span class="fa arrow"></span>
+        </a>
+        <ul class="nav nav-second-level collapse {{ route in ['tn_transferencia_index', 'tn_transferencia_new' , 'tn_transferencia_edit', 'reportes_agencia_costos_transferencias', 'reportes_agencia_agentes_transferencias'] ? 'in' }}">
+            <li class="{{ route in ['tn_transferencia_new'] ? 'active' }}">
+                <a href="{{ path('tn_transferencia_new') }}">
+                    <i class="fa fa-plus"></i> {{ 'backend.user_menu.administrator.transferencia.add'|trans({},'FOSUserBundle') }}
+                </a></li>
+            <li class="{{ route in ['tn_transferencia_index', 'tn_transferencia_edit'] ? 'active' }}">
+                <a href="{{ path('tn_transferencia_index') }}">
+                    <i class="fa fa-credit-card-alt"></i> {{ 'backend.user_menu.administrator.transferencia.list'|trans({},'FOSUserBundle') }}
+                </a>
+            </li>
+            <li class="{{ route in ['reportes_agencia_costos_transferencias'] ? 'active' }}">
+                <a href="{{ path('reportes_agencia_costos_transferencias') }}">
+                    <i class="fa fa-file-pdf-o"></i> {{ 'backend.user_menu.administrator.reportes.costos.title'|trans({},'FOSUserBundle') }}
+                </a>
+            </li>
+            <li class="{{ route in ['reportes_agencia_agentes_transferencias'] ? 'active' }}">
+                <a href="{{ path('reportes_agencia_agentes_transferencias') }}">
+                    <i class="fa fa-file-pdf-o"></i> {{ 'backend.user_menu.administrator.reportes.admin.agente'|trans({},'FOSUserBundle') }}
+                </a>
+            </li>
+        </ul>
+    </li>
+
+    {# Menú del saldo. #}
+    <li class="{{ route in ['tn_saldo_agentes_index'] ? 'active' }}">
+        <a href="#"><i class="fa fa-th-large fa-dollar"></i>
+            <span class="nav-label">{{ 'backend.user_menu.administrator.saldo.title'|trans({},'FOSUserBundle') }}</span>
+            <span class="fa arrow"></span>
+        </a>
+        <ul class="nav nav-second-level collapse {{ route in ['tn_saldo_agentes_index'] ? 'in' }}">
+            <li class="{{ route in ['tn_saldo_agentes_index'] ? 'active' }}">
+                <a href="{{ path('tn_saldo_agentes_index') }}">
+                    <i class="fa fa-money"></i> {{ 'backend.user_menu.administrator.saldo.list'|trans({},'FOSUserBundle') }}
+                </a>
+            </li>
+        </ul>
+    </li>
+
+    {#Menú de los grupos de pago agentes#}
+    <li class="{{ route in ['nm_grupo_pago_agente_edit','nm_grupo_pago_agente_new','nm_grupo_pago_agente_index'] ? 'active' }}">
+        <a href="#"><i class="fa fa-th-large fa-briefcase"></i>
+            <span class="nav-label">{{ 'backend.user_menu.administrator.nomencladores.grupo_pago_agente.title'|trans({},'FOSUserBundle') }}</span>
+            <span class="fa arrow"></span>
+        </a>
+        <ul class="nav nav-second-level collapse {{ route in ['nm_grupo_pago_agente_edit','nm_grupo_pago_agente_new','nm_grupo_pago_agente_index'] ? 'in' }}">
+            <li class="{{ route in ['nm_grupo_pago_agente_new'] ? 'active' }}">
+                <a href="{{ path('nm_grupo_pago_agente_new') }}">
+                    <i class="fa fa-plus"></i> {{ 'backend.user_menu.administrator.nomencladores.grupo_pago_agente.add'|trans({},'FOSUserBundle') }}
+                </a></li>
+            <li class="{{ route in ['nm_grupo_pago_agente_index', 'nm_grupo_pago_agente_edit'] ? 'active' }}">
+                <a href="{{ path('nm_grupo_pago_agente_index') }}">
+                    <i class="fa fa-th-list"></i> {{ 'backend.user_menu.administrator.nomencladores.grupo_pago_agente.list'|trans({},'FOSUserBundle') }}
+                </a>
+            </li>
+        </ul>
+    </li>
+
+    {#Menú de los grupos de pago agentes transferencias #}
+    <li class="{{ route in ['nm_grupo_pago_transf_agente_edit','nm_grupo_pago_transf_agente_new','nm_grupo_pago_transf_agente_index'] ? 'active' }}">
+        <a href="#"><i class="fa fa-th-large fa-briefcase"></i>
+            <span class="nav-label">{{ 'backend.user_menu.administrator.nomencladores.grupo_pago_transf.title'|trans({},'FOSUserBundle') }}</span>
+            <span class="fa arrow"></span>
+        </a>
+        <ul class="nav nav-second-level collapse {{ route in ['nm_grupo_pago_transf_agente_edit','nm_grupo_pago_transf_agente_new','nm_grupo_pago_transf_agente_index'] ? 'in' }}">
+            <li class="{{ route in ['nm_grupo_pago_transf_agente_new'] ? 'active' }}">
+                <a href="{{ path('nm_grupo_pago_transf_agente_new') }}">
+                    <i class="fa fa-plus"></i> {{ 'backend.user_menu.administrator.nomencladores.grupo_pago_transf.add'|trans({},'FOSUserBundle') }}
+                </a></li>
+            <li class="{{ route in ['nm_grupo_pago_transf_agente_index', 'nm_grupo_pago_transf_agente_edit'] ? 'active' }}">
+                <a href="{{ path('nm_grupo_pago_transf_agente_index') }}">
+                    <i class="fa fa-th-list"></i> {{ 'backend.user_menu.administrator.nomencladores.grupo_pago_transf.list'|trans({},'FOSUserBundle') }}
+                </a>
+            </li>
+        </ul>
+    </li>
+
+    {#Menú de los agentes#}
+    <li class="{{ route in ['tn_agente_index','tn_agente_new','tn_agente_edit','tn_agente_new_agencia'] ? 'active' }}">
+        <a href="#"><i class="fa fa-th-large fa-adn"></i>
+            <span class="nav-label">{{ 'backend.user_menu.administrator.nomencladores.agente.title'|trans({},'FOSUserBundle') }}</span>
+            <span class="fa arrow"></span>
+        </a>
+        <ul class="nav nav-second-level collapse {{ route in ['tn_agente_index','tn_agente_new','tn_agente_edit', 'tn_agente_new_agencia'] ? 'in' }}">
+            <li class="{{ route in ['tn_agente_new', 'tn_agente_new_agencia'] ? 'active' }}">
+                <a href="{{ path('tn_agente_new') }}">
+                    <i class="fa fa-plus"></i> {{ 'backend.user_menu.administrator.nomencladores.agente.add'|trans({},'FOSUserBundle') }}
+                </a></li>
+            <li class="{{ route in ['tn_agente_index', 'tn_agente_edit'] ? 'active' }}">
+                <a href="{{ path('tn_agente_index') }}">
+                    <i class="fa fa-th-list"></i> {{ 'backend.user_menu.administrator.nomencladores.agente.list'|trans({},'FOSUserBundle') }}
+                </a>
+            </li>
+        </ul>
+    </li>
+
+    {#Menú de los emisores#}
+    <li class="{{ route in ['tn_emisor_index','tn_emisor_new','tn_emisor_edit'] ? 'active' }}">
+        <a href="#"><i class="fa fa-th-large fa-user-circle-o"></i>
+            <span class="nav-label">{{ 'backend.user_menu.administrator.nomencladores.emisor.title'|trans({},'FOSUserBundle') }}</span>
+            <span class="fa arrow"></span>
+        </a>
+        <ul class="nav nav-second-level collapse {{ route in ['tn_emisor_index','tn_emisor_new','tn_emisor_edit'] ? 'in' }}">
+            <li class="{{ route in ['tn_emisor_new'] ? 'active' }}">
+                <a href="{{ path('tn_emisor_new') }}">
+                    <i class="fa fa-plus"></i> {{ 'backend.user_menu.administrator.nomencladores.emisor.add'|trans({},'FOSUserBundle') }}
+                </a></li>
+            <li class="{{ route in ['tn_emisor_index', 'tn_emisor_edit'] ? 'active' }}">
+                <a href="{{ path('tn_emisor_index') }}">
+                    <i class="fa fa-th-list"></i> {{ 'backend.user_menu.administrator.nomencladores.emisor.list'|trans({},'FOSUserBundle') }}
+                </a>
+            </li>
+        </ul>
+    </li>
+
+    {#Menú de los destinatarios #}
+    <li class="{{ route in ['tn_destinatario_index','tn_destinatario_new','tn_destinatario_edit', 'tn_destinatario_new_emisor'] ? 'active' }}">
+        <a href="#"><i class="fa fa-th-large fa-money"></i>
+            <span class="nav-label">{{ 'backend.user_menu.administrator.nomencladores.destinatario.title'|trans({},'FOSUserBundle') }}</span>
+            <span class="fa arrow"></span>
+        </a>
+        <ul class="nav nav-second-level collapse {{ route in ['tn_destinatario_index','tn_destinatario_new','tn_destinatario_edit', 'tn_destinatario_new_emisor'] ? 'in' }}">
+            <li class="{{ route in ['tn_destinatario_new', 'tn_destinatario_new_emisor'] ? 'active' }}">
+                <a href="{{ path('tn_destinatario_new') }}">
+                    <i class="fa fa-plus"></i> {{ 'backend.user_menu.administrator.nomencladores.destinatario.add'|trans({},'FOSUserBundle') }}
+                </a></li>
+            <li class="{{ route in ['tn_destinatario_index', 'tn_destinatario_edit'] ? 'active' }}">
+                <a href="{{ path('tn_destinatario_index') }}">
+                    <i class="fa fa-th-list"></i> {{ 'backend.user_menu.administrator.nomencladores.destinatario.list'|trans({},'FOSUserBundle') }}
+                </a>
+            </li>
+        </ul>
+    </li>
+
+    {#Menú de los Reportes#}
+    <li class="{{ route in ['reportes_agentes_remeas', 'reportes_utilidades_remeas', 'reportes_agencia_costos_remeas'] ? 'active' }}">
+        <a href="#"><i class="fa fa-th-large fa-bar-chart-o"></i>
+            <span class="nav-label">{{ 'backend.user_menu.administrator.reportes.title'|trans({},'FOSUserBundle') }}</span>
+            <span class="fa arrow"></span>
+        </a>
+        <ul class="nav nav-second-level collapse {{ route in ['reportes_agentes_remeas', 'reportes_utilidades_remeas', 'reportes_agencia_costos_remeas'] ? 'in' }}">
+            <li class="{{ route in ['reportes_agentes_remeas'] ? 'active' }}">
+                <a href="{{ path('reportes_agentes_remeas') }}">
+                    <i class="fa fa-file-pdf-o"></i> {{ 'backend.user_menu.administrator.reportes.admin.agente'|trans({},'FOSUserBundle') }}
+                </a>
+            </li>
+            <li class="{{ route in ['reportes_agencia_costos_remeas'] ? 'active' }}">
+                <a href="{{ path('reportes_agencia_costos_remeas') }}">
+                    <i class="fa fa-file-pdf-o"></i> {{ 'backend.user_menu.administrator.reportes.costos.title'|trans({},'FOSUserBundle') }}
+                </a>
+            </li>
+            <li class="{{ route in ['reportes_utilidades_remeas'] ? 'active' }}">
+                <a href="{{ path('reportes_utilidades_remeas') }}">
+                    <i class="fa fa-file-pdf-o"></i> {{ 'backend.user_menu.administrator.reportes.utilidad.title'|trans({},'FOSUserBundle') }}
+                </a>
+            </li>
+        </ul>
+    </li>
+
+    {#Menú de los Ficheros#}
+    <li class="{{ route in ['tn_documento_index'] ? 'active' }}">
+        <a href="#"><i class="fa fa-th-large fa-file-excel-o"></i>
+            <span class="nav-label">{{ 'backend.user_menu.administrator.nomencladores.documento.title'|trans({},'FOSUserBundle') }}</span>
+            <span class="fa arrow"></span>
+        </a>
+        <ul class="nav nav-second-level collapse {{ route in ['tn_documento_index'] ? 'in' }}">
+            <li class="{{ route in ['tn_documento_index'] ? 'active' }}">
+                <a href="{{ path('tn_documento_index') }}">
+                    <i class="fa fa-upload"></i> {{ 'backend.user_menu.administrator.nomencladores.documento.ficheros'|trans({},'FOSUserBundle') }}
+                </a>
+            </li>
+        </ul>
+    </li>
+
+    {% if app.user is defined and app.user.agencia is defined and is_apoderado(app.user.agencia) %}
+        {#Menú de los Apoderados#}
+        <li class="{{ route in ['reportes_agencia_apoderados_costos', 'reportes_agencia_apoderados_utilidades', 'reportes_agencia_apoderados_venta'] ? 'active' }}">
+            <a href="#"><i class="fa fa-th-large fa-suitcase"></i>
+                <span class="nav-label">{{ 'backend.user_menu.administrator.apoderado.title'|trans({},'FOSUserBundle') }}</span>
+                <span class="fa arrow"></span>
+            </a>
+            <ul class="nav nav-second-level collapse {{ route in [ 'reportes_agencia_apoderados_costos', 'reportes_agencia_apoderados_utilidades', 'reportes_agencia_apoderados_venta'] ? 'in' }}">
+                <li class="{{ route in ['reportes_agencia_apoderados_costos'] ? 'active' }}">
+                    <a href="{{ path('reportes_agencia_apoderados_costos') }}">
+                        <i class="fa fa-file-pdf-o"></i> {{ 'backend.user_menu.administrator.apoderado.costo.title'|trans({},'FOSUserBundle') }}
+                    </a>
+                </li>
+                <li class="{{ route in ['reportes_agencia_apoderados_venta'] ? 'active' }}">
+                    <a href="{{ path('reportes_agencia_apoderados_venta') }}">
+                        <i class="fa fa-file-pdf-o"></i> {{ 'backend.user_menu.administrator.apoderado.agencia.title'|trans({},'FOSUserBundle') }}
+                    </a>
+                </li>
+                <li class="{{ route in ['reportes_agencia_apoderados_utilidades'] ? 'active' }}">
+                    <a href="{{ path('reportes_agencia_apoderados_utilidades') }}">
+                        <i class="fa fa-file-pdf-o"></i> {{ 'backend.user_menu.administrator.apoderado.utilidad.title'|trans({},'FOSUserBundle') }}
+                    </a>
+                </li>
+            </ul>
+        </li>
+    {% endif %}
+
+
+    {#Menú de los Usuarios#}
+    <li class="{{ route in ['home_users_index','home_users_new'] ? 'active' }}">
+        <a href="#"><i class="fa fa-th-large fa-group"></i>
+            <span class="nav-label">{{ 'backend.user_menu.administrator.users.title'|trans({},'FOSUserBundle') }}</span>
+            <span class="fa arrow"></span>
+        </a>
+        <ul class="nav nav-second-level collapse {{ route in ['home_users_new','home_users_index'] ? 'in' }}">
+            <li class="{{ route in ['home_users_new'] ? 'active' }}">
+                <a href="{{ path('home_users_new') }}">
+                    <i class="fa fa-plus"></i> {{ 'backend.user_menu.administrator.users.add'|trans({},'FOSUserBundle') }}
+                </a></li>
+            <li class="{{ route in ['home_users_index'] ? 'active' }}">
+                <a href="{{ path('home_users_index') }}">
+                    <i class="fa fa-users"></i> {{ 'backend.user_menu.administrator.users.list'|trans({},'FOSUserBundle') }}
+                    {#<span class="label label-primary pull-right">{{ counter_menu.adminCountUsers }} </span>#}
+                </a>
+            </li>
+        </ul>
+    </li>
+{% endblock %}

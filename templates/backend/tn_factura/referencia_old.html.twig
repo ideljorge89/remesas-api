@@ -1,0 +1,51 @@
+{% trans_default_domain 'AppBundle' %}
+<div class="panel-default">
+    <div class="panel-heading">
+        <label class="label label-primary">Editar referencia anterior: {{ tnFactura.noFactura }}</label>
+    </div>
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="col-sm-12 well well-sm">
+                    <form id="referencia_oldForm"
+                          action="{{ path('tn_factura_referencia_old_edit', {'token': tnFactura.token }) }}"
+                          method="post">
+                        <div class="col-sm-6">
+                            <input name="referencia_old" class="form-control" id="referencia_old"
+                                   placeholder="Referencia anterior" value="{{ tnFactura.referenciaOld }}"/>
+                            <br/>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <button id="btn_submit" class="btn btn-primary pull-right" type="submit"
+                                    data-factura="{{ tnFactura.id }}"><i
+                                        class="fa fa-save"></i> Guardar
+                            </button>
+                            <div style="clear:both"></div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $("#referencia_oldForm").on('submit', function (e) {
+        e.preventDefault();
+        $(this).ajaxSubmit({
+            target: '#referencia_old_{{ tnFactura.id }}',
+            success: function () {
+                dataLink();
+
+                $("#modal-form").modal("hide");
+
+                showToastr('success', 'Referencia anterior', 'Referencia anterior {{ tnFactura.referenciaOld }} editada correctamente.');
+            }
+        });
+    });
+
+</script>
+
+
+

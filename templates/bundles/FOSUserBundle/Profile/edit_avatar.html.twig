@@ -1,0 +1,35 @@
+<div class="animated fadeInLeft col-sm-12 b-r">
+
+    <div class="">
+        <div id="crop-avatar{{ form.filePath.vars.id }}" class="data-crop" data-id="{{ form.filePath.vars.id }}">
+            {{ form_widget(form.filePath,{'attr':{'class':'avatar-result hide'} }) }}
+            <!-- Current avatar -->
+            <div class="avatar-view {% if form_errors(form.filePath) %} has-error control-upload{% endif %}" title="{{ 'backend.tabs_traduccion.change_photo'|trans({},'AppBundle') }}">
+                {% set foto = asset('assets/backend/img/profile_medium.png') %}
+                {% if form.vars.value !=null and form.filePath.vars.value!='' %}
+                    {% set foto = asset(form.filePath.vars.value) %}
+                {% endif %}
+                {#<img style="width: 40%;" class="img-responsive" alt="" src={{ asset(foto) }}>#}
+                <img  src="{{ foto }}" alt="Foto ">
+            </div>
+            {% if form_errors(form.filePath) %}
+                <div class="alert alert-danger" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                                   <span class="fa fa-exclamation"
+                                         aria-hidden="true"></span>
+                    <span class="sr-only">Error:</span>
+                    {{ form_errors(form.filePath) | striptags }}
+                </div>
+            {% endif %}
+            <!-- Cropping modal -->
+
+            <!-- /.modal -->
+
+
+            <div class="loading" aria-label="Loading" role="img" tabindex="-1"></div>
+
+        </div>
+    </div>
+
+
+</div>

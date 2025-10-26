@@ -1,0 +1,94 @@
+<table cellpadding="3px" width="785px">
+    <tr>
+        <td width="220px" align="left" style="font-size: 10px"><strong>Rango de fechas:</strong><br>{{ params['fi'] ~" - "~ params['ff'] }}</td>
+        <td width="150px" align="left" style="font-size: 10px;"><strong>Apoderado:</strong><br>{{ params['apoderado'] }}</td>
+        <td width="215px" align="left" style="font-size: 10px;"><strong>Agencias:</strong><br>{{ params['agencias'] }}</td>
+        <td width="230px" align="left" style="font-size: 10px"><strong>Estados:</strong><br>{{ params['estados'] }}</td>
+    </tr>
+</table>
+<table>
+    <tr>
+        <td>&nbsp;</td>
+    </tr>
+</table>
+{% set importeTotal = 0 %}
+{% set totalAPagarTotal = 0 %}
+{% set utilidadTotal = 0 %}
+{% set cantidadFacturas = 0 %}
+
+{% for item, values in facturas %}
+{% set importeFacturas = 0 %}
+{% set totalAPagar = 0 %}
+{% set utilidad = 0 %}
+    <table cellpadding="3px" width="785px">
+        <tr>
+            <td align="center" width="680px" style="font-size: 10px; border-top: 1px solid black; border-bottom: 1px solid black"><strong>{{ item }}</strong></td>
+        </tr>
+    </table>
+    <table cellpadding="3px" width="785px">
+        <tr>
+            <td width="45px" align="left" style="font-size: 9px; border-top: 1px solid black; border-bottom: 1px solid black"><strong>Factura</strong></td>
+            <td width="60px" align="left" style="font-size: 9px; border-top: 1px solid black; border-bottom: 1px solid black"><strong>Fecha</strong></td>
+            <td width="120px" align="left" style="font-size: 9px;border-top: 1px solid black; border-bottom: 1px solid black"><strong>Emisor</strong></td>
+            <td width="120px" align="left" style="font-size: 9px;border-top: 1px solid black; border-bottom: 1px solid black"><strong>Destinatario</strong></td>
+            <td width="60px" align="left" style="font-size: 9px;border-top: 1px solid black; border-bottom: 1px solid black"><strong>Estado</strong></td>
+            <td width="65px" align="left" style="font-size: 9px;border-top: 1px solid black; border-bottom: 1px solid black"><strong>Importe</strong></td>
+            <td width="70px" align="left" style="font-size: 9px;border-top: 1px solid black; border-bottom: 1px solid black"><strong>Total/%</strong></td>
+            <td width="70px" align="left" style="font-size: 9px;border-top: 1px solid black; border-bottom: 1px solid black"><strong>A pagar/%</strong></td>
+            <td width="70px" align="left" style="font-size: 9px;border-top: 1px solid black; border-bottom: 1px solid black"><strong>Utilidad</strong></td>
+        </tr>
+    {% for apodFactura in values %}
+        {% set factura = apodFactura.factura %}
+        <tr>
+            <td width="45px" align="left" style="font-size: 9px;border-top: 1px solid black; border-bottom: 1px solid black">{{ factura.noFactura }}</td>
+            <td width="60px" align="left" style="font-size: 9px;border-top: 1px solid black; border-bottom: 1px solid black">{{ factura.created | date('d/m/Y') }}</td>
+            <td width="120px" align="left" style="font-size: 9px;border-top: 1px solid black; border-bottom: 1px solid black">{{ factura.emisor.showData() }}</td>
+            <td width="120px" align="left" style="font-size: 9px;border-top: 1px solid black; border-bottom: 1px solid black">{% for remesa in factura.remesas %}{{ remesa.destinatario }}{{ not loop.last ? ("<br>" | raw) }}{% endfor %}</td>
+            <td width="60px" align="left" style="font-size: 9px;border-top: 1px solid black; border-bottom: 1px solid black">{{ factura.estado }}</td>
+            <td width="65px" align="left" style="font-size: 9px;border-top: 1px solid black; border-bottom: 1px solid black">{{ factura.importe }} {{ factura.moneda }}</td>
+            <td width="70px" align="left" style="font-size: 9px;border-top: 1px solid black; border-bottom: 1px solid black">{{ apodFactura.totalPagarSubordinada }} USD<br>{{ apodFactura.utilidadFijaFijaSubordinada ? apodFactura.porcentajeAsignadoSubordinada~" USD" : apodFactura.porcentajeAsignadoSubordinada ~" %" }}</td>
+            <td width="70px" align="left" style="font-size: 9px;border-top: 1px solid black; border-bottom: 1px solid black">{{ apodFactura.totalPagar | number_format(2) }} USD<br>{{ apodFactura.porcentajeAsignado }} %</td>
+            <td width="70px" align="left" style="font-size: 9px;border-top: 1px solid black; border-bottom: 1px solid black">{{ apodFactura.utilidad | number_format(2) }} USD</td>
+        </tr>
+        {% set importeFacturas = importeFacturas + apodFactura.totalPagarSubordinada %}
+        {% set totalAPagar = totalAPagar + apodFactura.totalPagar %}
+        {% set utilidad = utilidad + apodFactura.utilidad %}
+    {% endfor %}
+    </table>
+    <table cellpadding="3px" width="785px" style="border: 1px solid black">
+        <tr>
+            <td width="210px" align="left" style="font-size: 9px"><strong><strong>{{ item }}</strong></strong></td>
+            <td width="180px" align="center" style="font-size: 9px"><strong>{{ values | length }}</strong> factura(s)</td>
+            <td width="80px" align="center" style="font-size: 9px"><strong>TOTALES:</strong></td>
+            <td width="70px" align="left" style="font-size: 9px">{{ importeFacturas | number_format(2) }} USD</td>
+            <td width="70px" align="center" style="font-size: 9px">{{ totalAPagar | number_format(2) }} USD</td>
+            <td width="70px" align="left" style="font-size: 9px">{{ utilidad | number_format(2) }} USD</td>
+        </tr>
+    </table>
+    {%  set cantidadFacturas = cantidadFacturas + (values | length) %}
+    <table>
+        <tr>
+            <td>&nbsp;</td>
+        </tr>
+    </table>
+    {% set importeTotal = importeTotal + importeFacturas  %}
+    {% set totalAPagarTotal = totalAPagarTotal + totalAPagar %}
+    {% set utilidadTotal = utilidadTotal + utilidad %}
+{% endfor %}
+<table>
+<tr>
+    <td>&nbsp;</td>
+</tr>
+</table>
+<table cellpadding="3px" width="785px" style="border: 1px solid black">
+    <tr>
+        <td width="210px" align="left" style="font-size: 9px"><strong><strong>RESUMEN</strong></strong></td>
+        <td width="180px" align="center" style="font-size: 9px"><strong>{{ cantidadFacturas }}</strong> factura(s)</td>
+        <td width="80px" align="center" style="font-size: 9px"><strong>TOTALES:</strong></td>
+        <td width="70px" align="left" style="font-size: 9px">{{ importeTotal | number_format(2) }} USD</td>
+        <td width="70px" align="center" style="font-size: 9px">{{ totalAPagarTotal | number_format(2) }} USD</td>
+        <td width="70px" align="left" style="font-size: 9px">{{ utilidadTotal | number_format(2) }} USD</td>
+    </tr>
+</table>
+
+

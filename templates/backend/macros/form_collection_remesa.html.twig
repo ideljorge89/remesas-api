@@ -1,0 +1,608 @@
+{% macro widget_prototype_tn_remesa(widget, size) %}
+    {% if widget.vars.prototype is defined %}
+        {% set form = widget.vars.prototype %}
+        {% set name = widget.vars.prototype.vars.name %}
+    {% else %}
+        {% set form = widget %}
+        {% set name = widget.vars.full_name %}
+    {% endif %}
+
+    <div class="col-sm-4 well well-sm" style="z-index: 10;">
+        <div class="ibox animated fadeInLeft float-e-margins">
+            <div class="ibox-tittle">
+                <span class="label label-primary text-left fa-2x">Remesa</span>
+
+                <div class="ibox-tools">
+                    <a class="collapse-link">
+                        <i class="fa fa-chevron-up"></i>
+                    </a>
+                    <a class="close-link">
+                        <i class="fa fa-times"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="ibox-content">
+                <div class="row">
+                    <div class="col-md-12 col-xs-12">
+                        <div class="col-md-12 col-xs-12 required">
+                            <div class="form-group">
+                                <label class="font-noralm">{{ form_label(form.destinatario)|striptags }}
+                                    <sup>*</sup></label>
+                                <div class="col-md-12 col-xs-12 input-group" style="    width: 100%;">
+                                    {{ form_widget(form.destinatario,{'attr':{'class':'form-control destinatario chosen-select col-sm-12'}}) }}
+                                    {% if form_errors(form.destinatario) %}
+                                        <div class="alert alert-danger" role="alert">
+                                            <button type="button" class="close" data-dismiss="alert"
+                                                    aria-hidden="true">&times;
+                                            </button>
+                                            <span class="fa fa-exclamation"
+                                                  aria-hidden="true"></span>
+                                            <span class="sr-only">Error:</span>
+                                            {{ form_errors(form.destinatario) | striptags }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12 col-sm-12 col-xs-12">
+                        <div class="col-md-12 col-xs-12 required">
+                            <div class="form-group">
+                                <label class="font-noralm">{{ form_label(form.moneda)|striptags }}
+                                    <sup>*</sup></label>
+                                <div class="col-md-12 col-xs-12 input-group" style="    width: 100%;">
+                                    {{ form_widget(form.moneda,{'attr':{'class':'form-control moneda chosen-select col-sm-12'}}) }}
+                                    <span class="input-group-addon" data-toggle="tooltip" data-placement="right"
+                                          title="Entrega* debe corresponderse a la moneda seleccionada. Ej. Si la Moneda es CUP, ponga 2500 equivalentes a 100 CUC. Al elegir la moneda se espefica la tasa de cambio."><i
+                                                class="fa fa-info-circle" style="color: red"></i></span>
+                                    {% if form_errors(form.moneda) %}
+                                        <div class="alert alert-danger" role="alert">
+                                            <button type="button" class="close" data-dismiss="alert"
+                                                    aria-hidden="true">&times;
+                                            </button>
+                                            <span class="fa fa-exclamation"
+                                                  aria-hidden="true"></span>
+                                            <span class="sr-only">Error:</span>
+                                            {{ form_errors(form.moneda) | striptags }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12 col-xs-12" style="padding-right: 0">
+                        <div class="col-md-12 col-xs-12 required">
+                            <div class="form-group">
+                                <div class="row col-md-12 col-xs-12 input-group" style="width: 100%;">
+                                    {% if app.user.auth %}
+                                        <div class="col-md-6 col-xs-12">
+                                            <label class="font-noralm">{{ form_label(form.total_pagar)|striptags }}
+                                                (USD)<sup>*</sup></label><br>
+                                            {{ form_widget(form.total_pagar,{'attr':{'class':'form-control weigth'}}) }}
+                                        </div>
+                                        {% if form_errors(form.total_pagar) %}
+                                            <div class="alert alert-danger" role="alert">
+                                                <button type="button" class="close" data-dismiss="alert"
+                                                        aria-hidden="true">&times;
+                                                </button>
+                                                <span class="fa fa-exclamation"
+                                                      aria-hidden="true"></span>
+                                                <span class="sr-only">Error:</span>
+                                                {{ form_errors(form.total_pagar) | striptags }}
+                                            </div>
+                                        {% endif %}
+                                    {% endif %}
+                                    <div class="{{ app.user.auth ? "col-md-6 col-xs-12" : "col-md-7 col-xs-12" }}">
+                                        <label class="font-noralm">{{ form_label(form.importe_entregar)|striptags }}
+                                            <sup>*</sup></label><br>
+                                        {% if is_granted("ROLE_ASESOR") and form.vars.data is not null %}
+                                            {{ form_widget(form.importe_entregar,{'attr':{'class':'form-control weigth', 'readOnly': true}}) }}
+                                        {% else %}
+                                            {{ form_widget(form.importe_entregar,{'attr':{'class':'form-control weigth'}}) }}
+                                        {% endif %}
+                                    </div>
+                                    {% if form_errors(form.importe_entregar) %}
+                                        <div class="alert alert-danger" role="alert">
+                                            <button type="button" class="close" data-dismiss="alert"
+                                                    aria-hidden="true">&times;
+                                            </button>
+                                            <span class="fa fa-exclamation"
+                                                  aria-hidden="true"></span>
+                                            <span class="sr-only">Error:</span>
+                                            {{ form_errors(form.importe_entregar) | striptags }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function globals{{ form.vars.id }}() {
+            dataLink();
+
+            var config = {
+                '.chosen-select': {},
+                '.chosen-select-deselect': {allow_single_deselect: true},
+                '.chosen-select-no-single': {disable_search_threshold: 10},
+                '.chosen-select-no-results': {no_results_text: 'Oops, nothing found!'},
+                '.chosen-select-width': {width: "95%"}
+            };
+
+            for (var selector in config) {
+                $(selector).chosen(config[selector]);
+            }
+
+            $('#tn_factura_emisor').change(function () {
+                updateDestinatarios();
+            });
+
+            function updateDestinatarios() {
+                var idEmisor = $('#tn_factura_emisor option:selected').val();
+                if (idEmisor != "") {
+                    $.post("{{ url('admin_reload_destinatarios_emisor') }}", {
+                        idEmisor: idEmisor,
+                    }, function (data) {
+                        var result = $.parseJSON(data);
+                        if (result.destinatarios.length > 0) {
+                            var destinatarioId = "";
+                            {% if form.destinatario.vars.data is not null %}
+                            var destinatarioId = {{ form.destinatario.vars.data.id }}
+                                    {% endif %}
+                                $('#{{ form.destinatario.vars.id }}').find('option').remove();
+                            //Poniendo el placeholder por defecto.
+                            {#var group = ($("<option></option>").attr("value", "").text("Seleccione un destinatario"));#}
+                            {#$('#{{ form.destinatario.vars.id }}').append(group);#}
+                            $.each(result.destinatarios, function (i, v) {
+                                if (destinatarioId != "" && v.value == destinatarioId) {
+                                    var group = ($('<option selected="selected"></option>').attr("value", v.value).text(v.text));
+                                    $('#{{ form.destinatario.vars.id }}').append(group);
+                                } else {
+                                    var group = ($('<option></option>').attr("value", v.value).text(v.text));
+                                    $('#{{ form.destinatario.vars.id }}').append(group);
+                                }
+                            });
+
+                            $('#{{ form.destinatario.vars.id }}').trigger("chosen:updated");
+                        } else {
+                            $('#{{ form.destinatario.vars.id }}').find('option').remove();
+                            $('#{{ form.destinatario.vars.id }}').trigger("chosen:updated");
+                        }
+                    });
+                } else {
+                    $('#{{ form.destinatario.vars.id }}').find('option').remove();
+                    $('#{{ form.destinatario.vars.id }}').trigger("chosen:updated");
+                }
+            }
+
+            function verificarMonedaDestino() {
+                var idDestinatario = $('#{{ form.destinatario.vars.id }} option:selected').val();
+                var idMoneda = $('#{{ form.moneda.vars.id }} option:selected').val();
+                if (idDestinatario != "" && idMoneda != "") {
+                    $.post("{{ url('admin_reload_verificar_moneda_destino') }}", {
+                        idMoneda: idMoneda,
+                        idDestinatario: idDestinatario,
+                    }, function (data) {
+                        if (data.success == false) {
+                            showToastr('warning', 'Moneda entrega', 'No se está entregando remesas en la moneda EUR en el municipio del destinatario seleccionado.');
+                        }
+                    });
+                }
+            }
+
+            updateDestinatarios();
+
+            {% if app.user.auth %}
+            $('#tn_factura_agente').change(function () {
+                $('#{{ form.total_pagar.vars.id }}').trigger('change');
+            });
+
+            $('#tn_factura_agencia').change(function () {
+                $('#{{ form.total_pagar.vars.id }}').trigger('change');
+            });
+
+            function checksMoneda() {
+                if ($('#{{ form.moneda.vars.id }}').val() == "") {
+                    $('#{{ form.total_pagar.vars.id }}').val(0);
+                    $('#{{ form.total_pagar.vars.id }}').attr('readOnly', true);
+                    $('#{{ form.importe_entregar.vars.id }}').val(0);
+                    $('#{{ form.importe_entregar.vars.id }}').attr('readOnly', true);
+                } else {
+                    $('#{{ form.total_pagar.vars.id }}').val(0);
+                    $('#{{ form.total_pagar.vars.id }}').attr('readOnly', false);
+                    $('#{{ form.importe_entregar.vars.id }}').val(0);
+                    $('#{{ form.importe_entregar.vars.id }}').attr('readOnly', false);
+                }
+            }
+
+            function checksMonedaReload() {
+                if ($('#{{ form.moneda.vars.id }}').val() == "") {
+                    $('#{{ form.total_pagar.vars.id }}').val(0);
+                    $('#{{ form.total_pagar.vars.id }}').attr('readOnly', true);
+                    $('#{{ form.importe_entregar.vars.id }}').val(0);
+                    $('#{{ form.importe_entregar.vars.id }}').attr('readOnly', true);
+                }
+            }
+
+            checksMonedaReload();
+
+            $('#{{ form.total_pagar.vars.id }}').change(function () {
+                if ($('#tn_factura_auth').is(':checked') && $('#{{ form.moneda.vars.id }}').val() != '') {
+                    if ($(this).val() != "" && $(this).val() > 0) {
+                        //Tasa de cambio con respecto a la moneda contable.
+                        var tasa = parseFloat($('#{{ form.moneda.vars.id }} option:selected').data('tasa'));
+
+                        {% if is_granted("ROLE_SUPER_ADMIN") %}
+                        if ($('#tn_factura_agente option:selected').val() != undefined && $('#tn_factura_agente option:selected').val() != "") {
+                            var type = $('#tn_factura_agente option:selected').data('type');
+
+                            //Obteniendo porciento operacion
+                            $.post("{{ url('admin_agente_porciento_operacion_ajax') }}", {
+                                idAgente: $('#tn_factura_agente option:selected').val(),
+                                idMoneda: $('#{{ form.moneda.vars.id }}').val()
+                            }, function (data) {
+                                if (data.success == true) {
+                                    var porciento = parseInt(data.valor);
+                                } else {
+                                    var porciento = parseInt($('#tn_factura_agente option:selected').data('porciento'));
+                                }
+
+                                if (type == 'porciento') {
+                                    var total = parseInt($('#{{ form.total_pagar.vars.id }}').val());
+                                    if (total < 100) { //Si el total de las remesas es menor que 100, se calcula en base a 100
+                                        var temp = parseInt((100 * porciento) / 100);
+                                    } else {
+                                        var temp = parseInt((total * porciento) / 100);
+                                    }
+
+                                    var importe = (total - temp) * tasa;
+                                    $('#{{ form.importe_entregar.vars.id }}').val(importe);
+                                } else {
+                                    var total = parseInt($('#{{ form.total_pagar.vars.id }}').val());
+                                    var importe = parseInt(total - porciento) * tasa;
+                                    $('#{{ form.importe_entregar.vars.id }}').val(importe);
+                                }
+                            });
+                        } else if ($('#tn_factura_agencia option:selected').val() != undefined && $('#tn_factura_agencia option:selected').val() != "") {
+                            var type = $('#tn_factura_agencia option:selected').data('type');
+
+                            //Obteniendo porciento operacion
+                            $.post("{{ url('admin_agencia_porciento_operacion_ajax') }}", {
+                                idAgencia: $('#tn_factura_agencia option:selected').val(),
+                                idMoneda: $('#{{ form.moneda.vars.id }}').val()
+                            }, function (data) {
+                                if (data.success == true) {
+                                    var porciento = parseInt(data.valor);
+                                } else {
+                                    var porciento = parseInt($('#tn_factura_agencia option:selected').data('porciento'));
+                                }
+
+                                if (type == 'porciento') {
+                                    var total = parseInt($('#{{ form.total_pagar.vars.id }}').val());
+                                    if (total < 100) { //Si el total de las remesas es menor que 100, se calcula en base a 100
+                                        var temp = parseInt((100 * porciento) / 100);
+                                    } else {
+                                        var temp = parseInt((total * porciento) / 100);
+                                    }
+
+                                    var importe = (total - temp) * tasa;
+                                    $('#{{ form.importe_entregar.vars.id }}').val(importe);
+                                } else {
+                                    var total = parseInt($('#{{ form.total_pagar.vars.id }}').val());
+                                    var importe = parseInt(total - porciento) * tasa;
+                                    $('#{{ form.importe_entregar.vars.id }}').val(importe);
+                                }
+                            });
+                        } else {
+                            var type = 'porciento';
+                            var porciento = {{ percentUser() }};
+
+                            if (type == 'porciento') {
+                                var total = parseInt($('#{{ form.total_pagar.vars.id }}').val());
+                                if (total < 100) { //Si el total de las remesas es menor que 100, se calcula en base a 100
+                                    var temp = parseInt((100 * porciento) / 100);
+                                } else {
+                                    var temp = parseInt((total * porciento) / 100);
+                                }
+
+                                var importe = (total - temp) * tasa;
+                                $('#{{ form.importe_entregar.vars.id }}').val(importe);
+                            } else {
+                                var total = parseInt($('#{{ form.total_pagar.vars.id }}').val());
+                                var importe = parseInt(total - porciento) * tasa;
+                                $('#{{ form.importe_entregar.vars.id }}').val(importe);
+                            }
+                        }
+                        {% else %}
+                        var minimo = parseFloat($('#{{ form.moneda.vars.id }} option:selected').data('minimo'));
+                        var maximo = parseFloat($('#{{ form.moneda.vars.id }} option:selected').data('maximo'));
+                        var multiplo = parseInt($('#{{ form.moneda.vars.id }} option:selected').data('multiplo'));
+
+
+                        if ($('#tn_factura_agente option:selected').val() != undefined && $('#tn_factura_agente option:selected').val() != "") {
+                            //Obteniendo porciento operacion
+                            $.post("{{ url('admin_agente_porciento_operacion_ajax') }}", {
+                                idAgente: $('#tn_factura_agente option:selected').val(),
+                                idMoneda: $('#{{ form.moneda.vars.id }}').val()
+                            }, function (data) {
+                                if (data.success == true) {
+                                    var porciento = parseInt(data.valor);
+                                } else {
+                                    var porciento = parseInt($('#tn_factura_agente option:selected').data('porciento'));
+                                }
+                                var type = $('#tn_factura_agente option:selected').data('type');
+
+                                if (type == 'porciento') {
+                                    var total = parseInt($('#{{ form.total_pagar.vars.id }}').val());
+                                    if (total < 100) { //Si el total de las remesas es menor que 100, se calcula en base a 100
+                                        var temp = parseInt((100 * porciento) / 100);
+                                    } else {
+                                        var temp = parseInt((total * porciento) / 100);
+                                    }
+
+                                    var importe = parseInt((total - temp) * tasa);
+                                    $('#{{ form.importe_entregar.vars.id }}').val(importe);
+                                } else {
+                                    var total = parseInt($('#{{ form.total_pagar.vars.id }}').val());
+                                    var importe = parseInt(total - porciento) * tasa;
+                                    $('#{{ form.importe_entregar.vars.id }}').val(importe);
+                                }
+
+
+                                {% if not is_unlimited() %}
+                                if (importe < minimo || importe > maximo || importe % multiplo != 0) {
+                                    if (importe > maximo) {
+                                        $('#{{ form.total_pagar.vars.id }}').val(0);
+                                        $('#{{ form.importe_entregar.vars.id }}').val(maximo);
+                                    } else {
+                                        $('#{{ form.total_pagar.vars.id }}').val(0);
+                                        $('#{{ form.importe_entregar.vars.id }}').val(minimo);
+                                    }
+                                    $('#{{ form.importe_entregar.vars.id }}').trigger('change');
+                                    showToastr('warning', 'Monto mínimo', 'El total a entregar en la moneda seleccionada debe estar entre ' + minimo + ' y ' + maximo + ' y ser múltiplo de ' + multiplo);
+                                }
+                                {% endif %}
+
+                            });
+                        } else {
+                            var porciento = parseInt($('#{{ form.moneda.vars.id }} option:selected').data('porciento'));
+
+                            var total = parseInt($('#{{ form.total_pagar.vars.id }}').val());
+                            if (total < 100) { //Si el total de las remesas es menor que 100, se calcula en base a 100
+                                var temp = parseInt((100 * porciento) / 100);
+                            } else {
+                                var temp = parseInt((total * porciento) / 100);
+                            }
+
+                            var importe = (total - temp) * tasa;
+                            $('#{{ form.importe_entregar.vars.id }}').val(importe);
+
+
+                            {% if not is_unlimited() %}
+                            if (importe < minimo || importe > maximo || importe % multiplo != 0) {
+                                if (importe > maximo) {
+                                    $('#{{ form.total_pagar.vars.id }}').val(0);
+                                    $('#{{ form.importe_entregar.vars.id }}').val(maximo);
+                                } else {
+                                    $('#{{ form.total_pagar.vars.id }}').val(0);
+                                    $('#{{ form.importe_entregar.vars.id }}').val(minimo);
+                                }
+                                $('#{{ form.importe_entregar.vars.id }}').trigger('change');
+                                showToastr('warning', 'Monto mínimo', 'El total a entregar en la moneda seleccionada debe estar entre ' + minimo + ' y ' + maximo + ' y ser múltiplo de ' + multiplo);
+                            }
+                            {% endif %}
+                        }
+                        {% endif %}
+                    }
+                }
+            });
+
+            $('#{{ form.moneda.vars.id }}').change(function () {
+                if ($(this).val() != "") {
+                    checksMoneda();
+                    verificarMonedaDestino();
+                } else {
+                    checksMoneda();
+                }
+            });
+
+            $('#{{ form.importe_entregar.vars.id }}').change(function () {
+                if ($('#tn_factura_auth').is(':checked') && $('#{{ form.moneda.vars.id }}').val() != '') {
+                    if ($(this).val() != "" && $(this).val() > 0) {
+
+                        {% if is_granted("ROLE_SUPER_ADMIN") %}
+                        //Tasa de cambio con respecto a la moneda contable.
+                        var tasa = parseFloat($('#{{ form.moneda.vars.id }} option:selected').data('tasa'));
+
+                        if ($('#tn_factura_agente option:selected').val() != undefined && $('#tn_factura_agente option:selected').val() != "") {
+                            var type = $('#tn_factura_agente option:selected').data('type');
+
+                            //Obteniendo porciento operacion
+                            $.post("{{ url('admin_agente_porciento_operacion_ajax') }}", {
+                                idAgente: $('#tn_factura_agente option:selected').val(),
+                                idMoneda: $('#{{ form.moneda.vars.id }}').val()
+                            }, function (data) {
+                                if (data.success == true) {
+                                    var porciento = parseInt(data.valor);
+                                } else {
+                                    var porciento = parseInt($('#tn_factura_agente option:selected').data('porciento'));
+                                }
+
+                                if (type == 'porciento') {
+                                    //Diviendo entre la tasa para encontrar el importe según la moneda.
+                                    var total = parseInt(parseInt($('#{{ form.total_pagar.vars.id }}').val()) / tasa);
+                                    if (total < 100) { //Si el total de las remesas es menor que 100, se calcula en base a 100
+                                        var temp = parseInt((100 * porciento) / 100);
+                                    } else {
+                                        var temp = parseInt((total * porciento) / 100);
+                                    }
+                                    var importe = total + temp;
+                                    $('#{{ form.total_pagar.vars.id }}').val(importe);
+                                } else {
+                                    var total = parseInt(parseInt($('#{{ form.total_pagar.vars.id }}').val()) / tasa);
+                                    var importe = parseInt(total + porciento);
+                                    $('#{{ form.total_pagar.vars.id }}').val(importe);
+                                }
+                            });
+
+                        } else if ($('#tn_factura_agencia option:selected').val() != undefined && $('#tn_factura_agencia option:selected').val() != "") {
+                            var type = $('#tn_factura_agencia option:selected').data('type');
+                            //Obteniendo porciento operacion
+                            $.post("{{ url('admin_agencia_porciento_operacion_ajax') }}", {
+                                idAgencia: $('#tn_factura_agencia option:selected').val(),
+                                idMoneda: $('#{{ form.moneda.vars.id }}').val()
+                            }, function (data) {
+                                if (data.success == true) {
+                                    var porciento = parseInt(data.valor);
+                                } else {
+                                    var porciento = parseInt($('#tn_factura_agente option:selected').data('porciento'));
+                                }
+
+                                if (type == 'porciento') {
+                                    //Diviendo entre la tasa para encontrar el importe según la moneda.
+                                    var total = parseInt(parseInt($('#{{ form.importe_entregar.vars.id }}').val()) / tasa);
+                                    if (total < 100) { //Si el total de las remesas es menor que 100, se calcula en base a 100
+                                        var temp = parseInt((100 * porciento) / 100);
+                                    } else {
+                                        var temp = parseInt((total * porciento) / 100);
+                                    }
+                                    var importe = total + temp;
+                                    $('#{{ form.total_pagar.vars.id }}').val(importe);
+                                } else {
+                                    var total = parseInt(parseInt($('#{{ form.importe_entregar.vars.id }}').val()) / tasa);
+                                    var importe = parseInt(total + porciento);
+                                    $('#{{ form.total_pagar.vars.id }}').val(importe);
+                                }
+                            });
+                        } else {
+                            var type = 'porciento';
+                            var porciento = {{ percentUser() }};
+
+                            if (type == 'porciento') {
+                                //Diviendo entre la tasa para encontrar el importe según la moneda.
+                                var total = parseInt(parseInt($('#{{ form.importe_entregar.vars.id }}').val()) / tasa);
+                                if (total < 100) { //Si el total de las remesas es menor que 100, se calcula en base a 100
+                                    var temp = parseInt((100 * porciento) / 100);
+                                } else {
+                                    var temp = parseInt((total * porciento) / 100);
+                                }
+                                var importe = total + temp;
+                                $('#{{ form.total_pagar.vars.id }}').val(importe);
+                            } else {
+                                var total = parseInt(parseInt($('#{{ form.importe_entregar.vars.id }}').val()) / tasa);
+                                var importe = parseInt(total + porciento);
+                                $('#{{ form.total_pagar.vars.id }}').val(importe);
+                            }
+                        }
+                        {% else %}
+                        var minimo = parseFloat($('#{{ form.moneda.vars.id }} option:selected').data('minimo'));
+                        var maximo = parseFloat($('#{{ form.moneda.vars.id }} option:selected').data('maximo'));
+                        var multiplo = parseInt($('#{{ form.moneda.vars.id }} option:selected').data('multiplo'));
+                        var unlimited = false;
+
+                        {% if is_unlimited() %}
+                        var unlimited = true;
+                        {% endif %}
+
+                        if (($(this).val() >= minimo && $(this).val() <= maximo && $(this).val() % multiplo == 0) || unlimited == true) {
+                            //Tasa de cambio con respecto a la moneda contable.
+                            var tasa = parseFloat($('#{{ form.moneda.vars.id }} option:selected').data('tasa'));
+
+                            if ($('#tn_factura_agente option:selected').val() != undefined && $('#tn_factura_agente option:selected').val() != "") {
+                                var type = $('#tn_factura_agente option:selected').data('type');
+                                //Obteniendo porciento operacion
+                                $.post("{{ url('admin_agente_porciento_operacion_ajax') }}", {
+                                    idAgente: $('#tn_factura_agente option:selected').val(),
+                                    idMoneda: $('#{{ form.moneda.vars.id }}').val()
+                                }, function (data) {
+                                    if (data.success) {
+                                        var porciento = parseInt(data.valor);
+                                    } else {
+                                        var porciento = parseInt($('#tn_factura_agente option:selected').data('porciento'));
+                                    }
+                                    if (type == 'porciento') {
+                                        //Diviendo entre la tasa para encontrar el importe según la moneda.
+                                        var total = parseInt(parseInt($('#{{ form.importe_entregar.vars.id }}').val()) / tasa);
+                                        if (total < 100) { //Si el total de las remesas es menor que 100, se calcula en base a 100
+                                            var temp = parseInt((100 * porciento) / 100);
+                                        } else {
+                                            var temp = parseInt((total * porciento) / 100);
+                                        }
+                                        var importe = total + temp;
+                                        $('#{{ form.total_pagar.vars.id }}').val(importe);
+                                    } else {
+                                        var total = parseInt(parseInt($('#{{ form.importe_entregar.vars.id }}').val()) / tasa);
+                                        var importe = parseInt(total + porciento);
+                                        $('#{{ form.total_pagar.vars.id }}').val(importe);
+                                    }
+                                });
+                            } else {
+                                var porciento = parseInt($('#{{ form.moneda.vars.id }} option:selected').data('porciento'));
+                                //Diviendo entre la tasa para encontrar el importe según la moneda.
+                                var total = parseInt(parseInt($(this).val()) / tasa);
+                                if (total < 100) { //Si el total de las remesas es menor que 100, se calcula en base a 100
+                                    var temp = parseInt((100 * porciento) / 100);
+                                } else {
+                                    var temp = parseInt((total * porciento) / 100);
+                                }
+                                var importe = total + temp;
+                                $('#{{ form.total_pagar.vars.id }}').val(importe);
+                            }
+
+                        } else {
+                            if ($(this).val() > maximo) {
+                                $(this).val(maximo);
+                                $('#{{ form.total_pagar.vars.id }}').val(0)
+                            } else {
+                                $(this).val(minimo);
+                                $('#{{ form.total_pagar.vars.id }}').val(0)
+                            }
+                            $(this).trigger('change');
+                            showToastr('warning', 'Monto mínimo', 'El total a entregar en la moneda seleccionada debe estar entre ' + minimo + ' y ' + maximo + ' y ser múltiplo de ' + multiplo);
+                        }
+                        {% endif %}
+                    }
+                }
+            });
+
+            $("#{{ form.vars.id }}").validate({
+                rules: {
+                    '{{ form.destinatario.vars.full_name }}': {
+                        required: true
+                    },
+                    '{{ form.importe_entregar.vars.full_name }}': {
+                        required: true,
+                        number: true
+                    },
+                    '{{ form.total_pagar.vars.full_name }}': {
+                        required: true,
+                        number: true
+                    }
+                }
+            });
+            {% else %}
+            $("#{{ form.vars.id }}").validate({
+                rules: {
+                    '{{ form.destinatario.vars.full_name }}': {
+                        required: true
+                    },
+                    '{{ form.importe_entregar.vars.full_name }}': {
+                        required: true,
+                        number: true
+                    }
+                }
+            });
+            {% endif %}
+
+        }
+
+
+        if (typeof $ == "function") {
+            globals{{ form.vars.id }}()
+        }
+    </script>
+{% endmacro %}

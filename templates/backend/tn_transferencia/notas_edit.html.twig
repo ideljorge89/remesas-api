@@ -1,0 +1,11 @@
+{% trans_default_domain 'AppBundle' %}
+
+{{ transferencia.notas }}
+<a href="{{ path('tn_transferencia_notas_edit', {'token': transferencia.token }) }}"
+   data-target='#modal-form'
+   data-toggle="tooltip"
+   data-placement="right"
+   class="btn btn-xs btn-primary btn-circle btn-outline"
+   title="{{ 'backend.transferencia.table.edit_note'| trans }}"><i
+            class="fa fa-comments-o"></i></a>
+

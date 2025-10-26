@@ -1,0 +1,170 @@
+{% if (transferencia.agencia and transferencia.agencia.usuario is not null and transferencia.agencia.usuario.filePath is not null) or (transferencia.agente and transferencia.agente.usuario is not null and transferencia.agente.usuario.filePath is not null) %}
+    {% if transferencia.agente %}
+        <table cellpadding="3px" width="785px">
+            <tr>
+                <td width="200px" align="left">
+                    <img src="{{ asset(transferencia.agente.usuario.filePath) }}" alt="Avatar" style="width: 70px; height: 70px;">
+                </td>
+                <td width="200px" style="font-weight: bold; font-size: 15px" align="center"><strong>TRANSFERENCIA</strong></td>
+                <td width="250px" align="right">
+                    <label><strong>Nro. </strong>{{ transferencia.codigo }}</label><br>
+                    <label><strong>Fecha: </strong> {{ transferencia.created |date('d/m/Y H:i:s') }}</label>
+                </td>
+
+            </tr>
+        </table>
+    {% else %}
+        <table cellpadding="3px" width="785px">
+            <tr>
+                <td width="200px" align="left">
+                    <img src="{{ asset(transferencia.agencia.usuario.filePath) }}" alt="Avatar" style="width: 70px; height: 70px;">
+                </td>
+                <td width="200px" style="font-weight: bold; font-size: 15px" align="center" ><strong>TRANSFERENCIA</strong></td>
+                <td width="250px" align="right">
+                    <label><strong>Nro. </strong>{{ transferencia.codigo }}</label><br>
+                    <label><strong>Fecha: </strong> {{ transferencia.created |date('d/m/Y H:i:s') }}</label>
+                </td>
+
+            </tr>
+        </table>
+    {% endif %}
+{% else %}
+    <table cellpadding="3px" width="785px">
+        <tr>
+            <td width="400px" style="font-weight: bold; font-size: 20px" align="left"><strong>TRANSFERENCIA</strong></td>
+            <td width="250px" align="right">
+                <label><strong>Nro. </strong>{{ transferencia.codigo }}</label><br>
+                <label><strong>Fecha: </strong> {{ transferencia.created |date('d/m/Y H:i:s') }}</label>
+            </td>
+
+        </tr>
+    </table>
+{% endif %}
+
+<table>
+    <tr>
+        <td>&nbsp;</td>
+    </tr>
+</table>
+<table cellpadding="3px" width="785px" style="border: 1px solid black">
+    {% if app.user.auth and showImporteTrans(transferencia) %}
+        <tr>
+            <td width="50px" align="left" style="font-size: 11px"><strong>Nro.</strong></td>
+            <td width="150px" align="left" style="font-size: 11px"><strong>Emisor.</strong></td>
+            <td width="150px" align="left" style="font-size: 11px"><strong>Titular Tarjeta</strong></td>
+            <td width="150px" align="left" style="font-size: 11px"><strong># de Tarjeta</strong></td>
+            <td width="75px" align="left" style="font-size: 11px"><strong>Importe</strong></td>
+            <td width="75px" align="left" style="font-size: 11px"><strong>Enviado</strong></td>
+        </tr>
+        <tr>
+            <td width="50px" align="left" style="font-size: 11px">{{ transferencia.codigo }}</td>
+            <td width="150px" align="left" style="font-size: 11px">{{ transferencia.emisor ? transferencia.emisor : '-' }}</td>
+            <td width="150px" align="left" style="font-size: 11px">{{ transferencia.titularTarjeta }}</td>
+            <td width="150px" align="left" style="font-size: 11px">{{ transferencia.numeroTarjeta }}</td>
+            <td width="75px" align="left" style="font-size: 11px">{{ transferencia.totalCobrar | number_format(2) }} {{ transferencia.moneda }}</td>
+            <td width="75px" align="left" style="font-size: 11px">{{ transferencia.importe | number_format(2) }} {{ transferencia.moneda }}</td>
+        </tr>
+    {% else %}
+        <tr>
+            <td width="75px" align="left" style="font-size: 11px"><strong>Nro.</strong></td>
+            <td width="150px" align="left" style="font-size: 11px"><strong>Emisor.</strong></td>
+            <td width="150px" align="left" style="font-size: 11px"><strong>Titular Tarjeta</strong></td>
+            <td width="175px" align="left" style="font-size: 11px"><strong># de Tarjeta</strong></td>
+            <td width="100px" align="left" style="font-size: 11px"><strong>Enviado</strong></td>
+        </tr>
+        <tr>
+            <td width="75px" align="left" style="font-size: 11px">{{ transferencia.codigo }}</td>
+            <td width="150px" align="left" style="font-size: 11px">{{ transferencia.emisor ? transferencia.emisor : '-' }}</td>
+            <td width="150px" align="left" style="font-size: 11px">{{ transferencia.titularTarjeta }}</td>
+            <td width="175px" align="left" style="font-size: 11px">{{ transferencia.numeroTarjeta }}</td>
+            <td width="100x" align="left" style="font-size: 11px">{{ transferencia.importe | number_format(2) }} {{ transferencia.moneda }}</td>
+        </tr>
+    {% endif %}
+</table>
+<table>
+    <tr>
+        <td>&nbsp;</td>
+    </tr>
+</table>
+<table cellpadding="3px" width="785px" style="border: 1px solid black">
+    <tr>
+        <td width="150px" align="left" style="font-size: 11px"></td>
+        <td width="170px" align="left" style="font-size: 11px"></td>
+        <td width="180px" align="center" style="font-size: 11px"><strong>TOTAL</strong></td>
+        <td width="75px" align="left"
+            style="font-size: 11px">{% if app.user.auth and showImporteTrans(transferencia) %}{{ transferencia.totalCobrar | number_format(2) }} USD{% endif %}</td>
+        <td width="75px" align="left" style="font-size: 11px">{{ transferencia.importe | number_format(2) }} {{ transferencia.moneda }}</td>
+    </tr>
+</table>
+<table>
+    <tr>
+        <td>&nbsp;</td>
+    </tr>
+</table>
+<table>
+    <tr>
+        <td>&nbsp;</td>
+    </tr>
+</table>
+{# Poniendo 2 veces para que la agencias impriman #}
+<hr>
+<table>
+    <tr>
+        <td>&nbsp;</td>
+    </tr>
+</table>
+<table>
+    <tr>
+        <td>&nbsp;</td>
+    </tr>
+</table>
+<table cellpadding="3px" width="785px" style="border: 1px solid black">
+    {% if app.user.auth and showImporteTrans(transferencia) %}
+        <tr>
+            <td width="50px" align="left" style="font-size: 11px"><strong>Nro.</strong></td>
+            <td width="150px" align="left" style="font-size: 11px"><strong>Emisor.</strong></td>
+            <td width="150px" align="left" style="font-size: 11px"><strong>Titular Tarjeta</strong></td>
+            <td width="150px" align="left" style="font-size: 11px"><strong># de Tarjeta</strong></td>
+            <td width="75px" align="left" style="font-size: 11px"><strong>Importe</strong></td>
+            <td width="75px" align="left" style="font-size: 11px"><strong>Enviado</strong></td>
+        </tr>
+        <tr>
+            <td width="50px" align="left" style="font-size: 11px">{{ transferencia.codigo }}</td>
+            <td width="150px" align="left" style="font-size: 11px">{{ transferencia.emisor ? transferencia.emisor : '-' }}</td>
+            <td width="150px" align="left" style="font-size: 11px">{{ transferencia.titularTarjeta }}</td>
+            <td width="150px" align="left" style="font-size: 11px">{{ transferencia.numeroTarjeta }}</td>
+            <td width="75px" align="left" style="font-size: 11px">{{ transferencia.totalCobrar | number_format(2) }} {{ transferencia.moneda }}</td>
+            <td width="75px" align="left" style="font-size: 11px">{{ transferencia.importe | number_format(2) }} {{ transferencia.moneda }}</td>
+        </tr>
+    {% else %}
+        <tr>
+            <td width="75px" align="left" style="font-size: 11px"><strong>Nro.</strong></td>
+            <td width="150px" align="left" style="font-size: 11px"><strong>Emisor.</strong></td>
+            <td width="150px" align="left" style="font-size: 11px"><strong>Titular Tarjeta</strong></td>
+            <td width="175px" align="left" style="font-size: 11px"><strong># de Tarjeta</strong></td>
+            <td width="100px" align="left" style="font-size: 11px"><strong>Enviado</strong></td>
+        </tr>
+        <tr>
+            <td width="75px" align="left" style="font-size: 11px">{{ transferencia.codigo }}</td>
+            <td width="150px" align="left" style="font-size: 11px">{{ transferencia.emisor ? transferencia.emisor : '-' }}</td>
+            <td width="150px" align="left" style="font-size: 11px">{{ transferencia.titularTarjeta }}</td>
+            <td width="175px" align="left" style="font-size: 11px">{{ transferencia.numeroTarjeta }}</td>
+            <td width="100x" align="left" style="font-size: 11px">{{ transferencia.importe | number_format(2) }} {{ transferencia.moneda }}</td>
+        </tr>
+    {% endif %}
+</table>
+<table>
+    <tr>
+        <td>&nbsp;</td>
+    </tr>
+</table>
+<table cellpadding="3px" width="785px" style="border: 1px solid black">
+    <tr>
+        <td width="150px" align="left" style="font-size: 11px"></td>
+        <td width="170px" align="left" style="font-size: 11px"></td>
+        <td width="180px" align="center" style="font-size: 11px"><strong>TOTAL</strong></td>
+        <td width="75px" align="left"
+            style="font-size: 11px">{% if app.user.auth and showImporteTrans(transferencia) %}{{ transferencia.totalCobrar | number_format(2) }} USD{% endif %}</td>
+        <td width="75px" align="left" style="font-size: 11px">{{ transferencia.importe | number_format(2) }} {{ transferencia.moneda }}</td>
+    </tr>
+</table>

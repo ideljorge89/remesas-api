@@ -1,0 +1,244 @@
+{% trans_default_domain 'AppBundle' %}
+{% set route = app.request.get('_route') %}
+{% set locale = app.request.locale == 'es' ? 'en': 'es' %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{% block title %}
+            {{ 'backend.title'|trans({},'AppBundle') }}
+            {% if title is defined %}
+                | {{ title }}
+            {% endif %}
+        {% endblock %}</title>
+    {% block stylesheets %}
+        {% include 'backend/includes/stylesheets.html.twig' %}
+    {% endblock %}
+    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}"/>
+    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('favicon.ico') }}"/>
+</head>
+
+{% set valu=app.request.cookies.get('side_bar') %}
+<body class="pace-done {{ valu=='min'?'mini-navbar' }}">
+<div style="background: black;opacity: 0.1;z-index: 100000; height: 500px; display: none; position: absolute; left: 0px; top: 0px; width: 1400px;">
+    <div class="loadingfy sk-spinner sk-spinner-circle" style="top: 50%;">
+        <div class="sk-circle1 sk-circle"></div>
+        <div class="sk-circle2 sk-circle"></div>
+        <div class="sk-circle3 sk-circle"></div>
+        <div class="sk-circle4 sk-circle"></div>
+        <div class="sk-circle5 sk-circle"></div>
+        <div class="sk-circle6 sk-circle"></div>
+        <div class="sk-circle7 sk-circle"></div>
+        <div class="sk-circle8 sk-circle"></div>
+        <div class="sk-circle9 sk-circle"></div>
+        <div class="sk-circle10 sk-circle"></div>
+        <div class="sk-circle11 sk-circle"></div>
+        <div class="sk-circle12 sk-circle"></div>
+    </div>
+</div>
+<div id="wrapper">
+    {% block sidebar %}
+
+        {% if app.user %}
+            {% if is_granted('ROLE_ASESOR') %}
+                {% include 'backend/includes/Asesor/sidebar.html.twig' with { 'route': route } %}
+            {% elseif is_granted('ROLE_SUPER_ADMIN') %}
+                {% include 'backend/includes/SuperAdmin/sidebar.html.twig' with { 'route': route } %}
+            {% elseif is_granted('ROLE_AGENCIA') %}
+                {% include 'backend/includes/Agencia/sidebar.html.twig' with { 'route': route } %}
+            {% elseif is_granted('ROLE_AGENTE') %}
+                {% include 'backend/includes/Agente/sidebar.html.twig' with { 'route': route } %}
+            {% elseif is_granted('ROLE_DISTRIBUIDOR') %}
+                {% include 'backend/includes/Distribuidor/sidebar.html.twig' with { 'route': route } %}
+            {% endif %}
+        {% endif %}
+
+
+    {% endblock %}
+    {% block flash_messages %}
+        {% if app.request.hasPreviousSession %}
+            {% for type, messages in app.session.flashbag.all() %}
+                {% for message in messages %}
+                    <div class="flash-{{ type }} fade" data-action="toastr" data-method="{{ type }}"
+                         data-message="{{ message }}">
+
+                    </div>
+                {% endfor %}
+            {% endfor %}
+        {% endif %}
+    {% endblock %}
+    <div id="page-wrapper" class="gray-bg">
+        {% block topbar %}
+
+            {% if app.user %}
+                {% if is_granted('ROLE_ASESOR') %}
+                    {% include 'backend/includes/Asesor/topbar.html.twig' with { 'route': route } %}
+                {% elseif is_granted('ROLE_SUPER_ADMIN') %}
+                    {% include 'backend/includes/SuperAdmin/topbar.html.twig' %}
+                {% elseif is_granted('ROLE_AGENCIA') %}
+                    {% include 'backend/includes/Agencia/topbar.html.twig' with { 'route': route } %}
+                {% elseif is_granted('ROLE_AGENTE') %}
+                    {% include 'backend/includes/Agente/topbar.html.twig' with { 'route': route } %}
+                {% elseif is_granted('ROLE_DISTRIBUIDOR') %}
+                    {% include 'backend/includes/Distribuidor/topbar.html.twig' with { 'route': route } %}
+                {% endif %}
+            {% endif %}
+
+        {% endblock %}
+        <div class="modal inmodal" id="modal-form" data-refresh="true" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content animated fadeIn modal-form">
+                    <div style="height: 200px;padding-top: 70px;">
+                        <div class="sk-spinner sk-spinner-circle">
+                            <div class="sk-circle1 sk-circle"></div>
+                            <div class="sk-circle2 sk-circle"></div>
+                            <div class="sk-circle3 sk-circle"></div>
+                            <div class="sk-circle4 sk-circle"></div>
+                            <div class="sk-circle5 sk-circle"></div>
+                            <div class="sk-circle6 sk-circle"></div>
+                            <div class="sk-circle7 sk-circle"></div>
+                            <div class="sk-circle8 sk-circle"></div>
+                            <div class="sk-circle9 sk-circle"></div>
+                            <div class="sk-circle10 sk-circle"></div>
+                            <div class="sk-circle11 sk-circle"></div>
+                            <div class="sk-circle12 sk-circle"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% block breadcrumb_content %}
+            <div class="row wrapper border-bottom white-bg page-heading">
+                <div class="col-sm-6 col-xs-12">
+                    {% block breadcrumb %}
+                    {% endblock %}
+                </div>
+
+                {% if is_granted("ROLE_SUPER_ADMIN") %}
+                    <div class="col-sm-3 col-xs-12">
+                        <ul class="list-group clear-list m-t">
+                            <li class="list-group-item fist-item">
+                                <span class="pull-right">
+                                    {% set usd = value_config('saldo_usd') %}
+                                    {% set usd_dist = saldo_distribuido('USD') %}
+                                    <label for="usd"
+                                           class="label label-success">{{ usd | number_format(2, '.', ',') }} </label> | <label
+                                            for="usd"
+                                            class="label label-danger">{{ usd_dist | number_format(2, '.', ',') }} </label>
+                                </span>
+                                <span class="label label-warning"><strong>USD</strong></span>
+                            </li>
+                            <li class="list-group-item">
+                                <span class="pull-right">
+                                    {% set cup = value_config('saldo_cup') %}
+                                    {% set cup_dist = saldo_distribuido('CUP') %}
+                                    <label for="usd"
+                                           class="label label-success">{{ cup | number_format(2, '.', ',') }} </label> | <label
+                                            for="usd"
+                                            class="label label-danger">{{ cup_dist | number_format(2, '.', ',') }} </label>
+                                </span>
+                                <span class="label label-warning"><strong>CUP</strong></span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-sm-3 col-xs-12">
+                        <ul class="list-group clear-list m-t">
+                            <li class="list-group-item fist-item">
+                                <span class="pull-right">
+                                    {% set eur = value_config('saldo_eur') %}
+                                    {% set eur_dist = saldo_distribuido('EUR') %}
+                                    <label for="eur"
+                                           class="label label-success">{{ eur | number_format(2, '.', ',') }} </label> | <label
+                                            for="eur"
+                                            class="label label-danger">{{ eur_dist | number_format(2, '.', ',') }} </label>
+                                </span>
+                                <span class="label label-warning"><strong>EUR</strong></span>
+                            </li>
+                            <li class="list-group-item">
+                                <span class="pull-right">
+                                    {% set cad = value_config('saldo_cad') %}
+                                    {% set cad_dist = saldo_distribuido('CAD') %}
+                                    <label for="cad"
+                                           class="label label-success">{{ cad | number_format(2, '.', ',') }} </label> | <label
+                                            for="usd"
+                                            class="label label-danger">{{ cad_dist | number_format(2, '.', ',') }} </label>
+                                </span>
+                                <span class="label label-warning"><strong>CAD</strong></span>
+                            </li>
+                        </ul>
+                    </div>
+                {% elseif is_granted("ROLE_AGENCIA") %}
+                    {% set agencia = app.user.agencia %}
+                    {% set saldosAgc = agencia.saldoMonedas %}
+                    {% set halfSaldosAgc = ((saldosAgc | length)/ 2) %}
+                    {% if halfSaldosAgc > 0 %}
+                        {% for groupSaldos in saldosAgc | batch(halfSaldosAgc, '') %}
+                            <div class="col-sm-3 col-xs-12">
+                                <ul class="list-group clear-list m-t">
+                                    {% for saldoMoneda in groupSaldos %}
+                                        {% if saldoMoneda != '' %}
+                                            {% set moneda = saldoMoneda.grupoPago.moneda %}
+                                            <li class="list-group-item">
+                                    <span class="pull-right">
+                                        {% set mon_dist = saldo_distribuido_agencia(agencia, moneda.simbolo) %}
+                                        <label for="{{ moneda.simbolo }}"
+                                               class="label label-success">{{ saldoMoneda.saldo | number_format(2, '.', ',') }}</label> | <label
+                                                for="{{ moneda.simbolo }}"
+                                                class="label label-danger">{{ mon_dist | number_format(2, '.', ',') }}</label>
+                                    </span>
+                                                <span class="label label-warning"><strong>{{ moneda.simbolo }}</strong></span>
+                                            </li>
+                                        {% endif %}
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                {% elseif is_granted("ROLE_AGENTE") %}
+                    {% set agente = app.user.agente %}
+                    {% set saldosAgt = agente.saldoMonedas %}
+                    {% set halfSaldosAgt = ((saldosAgt | length)/ 2) %}
+                    {% if halfSaldosAgt > 0 %}
+                        {% for groupSaldos in saldosAgt | batch(halfSaldosAgt, '') %}
+                            <div class="col-sm-3 col-xs-12">
+                                <ul class="list-group clear-list m-t">
+                                    {% for saldoMoneda in groupSaldos %}
+                                        {% if saldoMoneda != '' %}
+                                            {% set moneda = saldoMoneda.grupoPagoAgente.moneda %}
+                                            <li class="list-group-item">
+                                    <span class="pull-right">
+                                        <label for="{{ moneda.simbolo }}"
+                                               class="label label-success">{{ saldoMoneda.saldo | number_format(2, '.', ',') }}</label>
+                                    </span>
+                                                <span class="label label-warning"><strong>{{ moneda.simbolo }}</strong></span>
+                                            </li>
+                                        {% endif %}
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endif %}
+            </div>
+        {% endblock %}
+        <div class="wrapper wrapper-content ">
+            {% block body %}
+            {% endblock %}
+        </div>
+
+        {% block footer %}
+            {% include 'backend/includes/footer.html.twig' %}
+        {% endblock %}
+    </div>
+</div>
+<!-- /.wrapper -->
+
+{% block javascripts %}
+    {% include 'backend/includes/javascripts.html.twig' %}
+{% endblock %}
+</body>
+</html>
+

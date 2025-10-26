@@ -1,0 +1,7 @@
+{% extends "@FOSUser/layout.html.twig" %}
+{% trans_default_domain 'FOSUserBundle' %}
+{% block breadcrumbs %}
+{% endblock %}
+{% block fos_user_content %}
+    {% include "@FOSUser/Resetting/reset_content.html.twig" %}
+{% endblock fos_user_content %}

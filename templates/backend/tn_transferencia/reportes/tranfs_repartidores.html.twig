@@ -1,0 +1,251 @@
+{% extends 'base_backend.html.twig' %}
+{% trans_default_domain 'AppBundle' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+
+    <link rel="stylesheet" type="text/css" href="{{ asset('bundles/stflagiconcss/css/flag-icon.min.css') }}"
+          xmlns="http://www.w3.org/1999/html"/>
+{% endblock %}
+{% block breadcrumb %}
+    <div class="col-lg-12">
+        <h2>Reportes</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="{{ path('homepage_backend') }}"><i
+                            class="fa fa-home"></i> {{ 'backend.user_menu.breadcrumb.home'|trans({},'FOSUserBundle') }}
+                </a>
+            </li>
+            <li>
+                {{ 'backend.reportes.title'|trans({}) }}
+            </li>
+            <li class="active">
+                <strong>{{ 'backend.transferencia.table.reporte'|trans({}) }}</strong>
+            </li>
+        </ol>
+    </div>
+{% endblock %}
+{% block body %}
+    <div class="ibox">
+        <div class="ibox-content">
+            <div class="row">
+                <div class="col-md-12">
+                    {{ form_start(form,{'attr':{
+                        'id':form.vars.id
+                    }}) }}
+
+                    {{ form_widget(form._token) }}
+                    {% if form_errors(form) %}
+                        <div class="alert alert-danger" role="alert">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
+                                &times;
+                            </button>
+                            <span class="fa fa-exclamation"
+                                  aria-hidden="true"></span>
+                            <span class="sr-only">Error:</span>
+                            {{ form_errors(form) | striptags }}
+                        </div>
+                    {% endif %}
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="col-md-4 required">
+                                <div class="form-group">
+                                    <label class="font-noraml"><strong>{{ 'backend.reportes.distribuidor_remesas.fields.fechas'|trans }}</strong>:</label>
+                                    <div class="input-daterange input-group">
+                                        {{ form_widget(form.fechaInicio,{
+                                            'attr':{
+                                                'class':'form-control'
+                                            }
+                                        }) }}
+                                        <span class="input-group-addon"> - </span>
+                                        {{ form_widget(form.fechaFin,{
+                                            'attr':{
+                                                'class':'form-control'
+                                            }
+                                        }) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 required">
+                                <div class="form-group">
+                                    <label class="font-noralm">{{ form_label(form.repartidor)|striptags }}:</label>
+                                    <div class="col-xs-12 input-group">
+                                        {{ form_widget(form.repartidor,{'attr':{'class':'form-control', 'data-placeholder': "Seleccione los repartidores"}}) }}
+                                        {% if form_errors(form.repartidor) %}
+                                            <div class="alert alert-danger" role="alert">
+                                                <button type="button" class="close" data-dismiss="alert"
+                                                        aria-hidden="true">&times;
+                                                </button>
+                                                <span class="fa fa-exclamation"
+                                                      aria-hidden="true"></span>
+                                                <span class="sr-only">Error:</span>
+                                                {{ form_errors(form.repartidor) | striptags }}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-2 required">
+                                <div class="form-group">
+                                    <label class="font-noralm">{{ form_label(form.moneda)|striptags }}:</label>
+                                    <div class="col-xs-12 input-group">
+                                        {{ form_widget(form.moneda,{'attr':{'class':'form-control', 'data-placeholder': "Monedas"}}) }}
+                                        {% if form_errors(form.moneda) %}
+                                            <div class="alert alert-danger" role="alert">
+                                                <button type="button" class="close" data-dismiss="alert"
+                                                        aria-hidden="true">&times;
+                                                </button>
+                                                <span class="fa fa-exclamation"
+                                                      aria-hidden="true"></span>
+                                                <span class="sr-only">Error:</span>
+                                                {{ form_errors(form.moneda) | striptags }}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-2 required">
+                                <div class="form-group">
+                                    <label class="font-noralm">{{ form_label(form.estado)|striptags }}:</label>
+                                    <div class="col-xs-12 input-group">
+                                        {{ form_widget(form.estado,{'attr':{'class':'form-control', 'data-placeholder': "Estados"}}) }}
+                                        {% if form_errors(form.estado) %}
+                                            <div class="alert alert-danger" role="alert">
+                                                <button type="button" class="close" data-dismiss="alert"
+                                                        aria-hidden="true">&times;
+                                                </button>
+                                                <span class="fa fa-exclamation"
+                                                      aria-hidden="true"></span>
+                                                <span class="sr-only">Error:</span>
+                                                {{ form_errors(form.estado) | striptags }}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 text-right">
+                            <div class="hr-line-dashed"></div>
+                            <button class="btn btn-primary pull-right" type="submit" style="margin-left: 5px;">
+                                <i
+                                        class="fa fa-search"></i> {{ 'backend.reportes.btn_search'|trans }}
+                            </button>
+                            {% if app.session.has('reportes/admin_reporte_repartidores') %}
+                                <a class="btn btn-primary" href="{{ path('tn_transferencia_repartidores_reporte_print') }}"
+                                   style="margin-left: 5px;" target="_blank"><i
+                                            class="fa fa-print"></i> {{ 'backend.reportes.btn_export'|trans }}</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                    </form>
+                </div>
+            </div>
+            <div class="row">
+
+                <div id='table' class="col-md-12 table-responsive">
+                    <table id="contenedores"
+                           class="footable footable-paging footable-paging-center   table table-stripped table-hover  toggle-arrow-tiny"
+                           data-paging-size="50" data-paging="true" data-filtering="true" data-sorting="true">
+                        <thead>
+                        <tr>
+                            <th>Código</th>
+                            <th>Titular tarjeta</th>
+                            <th>Tarjeta destino</th>
+                            <th>Enviado</th>
+                            <th>Fecha</th>
+                            <th>Estado</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% set totalTransfTotal = 0 %}
+                        {% set importeTransfTotal = 0 %}
+                        {% for item, values in transferencias %}
+                            {% set totalTransf = 0 %}
+                            {% set importeTransf = 0 %}
+                            {% for transferencia in values %}
+                                <tr>
+                                    <td>{{ transferencia.codigo }}</td>
+                                    <td>{{ transferencia.titularTarjeta }}</td>
+                                    <td>{{ transferencia.numeroTarjeta }}</td>
+                                    <td>{{ transferencia.importe | number_format(2, '.', ',') }} {{ transferencia.moneda }}</td>
+                                    <td>{{ transferencia.created | date('d/m/Y') }}</td>
+                                    <td>
+                                        {% if transferencia.estado.codigo == '01' %}
+                                            <span class="label label-info">Pendiente</span>
+                                        {% elseif transferencia.estado.codigo == '02' %}
+                                            <span class="label label-primary">Asignada</span>
+                                        {% elseif transferencia.estado.codigo == '03' %}
+                                            <span class="label label-warning">Enviada</span>
+                                        {% elseif transferencia.estado.codigo == '04' %}
+                                            <span class="label label-success">Entregada</span>
+                                        {% else %}
+                                            <span class="label label-danger">Cancelada</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% set importeTransf = importeTransf + transferencia.importe %}
+                                {% set totalTransf = totalTransf + 1 %}
+                            {% endfor %}
+                            <tr>
+                                <td><strong>{{ item }}</strong></td>
+                                <td><strong>{{ totalTransf }} transferencia(s)</strong></td>
+                                <td><strong>TOTALES:</strong></td>
+                                <td><strong>{{ importeTransf | number_format(2) }} USD</strong></td>
+                            </tr>
+                            {% set totalTransfTotal = totalTransfTotal + totalTransf %}
+                            {% set importeTransfTotal = importeTransfTotal + importeTransf %}
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12">
+                    <table class="table table-responsive">
+                        <tr>
+                            <td><strong>RESUMEN TOTAL:</strong></td>
+                            <td>{{ transferencias | length }} repartidor(s) <br>{{ totalTransfTotal }} transferencia(s)</td>
+                            <td><strong>ENVIADO:</strong></td>
+                            <td>{{ importeTransfTotal | number_format(2) }} USD</td>
+                            <td></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+
+    <script type="application/javascript">
+        $(function () {
+            $('.input-daterange').datepicker({
+                keyboardNavigation: false,
+                forceParse: false,
+                autoclose: true,
+                format: 'dd/mm/yyyy',
+                todayBtn: true,
+                language: 'es',
+                endDate: 'today',
+                todayHighlight: true
+            }).on('keypress paste', function (e) {
+                e.preventDefault();
+                return false;
+            });
+
+            $("#{{ form.vars.id }}").validate({
+                rules: {
+                    '{{ form.fechaInicio.vars.full_name }}': {
+                        required: true
+                    },
+                    '{{ form.fechaFin.vars.full_name }}': {
+                        required: true
+                    }
+                }
+            });
+
+            dataLink()
+        })
+    </script>
+{% endblock %}

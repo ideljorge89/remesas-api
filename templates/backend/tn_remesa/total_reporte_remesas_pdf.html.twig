@@ -1,0 +1,9 @@
+<table cellpadding="3px" width="785px" style="border: 1px solid black" nobr="true">
+    <tr>
+        <td width="100px" align="left" style="font-size: 11px"><strong>RESUMEN</strong><br><strong>{{ totalRemesas }}</strong> remesa(s)</td>
+        <td width="110px" align="center" style="font-size: 11px"><strong>TOTAL CUC: <br>{{ importeRemesas | number_format(2) }}</strong></td>
+        <td width="160px" align="right" style="font-size: 11px"><strong>TOTAL CUP: <br>{{ importeRemesasCUP | number_format(2) }}</strong></td>
+        <td width="160px" align="right" style="font-size: 11px"><strong>TOTAL USD: <br>{{ importeRemesasUSD | number_format(2) }}</strong></td>
+        <td width="160px" align="right" style="font-size: 11px"><strong>TOTAL EUR: <br>{{ importeRemesasEUR | number_format(2) }}</strong></td>
+    </tr>
+</table>

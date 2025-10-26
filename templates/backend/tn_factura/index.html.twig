@@ -1,0 +1,643 @@
+{% extends 'base_backend.html.twig' %}
+{% trans_default_domain 'AppBundle' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        label.remesas:hover {
+            cursor: pointer;
+        }
+
+        a.logs label {
+            cursor: pointer;
+        }
+
+        .filter-hidden {
+            display: none;
+        }
+
+        .filter-show {
+            display: block;
+        }
+    </style>
+{% endblock %}
+{% block breadcrumb %}
+    <div class="col-lg-12">
+        <h2>{{ 'backend.user_menu.administrator.facutra.title'|trans({},'FOSUserBundle') }}</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="{{ path('homepage_backend') }}"><i
+                            class="fa fa-home"></i> {{ 'backend.user_menu.breadcrumb.home'|trans({},'FOSUserBundle') }}
+                </a>
+            </li>
+            <li class="">
+                {{ 'backend.user_menu.administrator.nomencladores.title'|trans({},'FOSUserBundle') }}
+            </li>
+            <li class="active">
+                <strong>{{ 'backend.user_menu.administrator.facutra.list'|trans({},'FOSUserBundle') }}</strong>
+            </li>
+        </ol>
+    </div>
+{% endblock %}
+{% block body %}
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox advanced-filter filter-show">
+                <div class="ibox-content m-b-sm border-bottom">
+                    {{ form_start(form,{'attr':{
+                        'id':form.vars.id,
+                        'action': path('tn_factura_advanced_search')
+                    }}) }}
+
+                    {{ form_widget(form._token) }}
+                    {% if form_errors(form) %}
+                        <div class="alert alert-danger" role="alert">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
+                                &times;
+                            </button>
+                            <span class="fa fa-exclamation"
+                                  aria-hidden="true"></span>
+                            <span class="sr-only">Error:</span>
+                            {{ form_errors(form) | striptags }}
+                        </div>
+                    {% endif %}
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                {{ form_widget(form.orden,{'attr':{'class':'form-control'}}) }}
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <div class="input-group">
+                                    {{ form_widget(form.emisor,{'attr':{'class':'form-control'}}) }}
+                                    <span class="input-group-addon" data-toggle="tooltip" data-placement="bottom"
+                                          title="Para filtrar especifique de la siguiente forma: nombre(s)/apellidos(s). Ej. Jose/Perez Perez. Si solo quiere filtre por nombre o apellidos no ponga /."><i
+                                                class="fa fa-info-circle" style="color: red"></i></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <div class="input-group">
+                                    {{ form_widget(form.destinatario,{'attr':{'class':'form-control'}}) }}
+                                    <span class="input-group-addon" data-toggle="tooltip" data-placement="bottom"
+                                          title="Para filtrar especifique de la siguiente forma: nombre(s)/apellidos(s). Ej. Jose/Perez Perez. Si solo quiere filtre por nombre o apellidos no ponga /."><i
+                                                class="fa fa-info-circle" style="color: red"></i></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                {{ form_widget(form.estado,{'attr':{'class':'form-control', 'data-placeholder': "Estados"}}) }}
+                            </div>
+                        </div>
+                    </div>
+                    {% if is_granted("ROLE_SUPER_ADMIN") %}
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <div class="input-daterange input-group">
+                                    {{ form_widget(form.fechaInicio,{
+                                        'attr':{
+                                            'class':'form-control', 'placeholder': "Fecha inicio"
+                                        }
+                                    }) }}
+                                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                    {{ form_widget(form.fechaFin,{
+                                        'attr':{
+                                            'class':'form-control', 'placeholder': "Fecha fin"
+                                        }
+                                    }) }}
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    {{ form_widget(form.agencia,{'attr':{'class':'form-control', 'data-placeholder': "Agencias"}}) }}
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    {{ form_widget(form.agente,{'attr':{'class':'form-control', 'data-placeholder': "Agentes"}}) }}
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    {{ form_widget(form.distribuidor,{'attr':{'class':'form-control', 'data-placeholder': "Distribuidores"}}) }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    {{ form_widget(form.nota,{'attr':{'class':'form-control'}}) }}
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    {{ form_widget(form.moneda,{'attr':{'class':'form-control', 'data-placeholder': "Monedas"}}) }}
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <button type=submit class="btn btn-primary pull-right" data-toggle="tooltip"
+                                            title="Filtrar datos" data-placement="left" type="button"><i
+                                                class="fa fa-search"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    {% elseif is_granted("ROLE_AGENCIA") %}
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <div class="input-daterange input-group">
+                                    {{ form_widget(form.fechaInicio,{
+                                        'attr':{
+                                            'class':'form-control', 'placeholder': "Fecha inicio"
+                                        }
+                                    }) }}
+                                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                    {{ form_widget(form.fechaFin,{
+                                        'attr':{
+                                            'class':'form-control', 'placeholder': "Fecha fin"
+                                        }
+                                    }) }}
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    {{ form_widget(form.agente,{'attr':{'class':'form-control', 'data-placeholder': "Agentes"}}) }}
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    {{ form_widget(form.moneda,{'attr':{'class':'form-control', 'data-placeholder': "Monedas"}}) }}
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <button type=submit class="btn btn-primary pull-right" data-toggle="tooltip"
+                                            title="Filtrar datos" data-placement="left" type="button"><i
+                                                class="fa fa-search"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    {% elseif is_granted("ROLE_AGENTE") %}
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <div class="input-daterange input-group">
+                                    {{ form_widget(form.fechaInicio,{
+                                        'attr':{
+                                            'class':'form-control', 'placeholder': "Fecha inicio"
+                                        }
+                                    }) }}
+                                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                    {{ form_widget(form.fechaFin,{
+                                        'attr':{
+                                            'class':'form-control', 'placeholder': "Fecha fin"
+                                        }
+                                    }) }}
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    {{ form_widget(form.moneda,{'attr':{'class':'form-control', 'data-placeholder': "Monedas"}}) }}
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <button type=submit class="btn btn-primary pull-right" data-toggle="tooltip"
+                                            title="Filtrar datos" data-placement="left" type="button"><i
+                                                class="fa fa-search"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox">
+                <div class="ibox-content">
+                    <div class="row col-md-12" style="padding-right: 0">
+                        <div class="pull-right">
+                            <a href="{{ path('tn_factura_new') }}" class="btn btn-sm btn-info" data-toggle="tooltip"
+                               title="Nueva factura"> <i class="fa fa-plus"></i> <i class="fa fa-dollar"></i> </a>
+                            <button type="button" class="filter-action btn btn-sm btn-info" data-toggle="tooltip"
+                                    title="Filtro avanzado"><i class="fa fa-filter"></i></button>
+                            <a href="{{ path('tn_factura_index') }}" class="btn btn-sm btn-info" data-toggle="tooltip"
+                               title="Limpiar búsqueda"> <i class="fa fa-repeat"></i> </a>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div id='table' class="table-responsive">
+                                <table class="footable footable-paging footable-paging-center  footable-paging-center  table table-stripped table-hover  toggle-arrow-tiny"
+                                       data-paging-size="100" data-paging="true" data-filtering="true"
+                                       data-sorting="true">
+                                    <thead>
+                                    <tr>
+                                        <th data-sort-ignore="true" {{ is_granted("ROLE_SUPER_ADMIN") ? "width='12%'" }}>{{ 'backend.factura.table.orden'|trans }}</th>
+                                        <th data-sort-ignore="true">{{ 'backend.factura.table.emisor'|trans }}</th>
+                                        <th data-sort-ignore="true">{{ 'backend.factura.table.destinatario'|trans }}</th>
+                                        <th data-sort-ignore="true">{{ 'backend.factura.table.remesas'|trans }}</th>
+                                        {% if app.user.auth and not is_granted("ROLE_SUPER_ADMIN") %}
+                                            <th>{{ 'backend.factura.table.importe'|trans }}</th>
+                                        {% endif %}
+                                        <th>{{ 'backend.factura.table.total'|trans }}</th>
+                                        <th>{{ 'backend.factura.table.fecha'|trans }}</th>
+                                        {% if not is_granted("ROLE_AGENTE") %}
+                                            <th data-sort-ignore="true">{{ 'backend.factura.table.creador'|trans }}</th>
+                                        {% endif %}
+                                        <th data-sort-ignore="true">{{ 'backend.factura.table.estado'|trans }}</th>
+                                        <th class="text-right"
+                                            data-sort-ignore="true">{{ 'backend.comun.table.actions' | trans }}</th>
+                                        {% if is_granted("ROLE_SUPER_ADMIN") %}
+                                            <th data-breakpoints="all">{{ 'backend.factura.table.fechaContable'|trans }}</th>
+                                            <th data-breakpoints="all">{{ 'backend.factura.table.notas'|trans }}</th>
+                                            <th data-breakpoints="all">{{ 'backend.factura.table.referencia_old'|trans }}</th>
+                                            <th data-breakpoints="all">{{ 'backend.factura.table.logs'|trans }}</th>
+                                        {% endif %}
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for factura in tn_facturas %}
+                                        <tr>
+                                            <td>{{ factura.noFactura }}
+                                                {% if is_granted("ROLE_SUPER_ADMIN") and factura.sospechosa %}
+                                                    <div class="sospechosa_{{ factura.id }}">
+                                                        <i class="fa fa-shield remove" data-toggle="tooltip" data-placement="right"
+                                                           title="Eliminar sospecha"
+                                                           data-factura="{{ factura.id }}"
+                                                           style="color: red; cursor: pointer; font-size: 17px"></i>
+                                                    </div>
+                                                {% endif %}
+                                                {% if is_granted("ROLE_SUPER_ADMIN") and factura.retenida %}
+                                                    <div class="retenida_{{ factura.id }}">
+                                                        <i class="fa fa-ban remove-retenida" data-toggle="tooltip" data-placement="right"
+                                                           title="Eliminar retenida"
+                                                           data-factura="{{ factura.id }}"
+                                                           style="color: red;cursor: pointer; font-size: 17px"></i>
+                                                    </div>
+                                                {% endif %}
+                                            </td>
+                                            <td>{{ factura.emisor.nombre~" "~factura.emisor.apellidos }}</td>
+                                            <td>
+                                                {% for remesa in factura.remesas %}
+                                                    {% if remesa.entregada %}
+                                                        {{ remesa.destinatario }} <i class="fa fa-check"
+                                                                                     style="color: #1AB394"
+                                                                                     data-toggle="tooltip"
+                                                                                     title="Entregada"></i><br>
+                                                    {% else %}
+                                                        {{ remesa.destinatario }} {{ is_granted("ROLE_SUPER_ADMIN") and remesa.reporteEnvio ? ('<i class="fa fa-file-pdf-o" style="color:blue" data-toggle="tooltip" title="Reporte '~(remesa.reporteEnvio.created | date('d/m/Y H:i:s A'))~'"></i>') | raw }}
+                                                        <br>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </td>
+                                            <td>
+                                                {% set badge = findAsignacionZona(factura) %}
+                                                <a href="{{ path('admin_factura_detalles_remesas',{'token':factura.token}) }}"
+                                                   data-target='#modal-form' data-toggle="tooltip"
+                                                   title="{{ 'backend.factura.table.total_remesas'| transchoice(factura.remesas | length) }}">
+                                                    <label class="remesas label label-{{ badge }}">{{ factura.remesas | length }}</label>
+                                                    {{ badge != 'danger' ? '<i class="fa fa-car"></i>' }}
+                                                </a>
+                                            </td>
+                                            {% if app.user.auth and not is_granted("ROLE_SUPER_ADMIN") %}
+                                                <td>
+                                                    {% if showImporte(factura) %}
+                                                        {{ factura.total | number_format(2, '.', ',') }} USD
+                                                    {% endif %}
+                                                </td>
+                                            {% endif %}
+                                            <td>{{ factura.importe | number_format(2, '.', ',') }} {{ factura.moneda }}</td>
+                                            <td>{{ factura.created | date('d/m/Y') }}</td>
+                                            {% if not is_granted("ROLE_AGENTE") %}
+                                                <td align="center">
+                                                    {% if app.user and is_granted("ROLE_SUPER_ADMIN") %}
+                                                        {% if factura.agente is not null or factura.agencia is not null %}
+                                                            {% if factura.agente is not null %}
+                                                                {% if factura.agente.usuario is not null %}
+                                                                    <a data-placement="top"
+                                                                       title="Agente {{ factura.agente }}"
+                                                                       data-toggle="tooltip" data-target='#modal-form'
+                                                                       href="{{ path('home_users_show', {'token': factura.agente.usuario.token }) }}">
+                                                                        <i class="fa fa-user-circle"></i>
+                                                                    </a>
+                                                                {% endif %}
+                                                            {% else %}
+                                                                {% if factura.agencia.usuario is not null %}
+                                                                    <a data-placement="top"
+                                                                       title="Agencia {{ factura.agencia }}"
+                                                                       data-toggle="tooltip" data-target='#modal-form'
+                                                                       href="{{ path('home_users_show', {'token': factura.agencia.usuario.token }) }}">
+                                                                        <i class="fa fa-user-circle"></i>
+                                                                    </a>
+                                                                {% endif %}
+                                                            {% endif %}
+                                                        {% endif %}
+                                                    {% elseif app.user and is_granted("ROLE_AGENCIA") %}
+                                                        {% if factura.agente is not null %}
+                                                            {% if factura.agente.usuario is not null %}
+                                                                <a data-placement="top"
+                                                                   title="Agente {{ factura.agente }}"
+                                                                   data-toggle="tooltip" data-target='#modal-form'
+                                                                   href="{{ path('home_users_show', {'token': factura.agente.usuario.token }) }}">
+                                                                    <i class="fa fa-user-circle"></i>
+                                                                </a>
+                                                            {% endif %}
+                                                        {% endif %}
+                                                    {% endif %}
+                                                </td>
+                                            {% endif %}
+                                            <td>
+                                                <div id="state_factura_{{ factura.id }}">
+                                                    {% if factura.estado.codigo == '01' %}
+                                                        <span class="label label-info">Pendiente</span>
+                                                    {% elseif factura.estado.codigo == '02' %}
+                                                        <span class="label label-warning">Aprobada</span>
+                                                    {% elseif factura.estado.codigo == '03' %}
+                                                        <span class="label label-primary">Distribución</span>
+                                                    {% elseif factura.estado.codigo == '04' %}
+                                                        <span class="label label-success">Entregada</span>
+                                                    {% else %}
+                                                        <span class="label label-danger">Cancelada</span>
+                                                    {% endif %}
+                                                </div>
+                                            </td>
+                                            <td class="text-right">
+                                                <div id="actions_{{ factura.id }}">
+                                                    {% if factura.estado.codigo != '05' %}
+                                                        <a class="btn btn-warning btn-xs" data-toggle="tooltip"
+                                                           title="Descargar factura" target="_blank"
+                                                           href="{{ path('admin_factura_export_pdf', {'token': factura.token, 'action': 'print'}) }}"><i
+                                                                    class="fa fa-print"></i></a>
+
+                                                    {% endif %}
+                                                    {% if is_granted("ROLE_AGENTE") or is_granted("ROLE_AGENCIA") %}
+                                                        {% if factura.estado.codigo == '01' %}
+                                                            <a class="btn btn-success btn-xs" data-toggle="tooltip"
+                                                               title="Editar factura"
+                                                               href="{{ path('tn_factura_edit', {'token': factura.token }) }}"><i
+                                                                        class="fa fa-edit"></i></a>
+
+                                                            <a class='btn btn-danger btn-xs state_option'
+                                                               data-toggle="tooltip"
+                                                               data-state='{{ constant('App\\Entity\\NmEstado::ESTADO_CANCELADA') }}'
+                                                               data-factura='{{ factura.id }}'
+                                                               data-msg='Estás CANCELANDO la factura {{ factura.noFactura }}. Está seguro?'
+                                                               title="Cancelar factura"><i class="fa fa-remove"></i></a>
+                                                        {% endif %}
+                                                    {% else %}
+                                                        {% if factura.estado.codigo == '01' or factura.estado.codigo == '02' or factura.estado.codigo == '03' %}
+                                                            <a class="btn btn-success btn-xs" data-toggle="tooltip"
+                                                               title="Editar factura"
+                                                               href="{{ path('tn_factura_edit', {'token': factura.token }) }}"><i
+                                                                        class="fa fa-edit"></i></a>
+
+                                                            <a class='btn btn-danger btn-xs state_option'
+                                                               data-toggle="tooltip"
+                                                               data-state='{{ constant('App\\Entity\\NmEstado::ESTADO_CANCELADA') }}'
+                                                               data-factura='{{ factura.id }}'
+                                                               data-msg='Estás CANCELANDO la factura {{ factura.noFactura }}. Está seguro?'
+                                                               title="Cancelar factura"><i class="fa fa-remove"></i></a>
+                                                        {% endif %}
+                                                    {% endif %}
+                                                </div>
+                                            </td>
+                                            {% if is_granted("ROLE_SUPER_ADMIN") %}
+                                                {% if not is_granted('ROLE_ASESOR') %}
+                                                    <td>
+                                                        <div id="date_contable_{{ factura.id }}">
+                                                            {{ factura.fechaContable | date('d/m/Y') }}
+                                                            <a href="{{ path('admin_factura_change_fecha_contable',{'id': factura.id}) }}"
+                                                               data-target='#modal-form'
+                                                               data-toggle="tooltip"
+                                                               class="btn btn-primary btn-xs btn-circle btn-outline"
+                                                               title="Modificar fecha contable {{ factura.fechaContable | date('d/m/Y') }}"><i
+                                                                        class="fa fa-calendar"></i></a>
+                                                        </div>
+                                                    </td>
+                                                {% else %}
+                                                    <td>
+                                                        {{ factura.fechaContable | date('d/m/Y') }}
+                                                    </td>
+                                                {% endif %}
+                                                <td>
+                                                    <div id="notas_{{ factura.id }}">
+                                                        {{ factura.notas }}
+                                                        <a href="{{ path('tn_factura_notas_edit', {'token': factura.token }) }}"
+                                                           data-target='#modal-form'
+                                                           data-toggle="tooltip"
+                                                           data-placement="right"
+                                                           class="btn btn-xs btn-primary btn-circle btn-outline"
+                                                           title="{{ 'backend.factura.table.edit_note'| trans }}"><i
+                                                                    class="fa fa-comments-o"></i></a>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div id="referencia_old_{{ factura.id }}">
+                                                        {{ factura.referenciaOld }}
+                                                        <a href="{{ path('tn_factura_referencia_old_edit', {'token': factura.token }) }}"
+                                                           data-target='#modal-form'
+                                                           data-toggle="tooltip"
+                                                           data-placement="right"
+                                                           class="btn btn-xs btn-primary btn-circle btn-outline"
+                                                           title="{{ 'backend.factura.table.edit_referencia_old'| trans }}"><i
+                                                                    class="fa fa-dollar"></i></a>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    {% set logs = logsFactura(factura.id) %}
+                                                    {% if logs | length > 0 %}
+                                                        <a href="{{ path('admin_factura_logs_show',{'token':factura.token}) }}"
+                                                           class="logs"
+                                                           data-placement="right"
+                                                           data-target='#modal-form' data-toggle="tooltip"
+                                                           title="{{ 'backend.factura.table.logs_show'| trans }}">
+                                                            <label class="label label-danger"><i
+                                                                        class="fa fa-unlock-alt"></i></label>
+                                                        </a>
+                                                    {% endif %}
+                                                </td>
+                                            {% endif %}
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                    <tfoot class="hide-if-no-paging">
+                                    <tr>
+                                        <td colspan="9" class="text-center">
+                                            <ul class="pagination">
+
+                                            </ul>
+                                            <div class="pagination pull-right">{{ knp_pagination_render(tn_facturas,'@KnpPaginator/Pagination/sliding_backend.html.twig') }}</div>
+                                        </td>
+                                    </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        $(function () {
+            $('.input-daterange').datepicker({
+                keyboardNavigation: false,
+                forceParse: false,
+                autoclose: true,
+                format: "dd-mm-yyyy",
+                todayBtn: true,
+                language: 'es',
+                endDate: 'today',
+                todayHighlight: true,
+            }).on('keypress paste', function (e) {
+                e.preventDefault();
+                return false;
+            });
+
+            $(".filter-action").click(function (ev) {
+                if ($(".advanced-filter").hasClass("filter-hidden")) {
+                    $(".advanced-filter").removeClass("filter-hidden");
+                    $(".advanced-filter").addClass("filter-show");
+                } else {
+                    $(".advanced-filter").removeClass("filter-show");
+                    $(".advanced-filter").addClass("filter-hidden");
+                }
+            });
+
+            $("#{{ form.vars.id }}").on('submit', function (e) {
+                e.preventDefault();
+                $(this).ajaxSubmit({
+                    target: '#table',
+                    success: function () {
+                        dataLink();
+
+                        $('.state_option').click(state = function ($event) {
+                            $event.preventDefault();
+                            chageState($(this));
+                        });
+                    }
+                });
+            });
+
+            dataLink()
+
+            $('.state_option').click(state = function ($event) {
+                $event.preventDefault();
+                chageState($(this));
+            });
+
+            function chageState(object) {
+                var div_state = $('#state_factura_' + $(object).attr('data-factura'));
+                var div_actions = $('#actions_' + $(object).attr('data-factura'));
+                var factura = $(object).attr('data-factura');
+                var estado = $(object).attr('data-state');
+                swal({
+                    title: "Estado",
+                    text: $(object).attr('data-msg'),
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#F8C886",
+                    confirmButtonText: "SI",
+                    cancelButtonText: "NO",
+                    closeOnConfirm: true
+                }, function (confirmed) {
+                    if (confirmed) {
+                        $.post('{{ url('admin_factura_cancel_ajax') }}', {
+                            idFactura: factura,
+                            estado: estado
+                        }, function (data) {
+                            if (data.success) {
+                                div_state.html(data.html);
+                                div_actions.html("");
+                                showToastr('success', 'Estado factura', 'Factura cancelada correctamente.');
+                            }
+                        });
+                    }
+                });
+            }
+
+
+            $('.remove').click(function (ev) {
+                var factura = $(this).data('factura');
+                swal({
+                    title: "Eliminar sospecha",
+                    text: "¿Está seguro desea eliminar la factura como sospechosa?",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#F8C886",
+                    confirmButtonText: "Si, elimínala",
+                    cancelButtonText: "Cancelar",
+                    closeOnConfirm: true
+                }, function (confirmed) {
+                    if (confirmed) {
+                        var data = {
+                            'factura': factura,
+                        };
+                        var jqxhr = $.ajax({
+                            url: "{{ url('admin_factura_remove_sospecha') }}",
+                            method: 'POST',
+                            data: {
+                                'datos': JSON.stringify(data)
+                            }
+                        }).done(function (data) {
+                            if (data.success) {
+                                $('.sospechosa_' + factura).html("");
+                            }
+                        }).fail(function () {
+
+                        }).always(function () {
+
+                        });
+                    }
+                });
+            });
+
+            $('.remove-retenida').click(function (ev) {
+                var factura = $(this).data('factura');
+                swal({
+                    title: "Eliminar retenida",
+                    text: "¿Está seguro desea eliminar la factura como retenida?",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#F8C886",
+                    confirmButtonText: "Si, confirma",
+                    cancelButtonText: "Cancelar",
+                    closeOnConfirm: true
+                }, function (confirmed) {
+                    if (confirmed) {
+                        var data = {
+                            'factura': factura,
+                        };
+                        var jqxhr = $.ajax({
+                            url: "{{ url('admin_factura_remove_retenida') }}",
+                            method: 'POST',
+                            data: {
+                                'datos': JSON.stringify(data)
+                            }
+                        }).done(function (data) {
+                            if (data.success) {
+                                $('.retenida_' + factura).html("");
+                            }
+                        }).fail(function () {
+
+                        }).always(function () {
+
+                        });
+                    }
+                });
+            });
+
+        });
+    </script>
+{% endblock %}

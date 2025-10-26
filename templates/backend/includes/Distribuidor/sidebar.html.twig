@@ -1,0 +1,51 @@
+{% extends 'backend/includes/sidebar.html.twig' %}
+{% block tipo_usuario %}
+    {{ 'backend.user_menu.type.distribuidor'|trans({},'FOSUserBundle') }}
+{% endblock %}
+{% block tipo_home %}
+
+{% endblock %}
+{% block sidebar_menu %}
+
+    {#Menú de los Remesas#}
+    <li class="{{ route in ['entrega_distribuidor_index', 'entrega_reportes_envio_index'] ? 'active' }}">
+        <a href="#"><i class="fa fa-th-large fa-dollar"></i>
+            <span class="nav-label">{{ 'backend.user_menu.administrator.facutra.remesas.title'|trans({},'FOSUserBundle') }}</span>
+            <span class="fa arrow"></span>
+        </a>
+        <ul class="nav nav-second-level collapse {{ route in ['entrega_distribuidor_index', 'entrega_reportes_envio_index'] ? 'in' }}">
+            <li class="{{ route in ['entrega_distribuidor_index'] ? 'active' }}">
+                <a href="{{ path('entrega_distribuidor_index') }}">
+                    <i class="fa fa-dollar"></i> {{ 'backend.user_menu.administrator.facutra.remesas.list'|trans({},'FOSUserBundle') }}
+                </a>
+            </li>
+            {#<li class="{{ route in ['entrega_remesas_pendientes_export_pdf'] ? 'active' }}">#}
+                {#<a href="{{ path('entrega_remesas_pendientes_export_pdf', {'action': 'print'}) }}" target="_blank">#}
+                    {#<i class="fa fa-file-pdf-o"></i> {{ 'backend.user_menu.administrator.facutra.remesas.pdf_pendientes'|trans({},'FOSUserBundle') }}#}
+                {#</a>#}
+            {#</li>#}
+            <li class="{{ route in ['entrega_reportes_envio_index'] ? 'active' }}">
+                <a href="{{ path('entrega_reportes_envio_index') }}">
+                    <i class="fa fa-line-chart"></i> {{ 'backend.user_menu.administrator.facutra.remesas.reportes.title'|trans({},'FOSUserBundle') }}
+                </a>
+            </li>
+
+        </ul>
+    </li>
+
+    {#Menú de los Reportes#}
+    <li class="{{ route in ['reportes_distribuidor_remeas'] ? 'active' }}">
+        <a href="#"><i class="fa fa-th-large fa-bar-chart-o"></i>
+            <span class="nav-label">{{ 'backend.user_menu.administrator.reportes.title'|trans({},'FOSUserBundle') }}</span>
+            <span class="fa arrow"></span>
+        </a>
+        <ul class="nav nav-second-level collapse {{ route in ['reportes_distribuidor_remeas'] ? 'in' }}">
+            <li class="{{ route in ['reportes_distribuidor_remeas'] ? 'active' }}">
+                <a href="{{ path('reportes_distribuidor_remeas') }}">
+                    <i class="fa fa-file-pdf-o"></i> {{ 'backend.user_menu.administrator.reportes.distruidor.title'|trans({},'FOSUserBundle') }}
+                </a>
+            </li>
+
+        </ul>
+    </li>
+{% endblock %}

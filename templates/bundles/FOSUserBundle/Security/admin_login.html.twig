@@ -1,0 +1,92 @@
+{% trans_default_domain 'FOSUserBundle' %}
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{% block title %}Quickmoney | Login{% endblock %}</title>
+    {% block stylesheets %}
+
+        <link href="{{ asset('assets/backend/css/bootstrap.min.css') }}" rel="stylesheet">
+        <link href="{{ asset('assets/backend/font-awesome-4.7/css/font-awesome.css') }}" rel="stylesheet">
+
+        <link href="{{ asset('assets/backend/css/animate.css') }}" rel="stylesheet">
+        <link href="{{ asset('assets/backend/css/style.css') }}" rel="stylesheet">
+    {% endblock %}
+    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+</head>
+
+<body class="gray-bg">
+<div class="col-lg-12 col-sm-12 col-xs-12 text-center loginscreen">
+    <h1 class="logo-name"><img src="{{ asset('assets/backend/img/logo.png') }}" class="img-responsive mx-auto d-block" style="display: unset !important;" alt=""></h1>
+</div>
+<div class="middle-box text-center loginscreen animated fadeInDown">
+    <div>
+        {#<p>A briew description#}
+            {#<!--Continually expanded and constantly improved Inspinia Admin Them (IN+)-->#}
+        {#</p>#}
+        {#<p>Login in. To see it in action.</p>#}
+        {% block fos_user_content %}
+            <form action="{{ path("fos_user_backend_security_check") }}" method="post" role="form">
+            {% if error %}
+                <div class="alert alert-warning alert-dismissable">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                    {{ error.messageKey|trans(error.messageData, 'security') }}
+                </div>
+            {% endif %}
+
+            <div class="form-group">
+                {#<label for="sender-email"
+                       class="control-label">{{ 'security.login.username'|trans }}</label>#}
+                <div class="input-group m-b">
+                    <span class="input-group-addon"><i class="fa fa-user"></i></span>
+                    <input id="username" type="text" name="_username" value="{{ last_username }}"
+                           required="required" placeholder="{{ 'security.login.username'|trans }}"
+                           class="form-control email">
+                </div>
+            </div>
+
+            <div class="form-group">
+                {#<label for="user-pass" class="control-label">{{ 'security.login.password'|trans }}</label>#}
+                <div class="input-group m-b">
+                    <span class="input-group-addon"><i class="fa fa-lock"></i></span>
+                    <input type="password" class="form-control"
+                           placeholder="{{ 'security.login.password'|trans }}" id="password"
+                           name="_password" required="required">
+                </div>
+            </div>
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token }}"/>
+            <div class="form-group">
+                <input type="submit" id="_submit" name="_submit" value="{{ 'security.login.submit'|trans }}"
+                       class="btn btn-primary block full-width m-b"/>
+                {#<a  href="account-home.html" class="btn btn-primary  btn-block">Submit</a>#}
+            </div>
+            {#<div class="checkbox pull-left">#}
+                {#<label> <input type="checkbox" id="remember_me" name="_remember_me" value="on"> {{ 'security.login.remember_me'|trans }}</label>#}
+            {#</div>#}
+
+
+            {#<a href="{{ path('fos_user_resetting_request') }}"><small>{{ 'security.login.lost_your_password_question'|trans }}</small></a>#}
+
+            {#<p class="text-muted text-center"><small>Do not have an account?</small></p>#}
+            {#<a class="btn btn-sm btn-white btn-block" href="register.html">Create an account</a>#}
+                <div id="recaptcha-container"></div>
+        </form>
+        {% endblock fos_user_content %}
+        {#<p class="m-t"> <small>Inspinia we app framework base on Bootstrap 3 &copy; 2014</small> </p>#}
+    </div>
+</div>
+
+<!-- Mainly scripts -->
+<script src="{{ asset('assets/backend/js/jquery-2.1.1.js') }}"></script>
+<script src="{{ asset('assets/backend/js/bootstrap.min.js') }}"></script>
+
+</body>
+
+</html>
+
+

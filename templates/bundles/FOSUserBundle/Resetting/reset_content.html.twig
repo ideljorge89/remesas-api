@@ -1,0 +1,67 @@
+{% trans_default_domain 'FOSUserBundle' %}
+<div class="row">
+    <div class="col-sm-3">
+    </div>
+    <div class="col-sm-6">
+        <div class="panel panel-default">
+            <div class="panel-intro text-center">
+                <h2 class="logo-title" style="padding-top: 20px">
+                    <!-- Original Logo will be placed here  -->
+                    {{ 'resetting.reset.submit'|trans }}</h2>
+            </div>
+
+            <div class="panel-body">
+                <form action="{{ path('fos_user_resetting_reset', {'token': token}) }}"  method="POST" class="fos_user_resetting_reset">
+                   {% if form_errors(form) %}
+                        <div class="alert alert-danger alert-dismissable" role="alert">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                            <span class="fa fa-exclamation" aria-hidden="true"></span>
+                            <span class="sr-only">Error:</span>
+                            {{ form_errors(form)|striptags }}
+                        </div>
+                    {% endif %}
+                    <div class="form-group">
+                        <label for="sender-email"
+                               class="control-label">{{ form_label(form.plainPassword.first)|striptags }}</label>
+
+                        <div class="input-icon"><i class="icon-lock fa"></i>
+                            {{ form_widget(form.plainPassword.first,{'attr':{'class':'form-control'}}) }}
+
+                        </div>
+                        {% if form_errors(form.plainPassword.first) %}
+                            <div class="alert alert-danger alert-dismissable" role="alert">
+                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                                <span class="fa fa-exclamation" aria-hidden="true"></span>
+                                <span class="sr-only">Error:</span>
+                                {{ form_errors(form.plainPassword.first)|striptags }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="form-group">
+                        <label for="user-pass" class="control-label">{{ form_label(form.plainPassword.second)|striptags }}</label>
+
+                        <div class="input-icon"><i class="icon-lock fa"></i>
+                            {{ form_widget(form.plainPassword.second,{'attr':{'class':'form-control'}}) }}
+
+                        </div>
+                        {% if form_errors(form.plainPassword.second) %}
+                            <div class="alert alert-danger alert-dismissable" role="alert">
+                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                                <span class="fa fa-exclamation" aria-hidden="true"></span>
+                                <span class="sr-only">Error:</span>
+                                {{ form_errors(form.plainPassword.second)|striptags }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="form-group">
+                        <input class="btn btn-primary  btn-block" type="submit" value="{{ 'resetting.reset.submit'|trans }}" />
+                    </div>
+                    {{ form_rest(form) }}
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-3">
+    </div>
+</div>
+

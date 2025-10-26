@@ -1,0 +1,215 @@
+backend:
+  user_menu:
+    profile_show: Perfil
+    profile_edit: Editar perfil
+    porcentajes: Porcientos usuario
+    porcentajes_transf: Porcientos Transf.
+    editar_porcientos: Editar porcentajes
+    change_password: Cambiar contraseña
+    personal_home: Administración
+    admin_home: Administración
+    admin_board: Dashboard
+    type.super_administrator: Super Administrador
+    type.asesor: Asesor
+    type.agencia: Agencia
+    type.agente: Agente
+    type.distribuidor: Distribuidor
+    breadcrumb:
+      home: Administración
+    administrator:
+      configurations: Configuraciones
+      configurations_edit: Editar Configuracion
+      users:
+        title: Usuarios
+        add: Nuevo usuario
+        edit: Editar usuario %name%
+        list: Listado
+      facutra:
+        title: Facturas
+        remesas:
+          title: Remesas
+          list: Listado de remesas
+          pdf_pendientes: Exportar pendientes
+          reportes:
+            title: Reportes envío
+            list: Listado de reportes de envío
+            fecha: Fecha exportado
+            total: Total de remesas
+            importe: Importe a pagar
+            remesas: Remesas
+        add: Nueva factura
+        edit: Editar factura %codigo%
+        list: Listado de facturas
+        aprove: Aprobar facturas
+        dist: Distrubuir facturas
+      transferencia:
+        title: Transferencias
+        add: Nueva transferencia
+        edit: Editar transferencia %codigo%
+        evidencia: Registrar evidencia
+        list: Listado
+        send_report: Reporte envíos
+        report:
+          title: Reportes envíos
+          agencia: Reporte Agencias
+          asignar: Asignar repartidor
+          repartidor: Reporte Repartidor
+          list: Reportes de transferencias
+          fecha: Fecha exportado
+          total: Total de transferencias
+          importe: Importe a transferir
+          transf: Transferencias
+          btn_pend: Exportar pendientes
+      reportes:
+        title: Reportes
+        distruidor:
+          title: Reporte remesas
+        admin:
+          panel: Estadísticas
+          distribuidor: Reporte distribuidor
+          destinatario: Reporte destinatario
+          agencia: Reporte agencia
+          agencia_dist: Reporte agencia distribución
+          agente: Reporte agentes
+          apoderado: Reporte apoderado
+          pendientes: Pendientes distribuidor
+          reportes: Reportes envío distribuidor
+        costos:
+          title: Reporte costos
+        utilidad:
+          title: Reporte utilidad
+      apoderado:
+        title: Apoderado
+        costo:
+          title: Reporte costos
+        utilidad:
+          title: Reporte utilidades
+        agencia:
+          title: Reporte agencias
+      contabilidad:
+        title: Contabilidad
+        operacion:
+          title: Operaciones
+          new: Registrar
+          list: Listado
+        diario: Crédito Diario
+        cierres: Cierres
+        historiales: Historiales
+      saldo:
+        title: Saldos
+        list: Listado de saldos
+        agencias: Saldo Agencias
+        agentes: Saldo Agentes
+        edit: Editar saldo
+      nomencladores:
+        title: Nomencladores
+        provincia:
+          title: Provincias
+          edit: Editar provincia %name%
+          list: Listado
+        municipio:
+          title: Municipios
+          edit: Editar municipio %name%
+          list: Listado
+        moneda:
+          title: Monedas
+          add: Nueva Moneda
+          list: Listado
+          edit: Editar Moneda %name%
+        agencia:
+          title: Agencias
+          add: Nueva agencia
+          list: Listado
+          edit: Editar Agencia %name%
+        agente:
+          title: Agentes
+          add: Nuevo agente
+          list: Listado
+          edit: Editar agente %name%
+        emisor:
+          title: Emisores
+          add: Nuevo emisor
+          list: Listado
+          edit: Editar emisores %name%
+        distribuidor:
+          title: Distribuidores
+          add: Nuevo distribuidor
+          list: Listado
+          edit: Editar distribuidor %name%
+        destinatario:
+          title: Destinatarios
+          add: Nuevo destinatario
+          list: Listado
+          edit: Editar destinatario %name%
+        grupo_pago:
+          title: Grupos pago
+          add: Nuevo grupo
+          list: Listado
+          edit: Editar grupo %name%
+        grupo_pago_transf:
+          title: Grupos transf.
+          add: Nuevo grupo
+          list: Listado
+          edit: Editar grupo %name%
+        grupo_pago_agente:
+          title: Grupos agente
+          add: Nuevo grupo
+          list: Listado
+          edit: Editar grupo %name%
+        apoderado:
+          title: Apoderados
+          add: Nuevo apoderado
+          list: Listado
+          edit: Editar apoderado %name%
+        documento:
+          title: Ficheros
+          ficheros: Procesar ficheros
+        lista_negra:
+          title: Lista negra
+          add: Nueva lista
+          list: Listado
+          edit: Editar lista %name%
+        repartidor:
+          title: Repartidores
+          add: Nuevo repartidor
+          list: Listado
+          edit: Editar repartidor %name%
+
+# Profile
+profile:
+    show:
+        username: Nombre de usuario
+        email: Correo-e
+        extra_pages: Páginas extras
+        pages_show_profile: Perfil de usuario
+        pages_edit_profile: Editar perfil de usuario
+        pages_change_password: Cambiar contraseña
+
+    edit:
+        submit: Actualizar perfil
+        edit_title: Perfil de usuario (editando)
+        back_to_profile: Cancelar
+        personal_info: Información personal
+        profile_avatar: Imagen del perfil
+    flash:
+        updated: El perfil ha sido actualizado
+
+# Password change
+change_password:
+    title: Cambiar contraseña
+    submit: Cambiar contraseña
+    password.invalid: La contraseña debe contener letras mayúsculas y minúsculas, caracteres especiales, números y un mínimo de 6 y un máximo de 20 caracteres de longitud, por ejemplo MPs5@*
+    flash:
+        success: La contraseña se ha cambiado con éxito
+
+# Form field labels
+form:
+    username: Nombre de usuario
+    email: Correo electrónico
+    current_password: Contraseña actual
+    password: Contraseña
+    password.title: Contraseña
+    password.invalid: La contraseña debe contener letras mayúsculas y minúsculas, caracteres especiales y un mínimo de 6 y un máximo de 20 caracteres de longitud, por ejemplo MPs5@*.
+    password.info: La contraseña debe contener letras mayúsculas y minúsculas, caracteres especiales y un mínimo de 6 y un máximo de 20 caracteres de longitud, por ejemplo MPs5@*.
+    password_confirmation: Verificar contraseña
+    new_password: Nueva contraseña

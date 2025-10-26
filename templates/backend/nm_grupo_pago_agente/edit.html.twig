@@ -1,0 +1,70 @@
+{% extends 'base_backend.html.twig' %}
+{% trans_default_domain 'AppBundle' %}
+
+{% block breadcrumb %}
+    <div class="col-lg-12">
+        <h2>{{ 'backend.user_menu.administrator.nomencladores.grupo_pago_agente.edit'|trans({'%name%': nm_grupo_pago_agente.nombre},'FOSUserBundle') }}</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="{{ path('homepage_backend') }}"><i
+                            class="fa fa-home"></i> {{ 'backend.user_menu.breadcrumb.home'|trans({},'FOSUserBundle') }}
+                </a>
+            </li>
+            <li class="">
+                {{ 'backend.user_menu.administrator.nomencladores.title'|trans({},'FOSUserBundle') }}
+            </li>
+            <li class="active">
+                <strong>{{ 'backend.user_menu.administrator.nomencladores.grupo_pago_agente.edit'|trans({'%name%': nm_grupo_pago_agente.nombre},'FOSUserBundle') }}</strong>
+            </li>
+        </ol>
+    </div>
+{% endblock %}
+
+{% block body %}
+    <div class="ibox">
+        <div class="ibox-title">
+            <h5>
+                <small></small>
+            </h5>
+        </div>
+        <div class="ibox-content">
+            {{ include('backend/nm_grupo_pago_agente/_form.html.twig') }}
+        </div>
+    </div>
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        $(function () {
+
+            $("#{{ form.vars.id }}").validate({
+                rules: {
+                    '{{ form.nombre.vars.full_name }}': {
+                        required: true
+                    },
+                    '{{ form.minimo.vars.full_name }}': {
+                        required: false,
+                        number: true
+                    },
+                    '{{ form.utilidadFija.vars.full_name }}': {
+                        required: false,
+                        number: true
+                    },
+                }
+            });
+
+            $('#{{ form.utilidad.vars.id }}').change(function () {
+                if ($(this).val() == "") {
+                    $(this).val(0);
+                }
+            });
+
+            $('#{{ form.porcentaje.vars.id }}').change(function () {
+                if ($(this).val() == "") {
+                    $(this).val(0);
+                }
+            });
+        });
+
+    </script>
+{% endblock %}

@@ -1,0 +1,73 @@
+<table cellpadding="3px" width="785px">
+    <tr>
+        <td width="260px" align="left" style="font-size: 10px"><strong>Rango de fechas:</strong><br>{{ params['fi'] ~" - "~ params['ff'] }}</td>
+        <td width="260px" align="left" style="font-size: 10px;"><strong>Zonas distribución:</strong><br>{{ params['zonas'] }}</td>
+        <td width="215px" align="left" style="font-size: 10px"><strong>Estados:</strong><br>{{ params['estados'] }}</td>
+    </tr>
+</table>
+<table>
+    <tr>
+        <td>&nbsp;</td>
+    </tr>
+</table>
+{% set totalRemesas = 0 %}
+{% set importeRemesas = 0 %}
+{% set importeRemesasCUP = 0 %}
+{% set importeRemesasUSD = 0 %}
+{% set importeRemesasEUR = 0 %}
+<table cellpadding="3px" width="785px">
+    <tr>
+        <td width="80px" align="left" style="font-size: 9px; border-top: 1px solid black; border-bottom: 1px solid black"><strong>Factura</strong></td>
+        <td width="160px" align="left" style="font-size: 9px;border-top: 1px solid black; border-bottom: 1px solid black"><strong>Destinatario</strong></td>
+        <td width="80px" align="left" style="font-size: 9px;border-top: 1px solid black; border-bottom: 1px solid black"><strong>CI</strong></td>
+        <td width="60px" align="left" style="font-size: 9px;border-top: 1px solid black; border-bottom: 1px solid black"><strong>Teléfono</strong></td>
+        <td width="185px" align="left" style="font-size: 9px;border-top: 1px solid black; border-bottom: 1px solid black"><strong>Dirección</strong></td>
+        <td width="60px" align="left" style="font-size: 9px;border-top: 1px solid black; border-bottom: 1px solid black"><strong>Enviado</strong></td>
+        <td width="60px" align="left" style="font-size: 9px;border-top: 1px solid black; border-bottom: 1px solid black"><strong>Estado</strong></td>
+    </tr>
+    {% for remesa in remesas %}
+        {% set factura = remesa.factura %}
+        <tr>
+            <td width="80px" align="left" style="font-size: 9px;border-top: 1px solid black; border-bottom: 1px solid black">{{ remesa.factura.noFactura }}</td>
+            <td width="160px" align="left"
+                style="font-size: 9px;border-top: 1px solid black; border-bottom: 1px solid black">{{ remesa.destinatario~( remesa.destinatario.alias ? (" ("~ remesa.destinatario.alias) ~")") }}</td>
+            <td width="80px" align="left" style="font-size: 9px;border-top: 1px solid black; border-bottom: 1px solid black">{{ remesa.destinatario.ci ? remesa.destinatario.ci: '-' }}</td>
+            <td width="60px" align="left" style="font-size: 9px;border-top: 1px solid black; border-bottom: 1px solid black">{{ remesa.destinatario.phone }}</td>
+            <td width="185px" align="left" style="font-size: 9px;border-top: 1px solid black; border-bottom: 1px solid black">{{ remesa.destinatario.direccionEntrega() }}</td>
+            <td width="60px" align="left" style="font-size: 9px;border-top: 1px solid black; border-bottom: 1px solid black">{{ remesa.importeEntregar | number_format(2) }} {{ remesa.moneda.simbolo }}</td>
+            <td width="60px" align="left" style="font-size: 9px;border-top: 1px solid black; border-bottom: 1px solid black">{% if remesa.entregada %}
+                    <span class="label label-primary">Entregada</span>
+                {% else %}
+                    {% if factura.estado.codigo == '05'%}
+                        <span class="label label-warning">Cancelada</span>
+                    {% else %}
+                        <span class="label label-danger">Pendiente</span>
+                    {% endif %}
+                {% endif %}</td>
+        </tr>
+        {% if remesa.moneda.simbolo == "CUC" %}
+            {% set importeRemesas = importeRemesas + remesa.importeEntregar %}
+        {% elseif remesa.moneda.simbolo == "CUP" %}
+            {% set importeRemesasCUP = importeRemesasCUP + remesa.importeEntregar %}
+        {% elseif remesa.moneda.simbolo == "EUR" %}
+            {% set importeRemesasEUR = importeRemesasEUR + remesa.importeEntregar %}
+        {% else %}
+            {% set importeRemesasCUP = importeRemesasUSD + remesa.importeEntregar %}
+        {% endif %}
+    {% endfor %}
+</table>
+<table>
+    <tr>
+        <td>&nbsp;</td>
+    </tr>
+</table>
+<table cellpadding="3px" width="785px" style="border: 1px solid black">
+    <tr>
+        <td width="215px" align="left" style="font-size: 10px"><strong>RESUMEN: </strong><strong>{{ remesas | length }}</strong> remesa(s)</td>
+        <td width="80px" align="left" style="font-size: 10px"><strong>TOTAL:</strong></td>
+        <td width="130px" align="center" style="font-size: 10px">{{ importeRemesasCUP | number_format(2) }} CUP</td>
+        <td width="130px" align="right" style="font-size: 10px">{{ importeRemesasUSD | number_format(2) }} USD</td>
+        <td width="130px" align="right" style="font-size: 10px">{{ importeRemesasEUR | number_format(2) }} EUR</td>
+    </tr>
+</table>
+

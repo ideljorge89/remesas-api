@@ -1,0 +1,211 @@
+{% extends 'base_backend.html.twig' %}
+{% trans_default_domain 'AppBundle' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        i#checkAll:hover {
+            cursor: pointer;
+            color: green;
+        }
+
+        i#checkAll {
+            margin-left: 8px;
+        }
+    </style>
+{% endblock %}
+{% block breadcrumb %}
+    <div class="col-lg-12">
+        <h2>{{ 'backend.user_menu.administrator.facutra.aprove'|trans({},'FOSUserBundle') }}</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="{{ path('homepage_backend') }}"><i
+                            class="fa fa-home"></i> {{ 'backend.user_menu.breadcrumb.home'|trans({},'FOSUserBundle') }}
+                </a>
+            </li>
+            <li class="">
+                {{ 'backend.user_menu.administrator.nomencladores.title'|trans({},'FOSUserBundle') }}
+            </li>
+            <li class="active">
+                <strong>{{ 'backend.user_menu.administrator.facutra.aprove'|trans({},'FOSUserBundle') }}</strong>
+            </li>
+        </ol>
+    </div>
+{% endblock %}
+{% block body %}
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox">
+                {{ form_start(form) }}
+                <div class="ibox-title">
+                    <h5>
+                        {{ 'backend.user_menu.administrator.facutra.aprove'|trans({},'FOSUserBundle') | upper }}
+                        <small> {{ form_label(form.facturas)|striptags }} </small>
+                    </h5>
+                </div>
+                <div class="ibox-content">
+                    <div class="row">
+                        {% set facturas = form.facturas.children %}
+                        <div class="col-md-12 col-xs-12">
+                            <div class="col-md-12 col-xs-12">
+                                {% if form_errors(form.facturas) %}
+                                    <div class="alert alert-danger" role="alert">
+                                        <button type="button" class="close" data-dismiss="alert"
+                                                aria-hidden="true">&times;
+                                        </button>
+                                        <span class="fa fa-exclamation"
+                                              aria-hidden="true"></span>
+                                        <span class="sr-only">Error:</span>
+                                        {{ form_errors(form.facturas) | striptags }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div id='table' class="col-md-12 col-xs-12 table-responsive">
+                                <table class="footable footable-paging footable-paging-center  footable-paging-center  table table-stripped table-hover  toggle-arrow-tiny"
+                                       data-paging-size="100" data-paging="true" data-filtering="true"
+                                       data-sorting="false">
+                                    <thead>
+                                    <tr>
+                                        <th data-sort-ignore="true" align="center"></th>
+                                        <th data-sort-ignore="true">{{ 'backend.factura.table.orden'|trans }}</th>
+                                        <th data-sort-ignore="true">{{ 'backend.factura.table.emisor'|trans }}</th>
+                                        <th data-sort-ignore="true">{{ 'backend.factura.table.destinatario'|trans }}</th>
+                                        <th data-sort-ignore="true">{{ 'backend.factura.table.remesas'|trans }}</th>
+                                        <th>{{ 'backend.factura.table.total'|trans }}</th>
+                                        <th>{{ 'backend.factura.table.fecha'|trans }}</th>
+                                        <th data-sort-ignore="true">{{ 'backend.factura.table.creador'|trans }}</th>
+                                        <th data-sort-ignore="true">{{ 'backend.factura.table.estado'|trans }}</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for choice in facturas %}
+                                        {% set factura = form.facturas.vars.choices[choice.vars.value] is defined? form.facturas.vars.choices[choice.vars.value].data %}
+                                        <tr>
+                                            <td align="center">
+                                                {% set ready = ready_to_aprove(factura) %}
+                                                {% if ready %}
+                                                    {{ form_widget(choice, {'attr': {'class': 'fact-check'}}) }}
+                                                {% else %}
+                                                    <i class="fa fa-2x fa-remove" data-toggle="tooltip" style="color: red" data-placement="right"
+                                                       title="La factura contiene remesas que el distribuidor asingado no coincide con el municipio del destinatario"></i>
+                                                {% endif %}
+                                            </td>
+                                            <td>{{ factura.noFactura }}</td>
+                                            <td>{{ factura.emisor.nombre~" "~factura.emisor.apellidos }}</td>
+                                            <td>
+                                                {% for remesa in factura.remesas %}
+                                                    {{ remesa.destinatario }}<br>
+                                                {% endfor %}
+                                            </td>
+                                            <td>
+                                                {% set badge = findAsignacionZona(factura) %}
+                                                <a href="{{ path('admin_factura_detalles_remesas',{'token':factura.token}) }}"
+                                                   data-target='#modal-form' data-toggle="tooltip"
+                                                   title="{{ 'backend.factura.table.total_remesas'| transchoice(factura.remesas | length) }}">
+                                                    <label class="remesas label label-{{ badge }}">{{ factura.remesas | length }}</label>
+                                                    {{ badge != 'danger' ? '<i class="fa fa-car"></i>' }}
+                                                </a>
+                                            </td>
+                                            <td>{{ factura.importe | number_format(2, '.', ',') }} {{ factura.moneda }}</td>
+                                            <td>{{ factura.created | date('d/m/Y') }}</td>
+                                            <td align="center">
+                                                {% if factura.agente is not null or factura.agencia is not null %}
+                                                    {% if factura.agente is not null %}
+                                                        {% if factura.agente.usuario is not null %}
+                                                            <a data-placement="top"
+                                                               title="Agente {{ factura.agente }}"
+                                                               data-toggle="tooltip" data-target='#modal-form'
+                                                               href="{{ path('home_users_show', {'token': factura.agente.usuario.token }) }}">
+                                                                <i class="fa fa-user-circle"></i>
+                                                            </a>
+                                                        {% endif %}
+                                                    {% else %}
+                                                        {% if factura.agencia.usuario is not null %}
+                                                            <a data-placement="top"
+                                                               title="Agencia {{ factura.agencia }}"
+                                                               data-toggle="tooltip" data-target='#modal-form'
+                                                               href="{{ path('home_users_show', {'token': factura.agencia.usuario.token }) }}">
+                                                                <i class="fa fa-user-circle"></i>
+                                                            </a>
+                                                        {% endif %}
+                                                    {% endif %}
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                <div id="state_factura_{{ factura.id }}">
+                                                    {% if factura.estado.codigo == '01' %}
+                                                        <span class="label label-info">Pendiente</span>
+                                                    {% elseif factura.estado.codigo == '02' %}
+                                                        <span class="label label-warning">Aprobada</span>
+                                                    {% elseif factura.estado.codigo == '03' %}
+                                                        <span class="label label-primary">Distribución</span>
+                                                    {% elseif factura.estado.codigo == '04' %}
+                                                        <span class="label label-success">Entregada</span>
+                                                    {% else %}
+                                                        <span class="label label-danger">Cancelada</span>
+                                                    {% endif %}
+                                                </div>
+                                            </td>
+                                            <td class="text-right">
+                                                <div id="actions_{{ factura.id }}">
+                                                    <a class="btn btn-warning btn-xs" data-toggle="tooltip"
+                                                       title="Descargar factura"
+                                                       href="#"><i class="fa fa-print"></i></a>
+                                                    {% if factura.estado.codigo == '01' or factura.estado.codigo == '02' or factura.estado.codigo == '03' %}
+                                                        <a class="btn btn-success btn-xs" data-toggle="tooltip"
+                                                           title="Editar factura"
+                                                           href="{{ path('tn_factura_edit', {'token': factura.token }) }}"><i
+                                                                    class="fa fa-edit"></i></a>
+
+                                                        <a class='btn btn-danger btn-xs state_option'
+                                                           data-state='{{ constant('App\\Entity\\NmEstado::ESTADO_CANCELADA') }}'
+                                                           data-factura='{{ factura.id }}'
+                                                           data-msg='Estás CANCELANDO la factura {{ factura.noFactura }}. Está seguro?'
+                                                           title='SI'><i class="fa fa-remove"></i></a>
+                                                    {% endif %}
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="col-md-12 col-xs-12">
+                                {% if facturas |length > 0 %}
+                                    <i id="checkAll" class="fa fa-2x fa-check-square" data-toggle="tooltip"
+                                       title="Seleccionar todas" data-placement="right"></i>
+                                    <button type="submit" class="btn btn-warning pull-right">
+                                        <i class="fa fa-check-square-o"></i>
+                                        {{ 'backend.factura.aprove.btn' | trans }}
+                                    </button>
+                                {% else %}
+                                    <button type="submit" class="btn btn-warning pull-right disabled" disabled>
+                                        <i class="fa fa-check-square-o"></i>
+                                        {{ 'backend.factura.aprove.btn' | trans }}
+                                    </button>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {{ form_widget(form._token) }}
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        $(function () {
+            dataLink();
+
+            $("#checkAll").click(function () {
+                $('input:checkbox.fact-check').each(function (i, v) {
+                    $(v).trigger("click");
+                });
+            });
+        });
+    </script>
+{% endblock %}

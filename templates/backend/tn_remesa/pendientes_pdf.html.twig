@@ -1,0 +1,120 @@
+{% set totalRemesas = 0 %}
+{% set importeRemesas = 0 %}
+{% for prov, array_remesas in remesas %}
+    <table cellpadding="3px" width="785px">
+        <tr>
+            <td align="center" bgcolor="#f3f3f3" width="680px" style="font-size: 10px; border: 1px solid black"><strong>{{ prov | upper }}</strong></td>
+        </tr>
+    </table>
+    <table>
+        <tr>
+            <td>&nbsp;</td>
+        </tr>
+    </table>
+    {% set totalProv = 0 %}
+    {% for remesa in array_remesas %}
+        {% if remesa.factura.btnEmisor %}
+            <table cellpadding="3px" width="785px" style="border: 1px solid black">
+                <tr>
+                    <td width="100px" align="left" style="font-size: 10px"><strong>Emisor</strong></td>
+                    <td width="230px" align="center"
+                        style="font-size: 10px">{{ remesa.factura.emisor.descFactura() }}</td>
+                    <td width="65px" align="left" style="font-size: 10px"></td>
+                    <td width="150px" align="center" style="font-size: 10px"></td>
+                    <td width="135px" align="right" style="font-size: 10px">{{ reporte.created | date('d/m/Y H:i:s') }}</td>
+                </tr>
+            </table>
+        {% else %}
+            <table cellpadding="3px" width="785px" style="border: 1px solid black">
+                <tr>
+                    <td width="100px" align="left" style="font-size: 10px"></td>
+                    <td width="230px" align="center"
+                        style="font-size: 10px"></td>
+                    <td width="65px" align="left" style="font-size: 10px"></td>
+                    <td width="150px" align="center" style="font-size: 10px"></td>
+                    <td width="135px" align="right" style="font-size: 10px">{{ reporte.created | date('d/m/Y H:i:s') }}</td>
+                </tr>
+            </table>
+        {% endif %}
+
+        <table cellpadding="3px" width="785px" style="border: 1px solid black">
+            <tr>
+                <td width="85px" align="left" style="font-size: 10px"><strong>Factura</strong></td>
+                <td width="170px" align="left" style="font-size: 10px"><strong>Destinatario</strong></td>
+                <td width="90px" align="left" style="font-size: 10px"><strong>CI</strong></td>
+                <td width="70px" align="left" style="font-size: 10px"><strong>Teléfono</strong></td>
+                <td width="195px" align="left" style="font-size: 10px"><strong>Dirección</strong></td>
+                <td width="70px" align="left" style="font-size: 10px"><strong>Enviado</strong></td>
+            </tr>
+            <tr>
+                <td width="85px" align="left" style="font-size: 10px">{{ remesa.factura.noFactura }}</td>
+                <td width="170px" align="left"
+                    style="font-size: 10px">{{ remesa.destinatario~( remesa.destinatario.alias ? (" ("~ remesa.destinatario.alias) ~")") }}</td>
+                <td width="90px" align="left" style="font-size: 10px">{{ remesa.destinatario.ci ? remesa.destinatario.ci : "-" }}</td>
+                <td width="70px" align="left" style="font-size: 10px">{{ remesa.destinatario.phone }}</td>
+                <td width="195px" align="left" style="font-size: 10px">{{ remesa.destinatario.direccionEntrega() }}</td>
+                <td width="70px" align="left" style="font-size: 10px">{{ remesa.importeEntregar | number_format(2) }} CUC
+                </td>
+            </tr>
+            {% set destinatario = remesa.destinatario %}
+            {% if (destinatario.nombreAlternativo is not null and destinatario.apellidosAlternativo is not null) or destinatario.ciAlternativo is not null or destinatario.phoneAlternativo is not null %}
+                <tr>
+                    <td width="85px"></td>
+                    <td width="170px" align="left"
+                        style="font-size: 10px">{{ destinatario.nombreAlternativo ~" "~ destinatario.apellidosAlternativo }}</td>
+                    <td width="90px" align="left" style="font-size: 10px">{{ destinatario.ciAlternativo ? destinatario.ciAlternativo : '-' }}</td>
+                    <td width="70px" align="left" style="font-size: 10px">{{ destinatario.phoneAlternativo ? destinatario.phoneAlternativo : '-'}}</td>
+                    <td width="195px" align="left" style="font-size: 10px"></td>
+                    <td width="70px" align="left" style="font-size: 10px"></td>
+                </tr>
+            {% endif %}
+        </table>
+        <table cellpadding="3px" width="785px" style="border: 1px solid black">
+            <tr>
+                <td width="100px" align="left" style="font-size: 10px"></td>
+                <td width="210px" align="left" style="font-size: 10px"></td>
+                <td width="85px" align="left" style="font-size: 10px"><strong>RECIBE:</strong></td>
+                <td width="185px" align="center" style="font-size: 10px"></td>
+                <td width="100px" align="left" style="font-size: 10px"></td>
+            </tr>
+            <tr>
+                <td width="30px" align="left" style="font-size: 10px"><strong>CI:</strong></td>
+                <td width="200x" align="left" style="font-size: 10px">_________________________________</td>
+                <td width="150px" align="left" style="font-size: 10px"><strong>Firma: </strong>_________________</td>
+                <td width="145px" align="left" style="font-size: 10px"><strong>Fecha: </strong>_________________</td>
+                <td width="90px" align="left" style="font-size: 10px"><strong>Ctrl: </strong>___________</td>
+            </tr>
+        </table>
+        <table>
+            <tr>
+                <td>&nbsp;</td>
+            </tr>
+        </table>
+        {% set totalProv = totalProv + remesa.importeEntregar %}
+    {% endfor %}
+    {% set importeRemesas = importeRemesas + totalProv %}
+    {% set totalRemesas = totalRemesas + (array_remesas | length) %}
+    <table cellpadding="3px" width="785px" style="border: 1px solid black">
+        <tr>
+            <td width="100px" align="left" style="font-size: 10px"><strong>{{ prov }}</strong></td>
+            <td width="230px" align="center" style="font-size: 10px"><strong>{{ array_remesas | length }}</strong> remesa(s)</td>
+            <td width="65px" align="left" style="font-size: 10px"></td>
+            <td width="185px" align="center" style="font-size: 10px"><strong>TOTAL:</strong></td>
+            <td width="100px" align="right" style="font-size: 10px">{{ totalProv | number_format(2) }} CUC</td>
+        </tr>
+    </table>
+    <table>
+        <tr>
+            <td>&nbsp;</td>
+        </tr>
+    </table>
+{% endfor %}
+<table cellpadding="3px" width="785px" style="border: 1px solid black">
+    <tr>
+        <td width="100px" align="left" style="font-size: 10px"><strong>RESUMEN</strong></td>
+        <td width="230px" align="center" style="font-size: 10px"><strong>{{ totalRemesas }}</strong> remesa(s)</td>
+        <td width="65px" align="left" style="font-size: 10px"></td>
+        <td width="185px" align="center" style="font-size: 10px"><strong>TOTAL:</strong></td>
+        <td width="100px" align="right" style="font-size: 10px">{{ importeRemesas | number_format(2) }} CUC</td>
+    </tr>
+</table>

@@ -1,0 +1,144 @@
+{% trans_default_domain 'AppBundle' %}
+{{ form_start(form) }}
+
+    {{ form_widget(form._token) }}
+
+<p>
+    {% if form_errors(form) %}
+
+    <div class="alert alert-danger" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+        <span class="fa fa-exclamation"
+              aria-hidden="true"></span>
+        <span class="sr-only">Error:</span>
+        {{ form_errors(form) | striptags }}
+    </div>
+{% endif %}
+</p>
+
+<div class="row">
+    <div class="col-xs-12">
+        <div class="col-xs-4 form-group required">
+
+            <label class="col-lg-3 control-label text-right">{{ form_label(form.codigo)|striptags }}<sup>*</sup></label>
+
+            <div class="col-lg-9">
+                {{ form_widget(form.codigo,{'attr':{'class':'form-control'}}) }}
+                {% if form_errors(form.codigo) %}
+                    <div class="alert alert-danger" role="alert">
+                        <button type="button" class="close" data-dismiss="alert"
+                                aria-hidden="true">&times;
+                        </button>
+                        <span class="fa fa-exclamation"
+                              aria-hidden="true"></span>
+                        <span class="sr-only">Error:</span>
+                        {{ form_errors(form.codigo) | striptags }}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        <div class="col-xs-4 form-group required">
+
+            <label class="col-lg-3 control-label text-right">{{ form_label(form.simbolo)|striptags }}
+                <sup>*</sup></label>
+
+            <div class="col-lg-9">
+                {{ form_widget(form.simbolo,{'attr':{'class':'form-control'}}) }}
+                {% if form_errors(form.simbolo) %}
+                    <div class="alert alert-danger" role="alert">
+                        <button type="button" class="close" data-dismiss="alert"
+                                aria-hidden="true">&times;
+                        </button>
+                        <span class="fa fa-exclamation"
+                              aria-hidden="true"></span>
+                        <span class="sr-only">Error:</span>
+                        {{ form_errors(form.simbolo) | striptags }}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        <div class="col-xs-4 form-group required">
+
+            <label class="col-lg-3 control-label text-right">{{ form_label(form.tasaCambio)|striptags }}
+                <sup>*</sup></label>
+
+            <div class="col-lg-9">
+                {{ form_widget(form.tasaCambio,{'attr':{'class':'form-control'}}) }}
+                {% if form_errors(form.tasaCambio) %}
+                    <div class="alert alert-danger" role="alert">
+                        <button type="button" class="close" data-dismiss="alert"
+                                aria-hidden="true">&times;
+                        </button>
+                        <span class="fa fa-exclamation"
+                              aria-hidden="true"></span>
+                        <span class="sr-only">Error:</span>
+                        {{ form_errors(form.tasaCambio) | striptags }}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="col-xs-12">
+        <div class="col-xs-3 form-group">
+            <label class="col-lg-3 control-label text-right">{{ form_label(form.enabled)|striptags }}<sup>*</sup></label><br>
+
+            <div class="col-lg-9">
+                {{ form_widget(form.enabled,{'attr':{'class':'form-control js-switch'}}) }}
+            </div>
+        </div>
+        <div class="col-xs-3 form-group pull-right">
+            <label class="col-lg-3 control-label text-right">{{ form_label(form.aviable)|striptags }}<sup>*</sup></label><br>
+
+            <div class="col-lg-9">
+                {{ form_widget(form.aviable,{'attr':{'class':'form-control js-switch'}}) }}
+            </div>
+        </div>
+        <div class="col-xs-3 form-group pull-right">
+            <label class="col-lg-3 control-label text-right">{{ form_label(form.contable)|striptags }}<sup>*</sup></label><br>
+
+            <div class="col-lg-9">
+                {{ form_widget(form.contable,{'attr':{'class':'form-control js-switch'}}) }}
+                {% if form_errors(form.contable) %}
+                    <div class="alert alert-danger" role="alert">
+                        <button type="button" class="close" data-dismiss="alert"
+                                aria-hidden="true">&times;
+                        </button>
+                        <span class="fa fa-exclamation"
+                              aria-hidden="true"></span>
+                        <span class="sr-only">Error:</span>
+                        {{ form_errors(form.contable) | striptags }}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        <div class="col-xs-3 form-group pull-right">
+            <label class="col-lg-3 control-label text-right">{{ form_label(form.comision)|striptags }}<sup>*</sup></label><br>
+
+            <div class="col-lg-9">
+                {{ form_widget(form.comision,{'attr':{'class':'form-control js-switch'}}) }}
+                {% if form_errors(form.comision) %}
+                    <div class="alert alert-danger" role="alert">
+                        <button type="button" class="close" data-dismiss="alert"
+                                aria-hidden="true">&times;
+                        </button>
+                        <span class="fa fa-exclamation"
+                              aria-hidden="true"></span>
+                        <span class="sr-only">Error:</span>
+                        {{ form_errors(form.comision) | striptags }}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xs-12 text-right">
+        <div class="hr-line-dashed"></div>
+        <a class="btn btn-warning" href="{{ path('moneda_index') }}"><i
+                    class="fa fa-reply"></i> {{ 'backend.comun.form.to_list'|trans }}</a>
+
+        <button class="btn btn-primary pull-right" type="submit" style="margin-left: 5px;"><i
+                    class="fa fa-save"></i> {{ 'backend.comun.table.save'|trans }}</button>
+
+    </div>
+</div>
+{{ form_end(form) }}

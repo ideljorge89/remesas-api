@@ -1,0 +1,113 @@
+{% extends 'base_backend.html.twig' %}
+{% trans_default_domain 'AppBundle' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+
+    <link rel="stylesheet" type="text/css" href="{{ asset('bundles/stflagiconcss/css/flag-icon.min.css') }}"
+          xmlns="http://www.w3.org/1999/html"/>
+{% endblock %}
+{% block breadcrumb %}
+    <div class="col-lg-12">
+        <h2>Reportes</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="{{ path('homepage_backend') }}"><i
+                            class="fa fa-home"></i> {{ 'backend.user_menu.breadcrumb.home'|trans({},'FOSUserBundle') }}
+                </a>
+            </li>
+            <li>
+                {{ 'backend.reportes.title'|trans({}) }}
+            </li>
+            <li class="active">
+                <strong>{{ 'backend.transferencia.asignar.asignaciones'|trans({}) }}</strong>
+            </li>
+        </ol>
+    </div>
+{% endblock %}
+{% block body %}
+    <div class="ibox">
+        <div class="ibox-content">
+            <div class="row">
+                <div class="col-md-12">
+                    {{ form_start(form,{'attr':{
+                        'id':form.vars.id
+                    }}) }}
+
+                    {{ form_widget(form._token) }}
+                    {% if form_errors(form) %}
+                        <div class="alert alert-danger" role="alert">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
+                                &times;
+                            </button>
+                            <span class="fa fa-exclamation"
+                                  aria-hidden="true"></span>
+                            <span class="sr-only">Error:</span>
+                            {{ form_errors(form) | striptags }}
+                        </div>
+                    {% endif %}
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="col-md-4 required">
+                                <div class="form-group">
+                                    <label class="font-noralm">{{ form_label(form.repartidor)|striptags }}:</label>
+                                    <div class="col-xs-12 input-group">
+                                        {{ form_widget(form.repartidor,{'attr':{'class':'form-control', 'data-placeholder': "Seleccione un repartidor"}}) }}
+                                        {% if form_errors(form.repartidor) %}
+                                            <div class="alert alert-danger" role="alert">
+                                                <button type="button" class="close" data-dismiss="alert"
+                                                        aria-hidden="true">&times;
+                                                </button>
+                                                <span class="fa fa-exclamation"
+                                                      aria-hidden="true"></span>
+                                                <span class="sr-only">Error:</span>
+                                                {{ form_errors(form.repartidor) | striptags }}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="hr-line-dashed"></div>
+                        </div>
+                        <div class="col-md-12">
+                            <div id="reportes"></div>
+                        </div>
+                    </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+
+    <script type="application/javascript">
+        $(function () {
+            dataLink();
+
+            function load(repartidor) {
+                $("#reportes").load("{{ url('envio_transferencias_asignaciones_repartidor_ajax') }}", {
+                    repartidor: repartidor
+                }, function (a) {
+                });
+            }
+
+            if ($('#{{ form.repartidor.vars.id }} option:selected').val() != "") {
+                load($('#{{ form.repartidor.vars.id }} option:selected').val());
+            }
+
+            //Para buscar las Pref. Genéricas a partir del un negocio seleccionado.
+            $({{ form.repartidor.vars.id }}).change(function () {
+                var option = $(this).find('option:selected');
+                if (option && option.val() != "") {
+                    load(option.val());
+                } else {
+                    $("#reportes").html("");
+                }
+            });
+        })
+    </script>
+{% endblock %}

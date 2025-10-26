@@ -1,0 +1,106 @@
+{% trans_default_domain 'AppBundle' %}
+{{ form_start(form,{
+    'attr':{
+        'id': form.vars.id,
+        'action': (repartidor.id is not null ? path('tn_transferencia_repartidores_edit', {'token': repartidor.token}) : path('tn_transferencia_repartidores_new')),
+        'novalidate':'novalidate'
+    }}) }}
+
+    {{ form_widget(form._token) }}
+
+<p>
+    {% if form_errors(form) %}
+
+    <div class="alert alert-danger" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+        <span class="fa fa-exclamation"
+              aria-hidden="true"></span>
+        <span class="sr-only">Error:</span>
+        {{ form_errors(form) | striptags }}
+    </div>
+{% endif %}
+</p>
+
+<div class="row">
+    <div class="col-md-offset-2 col-md-10 col-sm-12 col-xs-12 form-group pull-right required">
+        <div class="col-md-6 col-sm-12 col-xs-12">
+            <label class="col-lg-3 control-label text-right">{{ form_label(form.nombre)|striptags }}<sup>*</sup></label>
+
+            <div class="col-lg-9">
+                {{ form_widget(form.nombre,{'attr':{'class':'form-control'}}) }}
+                {% if form_errors(form.nombre) %}
+                    <div class="alert alert-danger" role="alert">
+                        <button type="button" class="close" data-dismiss="alert"
+                                aria-hidden="true">&times;
+                        </button>
+                        <span class="fa fa-exclamation"
+                              aria-hidden="true"></span>
+                        <span class="sr-only">Error:</span>
+                        {{ form_errors(form.nombre) | striptags }}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        <div class="col-md-6 col-sm-12 col-xs-12">
+            <label class="col-lg-3 control-label text-right">{{ form_label(form.comision)|striptags }}<sup>*</sup></label>
+
+            <div class="col-lg-9">
+                {{ form_widget(form.comision,{'attr':{'class':'form-control'}}) }}
+                {% if form_errors(form.comision) %}
+                    <div class="alert alert-danger" role="alert">
+                        <button type="button" class="close" data-dismiss="alert"
+                                aria-hidden="true">&times;
+                        </button>
+                        <span class="fa fa-exclamation"
+                              aria-hidden="true"></span>
+                        <span class="sr-only">Error:</span>
+                        {{ form_errors(form.comision) | striptags }}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-offset-2 col-md-10 col-sm-12 col-xs-12 form-group pull-right">
+        <div class="col-md-6 col-sm-12 col-xs-12">
+            <label class="col-lg-3 control-label text-right">{{ form_label(form.enabled)|striptags }}</label>
+
+            <div class="col-lg-9">
+                {% if form.vars.data.id == null %}
+                    {{ form_widget(form.enabled,{'attr':{'class':'form-control js-switch', 'checked':'checked'}}) }}
+                {% else %}
+                    {{ form_widget(form.enabled,{'attr':{'class':'form-control js-switch'}}) }}
+                {% endif %}
+            </div>
+        </div>
+        <div class="col-md-6 col-sm-12 col-xs-12">
+            <label class="col-lg-3 control-label text-right">{{ form_label(form.observacion)|striptags }}</label>
+
+            <div class="col-lg-9">
+                {{ form_widget(form.observacion,{'attr':{'class':'form-control'}}) }}
+                {% if form_errors(form.observacion) %}
+                    <div class="alert alert-danger" role="alert">
+                        <button type="button" class="close" data-dismiss="alert"
+                                aria-hidden="true">&times;
+                        </button>
+                        <span class="fa fa-exclamation"
+                              aria-hidden="true"></span>
+                        <span class="sr-only">Error:</span>
+                        {{ form_errors(form.observacion) | striptags }}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xs-12 text-right">
+        <div class="hr-line-dashed"></div>
+        <a class="btn btn-warning" href="{{ path('tn_transferencia_repartidores_lista') }}"><i
+                    class="fa fa-reply"></i> {{ 'backend.comun.form.to_list'|trans }}</a>
+
+        <button class="btn btn-primary pull-right" type="submit" style="margin-left: 5px;"><i
+                    class="fa fa-save"></i> {{ 'backend.comun.table.save'|trans }}</button>
+
+    </div>
+</div>
+</form>

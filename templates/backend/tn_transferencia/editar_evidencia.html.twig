@@ -1,0 +1,149 @@
+{% extends 'base_backend.html.twig' %}
+{% trans_default_domain 'AppBundle' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .filter-hidden {
+            display: none;
+        }
+
+        .filter-show {
+            display: block;
+        }
+
+        .titular:hover {
+            cursor: pointer;
+            color: blue;
+        }
+    </style>
+{% endblock %}
+
+{% block breadcrumb %}
+    <div class="col-lg-12">
+        <h2>{{ 'backend.user_menu.administrator.transferencia.title'|trans({},'FOSUserBundle') }}</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="{{ path('homepage_backend') }}"><i
+                            class="fa fa-home"></i> {{ 'backend.user_menu.breadcrumb.home'|trans({},'FOSUserBundle') }}
+                </a>
+            </li>
+            <li class="">
+                {{ 'backend.user_menu.administrator.nomencladores.title'|trans({},'FOSUserBundle') }}
+            </li>
+            <li class="active">
+                <strong>{{ 'backend.user_menu.administrator.transferencia.evidencia'|trans({},'FOSUserBundle') }}</strong>
+            </li>
+        </ol>
+    </div>
+{% endblock %}
+
+{% block body %}
+    <div class="ibox">
+        {{ form_start(form,{
+            'attr':{
+                'id': form.vars.id,
+                'novalidate':'novalidate'
+            }}) }}
+
+        {{ form_widget(form._token) }}
+        <div class="ibox-title">
+
+        </div>
+        <div class="ibox-content">
+            {% trans_default_domain 'AppBundle' %}
+            <p>
+                {% if form_errors(form) %}
+
+            <div class="alert alert-danger" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                <span class="fa fa-exclamation"
+                      aria-hidden="true"></span>
+                <span class="sr-only">Error:</span>
+                {{ form_errors(form) | striptags }}
+            </div>
+            {% endif %}
+            </p>
+
+            <div class="row">
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                    <div class="col-md-4 col-sm-12 col-xs-12 required">
+                        <div class="form-group">
+                            <label class="font-noralm">{{ form_label(form.evidencia)|striptags }}
+                                <sup>*</sup></label>
+                            <div class="col-md-12 input-group" style="    width: 100%;">
+                                {{ form_widget(form.evidencia,{'attr':{
+                                    'class':'form-control',
+                                    'accept':'image/jpeg,image/png'
+                                }}) }}
+                                {% if form_errors(form.evidencia) %}
+                                    <div class="alert alert-danger" role="alert">
+                                        <button type="button" class="close" data-dismiss="alert"
+                                                aria-hidden="true">&times;
+                                        </button>
+                                        <span class="fa fa-exclamation"
+                                              aria-hidden="true"></span>
+                                        <span class="sr-only">Error:</span>
+                                        {{ form_errors(form.evidencia) | striptags }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-8 col-sm-12 col-xs-12">
+                        <div class="form-group">
+                            <label class="font-noralm">{{ form_label(form.notas)|striptags }}</label>
+
+                            <div class="col-md-12 input-group">
+                                {{ form_widget(form.notas,{'attr':{'class':'form-control'}}) }}
+                                {% if form_errors(form.notas) %}
+                                    <div class="alert alert-danger" role="alert">
+                                        <button type="button" class="close" data-dismiss="alert"
+                                                aria-hidden="true">&times;
+                                        </button>
+                                        <span class="fa fa-exclamation"
+                                              aria-hidden="true"></span>
+                                        <span class="sr-only">Error:</span>
+                                        {{ form_errors(form.notas) | striptags }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    {% if form.vars.data is not null and form.vars.data.evidencia != "" %}
+
+                    {% endif %}
+                </div>
+                <div class="col-xs-12 col-xs-12 text-right">
+                    <div class="hr-line-dashed"></div>
+                    <a class="btn btn-warning" href="{{ path('tn_transferencia_index') }}"><i
+                                class="fa fa-reply"></i> {{ 'backend.comun.form.to_list'|trans }}</a>
+
+                    <button class="btn btn-primary pull-right" type="submit" style="margin-left: 5px;"><i
+                                class="fa fa-save"></i> {{ 'backend.comun.table.save'|trans }}</button>
+
+                </div>
+            </div>
+            </form>
+
+        </div>
+    </div>
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        $(function () {
+
+            $("#{{ form.vars.id }}").validate({
+                rules: {
+                    '{{ form.evidencia.vars.full_name }}': {
+                        required: true
+                    }
+                }
+            });
+        });
+
+    </script>
+{% endblock %}

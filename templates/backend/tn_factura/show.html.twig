@@ -1,0 +1,61 @@
+{% trans_default_domain 'AppBundle' %}
+<div class="panel-default">
+    <div class="panel-heading">
+        <label class="label label-primary">Remesas de la Factura {{ tnFactura.noFactura }}</label>
+    </div>
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-sm-12">
+                {% for remesa in tnFactura.remesas %}
+                    <div class="col-sm-12 well well-sm" {{ remesa.entregada ? ('style="border: 2px solid #1AB394"') | raw }}>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <label>{{ 'backend.factura.table.destinatario'|trans }}
+                                    : </label> {{ remesa.destinatario }} {{ remesa.destinatario.alias ? "("~ remesa.destinatario.alias ~")" }}
+                                <br>
+                                <label>{{ 'backend.destinatario.table.ci'|trans }}
+                                    : </label> {{ remesa.destinatario.ci ? remesa.destinatario.ci : '-' }}
+                                <br>
+                                <label>{{ 'backend.destinatario.table.telefono'|trans }}
+                                    : </label> {{ remesa.destinatario.phone }}
+                                <br>
+                                {% if app.user.auth %}
+                                    {% if showImporte(remesa.factura) %}
+                                        <label>{{ 'backend.factura.form.fields.total_pagar'|trans }}
+                                            : </label> {{ remesa.totalPagar | number_format(2, '.', ',') }}
+                                        <br>
+                                    {% endif %}
+                                {% endif %}
+                                <label>{{ 'backend.factura.form.detalles.direccion'|trans }}
+                                    : </label> {{ remesa.destinatario.getDireccionEntrega() }}
+                                <br>
+                            </div>
+                            <div class="col-sm-6">
+                                <label>{{ 'backend.destinatario.table.nombre_alt'|trans }}
+                                    : </label> {{ remesa.destinatario.nombreAlternativo ? remesa.destinatario.nombreAlternativo }}
+                                <br>
+                                <label>{{ 'backend.destinatario.table.ci_alt'|trans }}
+                                    : </label> {{ remesa.destinatario.ciAlternativo }}
+                                <br>
+                                <label>{{ 'backend.destinatario.form.fields.telefono_alt'|trans }}
+                                    : </label> {{ remesa.destinatario.phoneAlternativo ? remesa.destinatario.phoneAlternativo }}
+                                <br>
+                                <label>{{ 'backend.factura.form.fields.entrega'|trans }}
+                                    : </label> {{ remesa.importeEntregar | number_format(2, '.', ',') }} {{ remesa.moneda ? remesa.moneda.simbolo }}
+                                <br>
+                                <label>{{ 'backend.factura.form.fields.hora'|trans }}
+                                    : </label> {{ remesa.created | date('H:i:s') }}
+                                <br>
+                                {% if app.user and is_granted("ROLE_SUPER_ADMIN") and remesa.distribuidor %}
+                                    <label>{{ 'backend.factura.table.distribuidor'|trans }}
+                                        : </label> {{ remesa.distribuidor }}
+                                    <br>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>

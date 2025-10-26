@@ -1,0 +1,71 @@
+{% extends 'base_backend.html.twig' %}
+{% trans_default_domain 'AppBundle' %}
+
+{% block breadcrumb %}
+    <div class="col-lg-12">
+        <h2>{{ 'backend.user_menu.administrator.nomencladores.provincia.title'|trans({},'FOSUserBundle') }}</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="{{ path('homepage_backend') }}"><i
+                            class="fa fa-home"></i> {{ 'backend.user_menu.breadcrumb.home'|trans({},'FOSUserBundle') }}
+                </a>
+            </li>
+            <li class="">
+                {{ 'backend.user_menu.administrator.nomencladores.title'|trans({},'FOSUserBundle') }}
+            </li>
+            <li class="active">
+                <strong>{{ 'backend.user_menu.administrator.nomencladores.provincia.title'|trans({},'FOSUserBundle') }}</strong>
+            </li>
+        </ol>
+    </div>
+{% endblock %}
+{% block body %}
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox">
+                <div class="ibox-content">
+                    {#<a class="btn btn-primary pull-right" href="{{ path('nm_provincia_new') }}">
+                        <i class="fa fa-plus"></i>
+                        {{ 'backend.user_menu.administrator.nomencladores.provincia.add'|trans({},'FOSUserBundle') }}
+                    </a>#}
+                    <div id='table' class="table-responsive">
+                        <table class="footable footable-paging footable-paging-center   table table-stripped table-hover  toggle-arrow-tiny"
+                               data-paging-size="50" data-paging="true" data-filtering="true" data-sorting="true">
+                            <thead>
+                            <tr>
+                                <th data-breakpoints="all">{{ 'backend.provincia.table.id'|trans }}</th>
+                                <th data-breakpoints="all">{{ 'backend.provincia.table.acronimo'|trans }}</th>
+                                <th>{{ 'backend.provincia.table.nombre'|trans }}</th>
+                                <th>{{ 'backend.provincia.table.codigo'|trans }}</th>
+                                <th data-breakpoints="all">{{ 'backend.provincia.table.created'|trans }}</th>
+                                <th data-breakpoints="all">{{ 'backend.provincia.table.updated'|trans }}</th>
+                                <th class="text-right"
+                                    data-sort-ignore="true">{{ 'backend.comun.table.actions'|trans }}</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for nm_provincia in nm_provincias %}
+                                <tr>
+                                    <td>{{ nm_provincia.id }}</td>
+                                    <td>{{ nm_provincia.acronimo }}</td>
+                                    <td>{{ nm_provincia.name }}</td>
+                                    <td>{{ nm_provincia.codigo ? nm_provincia.codigo }}</td>
+                                    <td>{{ nm_provincia.created ? nm_provincia.created|date('Y-m-d') : '' }}</td>
+                                    <td>{{ nm_provincia.updated ? nm_provincia.updated|date('Y-m-d') : '' }}</td>
+                                    <td class="text-right">
+                                        <a class="btn btn-warning btn-xs" data-toggle="tooltip"
+                                           title="Editar provincia"
+                                           href="{{ path('nm_provincia_edit', {'id': nm_provincia.id}) }}"><i
+                                                    class="fa fa-pencil-square-o"></i></a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+{% endblock %}

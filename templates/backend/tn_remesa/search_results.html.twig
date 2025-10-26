@@ -1,0 +1,130 @@
+{% trans_default_domain 'AppBundle' %}
+
+<table class="footable footable-paging footable-paging-center  footable-paging-center  table table-stripped table-hover  toggle-arrow-tiny"
+       data-paging-size="100" data-paging="true" data-filtering="true"
+       data-sorting="true">
+    <thead>
+    <tr>
+        <th data-sort-ignore="true">{{ 'backend.remesa.table.orden'|trans }}</th>
+        <th data-sort-ignore="true"
+            width="20%">{{ 'backend.remesa.table.destinatario'|trans }}</th>
+        <th data-sort-ignore="true"
+            width="20%">{{ 'backend.remesa.table.direccion'|trans }}</th>
+        <th data-sort-ignore="true">{{ 'backend.remesa.table.mun'|trans }}</th>
+        <th data-sort-ignore="true">{{ 'backend.remesa.table.prov'|trans }}</th>
+        <th>{{ 'backend.factura.table.total'|trans }}</th>
+        <th>{{ 'backend.factura.table.fecha'|trans }}</th>
+        <th data-sort-ignore="true">{{ 'backend.factura.table.estado'|trans }}</th>
+        <th class="text-right"
+            data-sort-ignore="true" align="center">Acts
+        </th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for remesa in remesas %}
+        {% set factura = remesa.factura %}
+        <tr>
+            <td>{{ factura.noFactura }} {{ remesa.reporteEnvio ? ('<i class="fa fa-file-pdf-o" style="color:blue" data-toggle="tooltip" title="Reporte '~(remesa.reporteEnvio.created | date('d/m/Y H:i:s A'))~'"></i>') | raw }}</td>
+            <td width="20%">
+                {{ remesa.destinatario ~" - "~remesa.destinatario.phone }}
+            </td>
+            <td width="20%">{{ remesa.destinatario.direccion~( remesa.destinatario.direccion1 ? (". "~ remesa.destinatario.direccion1)) }}</td>
+            <td>{{ remesa.destinatario.municipio }}</td>
+            <td>{{ remesa.destinatario.provincia }}</td>
+            <td>{{ remesa.importeEntregar | number_format(2, '.', ',') }} {{ remesa.moneda.simbolo }}</td>
+            <td>{{ factura.created | date('d/m/Y') }}</td>
+            <td>
+                <div id="state_{{ remesa.id }}">
+                    {% if remesa.entregada %}
+                        <span class="label label-primary">Entregada</span>
+                    {% else %}
+                        {% if factura.estado.codigo == '05'%}
+                            <span class="label label-warning">Cancelada</span>
+                        {% else %}
+                            <span class="label label-danger">Pendiente</span>
+                        {% endif %}
+                    {% endif %}
+                </div>
+            </td>
+            <td class="text-center">
+                <div>
+                    {% if factura.estado.codigo == '03' or factura.estado.codigo == '02' %}
+                        {% if not remesa.entregada and remesa. reporteEnvio is not null %}
+                            <div class="switch inline"
+                                 id="chante_state_{{ remesa.id }}">
+                                <div class="onoffswitch">
+                                    <input data-check-remesa="{{ path('entrega_change_state_remesa',{'id':remesa.id}) }}"
+                                           {% if remesa.entregada %}checked{% endif %}
+                                           type="checkbox"
+                                           class="onoffswitch-checkbox"
+                                           data-remesa="{{ remesa.id }}"
+                                           id="check-{{ remesa.id }}">
+                                    <label class="onoffswitch-label"
+                                           for="check-{{ remesa.id }}">
+                                        <span class="onoffswitch-inner"></span>
+                                        <span class="onoffswitch-switch"></span>
+                                    </label>
+                                </div>
+                                {#<a class="btn btn-warning btn-xs"#}
+                                   {#data-toggle="tooltip"#}
+                                   {#title="Descargar remesa" target="_blank"#}
+                                   {#href="{{ path('entrega_remesa_export_pdf', {'id': remesa.id, 'action': 'print'}) }}"><i#}
+                                            {#class="fa fa-print"></i></a>#}
+
+                            </div>
+                        {% endif %}
+                    {% endif %}
+                </div>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+<script>
+    $(function () {
+
+        $('.footable').footable();
+
+        dataLink();
+
+        $('.onoffswitch-checkbox').change(function (e) {
+            var remesa = $(this).data('check-remesa');
+            var div_state = $('#state_' + $(e.currentTarget).data("remesa"));
+            var div_btn = $('#chante_state_' + $(e.currentTarget).data("remesa"));
+            swal({
+                title: "Confirmar entrega",
+                text: "Está seguro quiere cambiar a entregada esta remesa?",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#F8C886",
+                confirmButtonText: "SI",
+                cancelButtonText: "NO",
+                closeOnConfirm: true
+            }, function (confirmed) {
+                if (confirmed) {
+                    $.ajax({
+                        url: remesa,
+                        method: 'post',
+                        success: function () {
+                            div_state.html('<span class="label label-primary">Entregada</span>');
+                            div_btn.html("");
+
+                            swal({
+                                title: "Remesa",
+                                text: "El estado de la remesa ha sido cambiado satisfactoriamente.",
+                                type: "success",
+                                showCancelButton: false,
+                                confirmButtonColor: "##A5DC86",
+                                confirmButtonText: "OK",
+                                closeOnConfirm: true
+                            });
+                        }
+                    })
+                } else {
+                    $(e.currentTarget).trigger('click');
+                }
+            });
+        });
+    });
+</script>

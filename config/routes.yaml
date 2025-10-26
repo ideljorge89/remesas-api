@@ -1,0 +1,26 @@
+controllers:
+  resource: '../src/Controller/'
+  type: annotation
+
+backend:
+  resource: "../Resources/config/routing/security.xml"
+
+fos_user:
+  resource: "@FOSUserBundle/Resources/config/routing/all.xml"
+
+#Liip
+_liip_imagine:
+  resource: "@LiipImagineBundle/Resources/config/routing.yaml"
+
+
+gesdinet_jwt_refresh_token:
+  path:       /api/token/refresh
+  controller: gesdinet.jwtrefreshtoken::refresh
+
+authentication_token:
+  path: /authentication_token
+  methods: ['POST']
+
+swagger_ui:
+  path: /backend/api-docs
+  controller: api_platform.swagger.action.ui

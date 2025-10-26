@@ -1,0 +1,22 @@
+{% extends 'base_backend.html.twig' %}
+{% trans_default_domain "FOSUserBundle" %}
+
+{% block breadcrumbs %}
+    <li><a href="{{ path('homepage') }}">{{ 'backend.user_menu.admin_home'|trans }}</a></li>
+    <li class="active">505</li>
+{% endblock %}
+
+{% block body %}
+    <div class="middle-box text-center animated fadeInDown">
+        <h1>500</h1>
+        <h3 class="font-bold">Error interno del servidor</h3>
+
+        <div class="error-desc">
+            <h3>Ha ocurrido un error, por favor conctacte al administrador para detalles.</h3>
+        </div>
+    </div>
+{% endblock %}
+
+
+
+

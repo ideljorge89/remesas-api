@@ -1,0 +1,237 @@
+{% extends 'base_backend.html.twig' %}
+{% trans_default_domain 'AppBundle' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+
+    <link rel="stylesheet" type="text/css" href="{{ asset('bundles/stflagiconcss/css/flag-icon.min.css') }}"
+          xmlns="http://www.w3.org/1999/html"/>
+{% endblock %}
+{% block breadcrumb %}
+    <div class="col-lg-12">
+        <h2>Reportes</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="{{ path('homepage_backend') }}"><i
+                            class="fa fa-home"></i> {{ 'backend.user_menu.breadcrumb.home'|trans({},'FOSUserBundle') }}
+                </a>
+            </li>
+            <li>
+                {{ 'backend.reportes.title'|trans({}) }}
+            </li>
+            <li class="active">
+                <strong>{{ 'backend.user_menu.administrator.contabilidad.historiales'|trans({},'FOSUserBundle') }}</strong>
+            </li>
+        </ol>
+    </div>
+{% endblock %}
+{% block body %}
+    <div class="ibox">
+        <div class="ibox-content">
+            <div class="row">
+                <div class="col-md-12">
+                    {{ form_start(form,{'attr':{
+                        'id':form.vars.id
+                    }}) }}
+
+                    {{ form_widget(form._token) }}
+                    {% if form_errors(form) %}
+                        <div class="alert alert-danger" role="alert">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
+                                &times;
+                            </button>
+                            <span class="fa fa-exclamation"
+                                  aria-hidden="true"></span>
+                            <span class="sr-only">Error:</span>
+                            {{ form_errors(form) | striptags }}
+                        </div>
+                    {% endif %}
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="col-md-4 required">
+                                <div class="form-group">
+                                    <label class="font-noraml"><strong>{{ 'backend.reportes.distribuidor_remesas.fields.fechas'|trans }}</strong>:</label>
+                                    <div class="input-daterange input-group">
+                                        {{ form_widget(form.fechaInicio,{
+                                            'attr':{
+                                                'class':'form-control'
+                                            }
+                                        }) }}
+                                        <span class="input-group-addon"> - </span>
+                                        {{ form_widget(form.fechaFin,{
+                                            'attr':{
+                                                'class':'form-control'
+                                            }
+                                        }) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 required">
+                                <div class="form-group">
+                                    <label class="font-noralm">{{ form_label(form.distribuidor)|striptags }}:</label>
+                                    <div class="col-xs-12 input-group">
+                                        {{ form_widget(form.distribuidor,{'attr':{'class':'form-control', 'data-placeholder': "Seleccione los distribuidores"}}) }}
+                                        {% if form_errors(form.distribuidor) %}
+                                            <div class="alert alert-danger" role="alert">
+                                                <button type="button" class="close" data-dismiss="alert"
+                                                        aria-hidden="true">&times;
+                                                </button>
+                                                <span class="fa fa-exclamation"
+                                                      aria-hidden="true"></span>
+                                                <span class="sr-only">Error:</span>
+                                                {{ form_errors(form.distribuidor) | striptags }}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 required">
+                                <div class="form-group">
+                                    <label class="font-noralm">{{ form_label(form.moneda)|striptags }}:</label>
+                                    <div class="col-xs-12 input-group">
+                                        {{ form_widget(form.moneda,{'attr':{'class':'form-control', 'data-placeholder': "Monedas"}}) }}
+                                        {% if form_errors(form.moneda) %}
+                                            <div class="alert alert-danger" role="alert">
+                                                <button type="button" class="close" data-dismiss="alert"
+                                                        aria-hidden="true">&times;
+                                                </button>
+                                                <span class="fa fa-exclamation"
+                                                      aria-hidden="true"></span>
+                                                <span class="sr-only">Error:</span>
+                                                {{ form_errors(form.moneda) | striptags }}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 text-right">
+                            <div class="hr-line-dashed"></div>
+                            <button class="btn btn-primary pull-right" type="submit" style="margin-left: 5px;">
+                                <i
+                                        class="fa fa-search"></i> {{ 'backend.reportes.btn_search'|trans }}
+                            </button>
+                        </div>
+                    </div>
+                    </form>
+                </div>
+            </div>
+            <div class="row">
+                <div id='table' class="col-md-12 table-responsive">
+                    <table class="footable footable-paging footable-paging-center  footable-paging-center  table table-stripped table-hover  toggle-arrow-tiny"
+                           data-paging-size="50" data-paging="true" data-filtering="true"
+                           data-sorting="true">
+                        <thead>
+                        <tr>
+                            <th>{{ 'backend.distribucion.table.historial.nro'|trans }}</th>
+                            <th>{{ 'backend.distribucion.table.historial.destinatario'|trans }}</th>
+                            <th>{{ 'backend.distribucion.table.historial.entregado'|trans }}</th>
+                            <th>{{ 'backend.distribucion.table.historial.moneda'|trans }}</th>
+                            <th>{{ 'backend.distribucion.table.historial.importe'|trans }}</th>
+                            <th>{{ 'backend.distribucion.table.historial.comision'|trans }}</th>
+                            <th>{{ 'backend.distribucion.table.historial.total'|trans }}</th>
+                            <th>{{ 'backend.distribucion.table.historial.estado'|trans }}</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% set remesasCUP = 0 %}
+                        {% set remesasUSD = 0 %}
+                        {% set totalRemesasCUP = 0 %}
+                        {% set totalRemesasUSD = 0 %}
+                        {% set totalComision = 0 %}
+                        {% for historial in historiales %}
+                            {% set remesa = historial.remesa %}
+                            <tr>
+                                <td>{{ remesa ? remesa.factura.noFactura: 'Eliminada' }}</td>
+                                <td>{{ remesa ? (remesa.destinatario.nombre~" "~remesa.destinatario.apellidos~(remesa.destinatario.alias ? " ("~remesa.destinatario.alias~")")) : 'Eliminada' }}</td>
+                                <td>{{ historial.importeRemesa }}</td>
+                                <td>{{ historial.monedaRemesa.simbolo }}</td>
+                                <td>{{ historial.importeRemesa }} {{ historial.monedaRemesa.simbolo }}</td>
+                                <td>{{ historial.tasaDistrucion }} CUP</td>
+                                <td>
+                                    {% if historial.monedaRemesa.comision %}
+                                        {{ historial.importeRemesa + (historial.tasaDistrucion ? historial.tasaDistrucion : 0) }} {{ historial.monedaRemesa.simbolo }}
+                                    {% else %}
+                                        {{ historial.importeRemesa }} {{ historial.monedaRemesa.simbolo }}
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if historial.estado == 'efectiva' %}
+                                        <label for="Efectiva" class="label label-primary">Efectiva</label>
+
+                                        {% if historial.monedaRemesa.simbolo == "CUP" %}
+                                            {% set remesasCUP = remesasCUP + 1 %}
+                                            {% set totalRemesasCUP = totalRemesasCUP + historial.importeRemesa %}
+                                        {% else %}
+                                            {% set remesasUSD = remesasUSD + 1 %}
+                                            {% set totalRemesasUSD = totalRemesasUSD + historial.importeRemesa %}
+                                        {% endif %}
+
+                                        {% set totalComision = totalComision + (historial.tasaDistrucion ? historial.tasaDistrucion : 0) %}
+                                    {% else %}
+                                        <label for="Efectiva" class="label label-danger">Cancelada</label>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12">
+                    <table class="table table-responsive">
+                        <tr>
+                            <td><strong>RESUMEN TOTAL: </strong>{{ historiales | length }}
+                                remesas(s)<br>{{ remesasCUP }} CUP
+                                <br>{{ remesasUSD }} USD
+                            </td>
+                            <td></td>
+                            <td><strong>REMESAS: <br> </strong>{{ totalRemesasCUP | number_format(2) }}
+                                CUP<br>{{ totalRemesasUSD | number_format(2) }} USD
+                            </td>
+                            <td><strong>COMISIÓN: <br> </strong>{{ totalComision | number_format(2) }} CUP</td>
+                            <td><strong>TOTAL: <br></strong>{{ (totalRemesasCUP + totalComision) | number_format(2) }} CUP
+                                <br>{{ totalRemesasUSD | number_format(2) }} USD
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+
+    <script type="application/javascript">
+        $(function () {
+            $('.input-daterange').datepicker({
+                keyboardNavigation: false,
+                forceParse: false,
+                autoclose: true,
+                format: 'dd/mm/yyyy',
+                todayBtn: true,
+                language: 'es',
+                endDate: 'today',
+                todayHighlight: true
+            }).on('keypress paste', function (e) {
+                e.preventDefault();
+                return false;
+            });
+
+            $("#{{ form.vars.id }}").validate({
+                rules: {
+                    '{{ form.fechaInicio.vars.full_name }}': {
+                        required: true
+                    },
+                    '{{ form.fechaFin.vars.full_name }}': {
+                        required: true
+                    }
+                }
+            });
+
+            dataLink()
+        })
+    </script>
+{% endblock %}

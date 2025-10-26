@@ -1,0 +1,109 @@
+{% trans_default_domain 'AppBundle' %}
+<div class="panel-default">
+    <div class="panel-heading">
+        <label class="label label-primary">Logs de la transferencia {{ tnTransferencia.codigo }}</label>
+    </div>
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-sm-12">
+                <div id="vertical-timeline" class="vertical-container dark-timeline">
+                    {% for log in logs %}
+                        {% if log.username!='' %}
+                            <div class="vertical-timeline-block">
+                                <div class="vertical-timeline-icon navy-bg fa-stack fa-lg">
+                                    {% if log.data.estado is defined and log.data.estado['id'] is not null %}
+                                        {% set estado = findEstadoTransferencia(log.data.estado['id']) %}
+                                        {% if estado == '01' %}
+                                            <i class="fa fa-credit-card-alt"></i>
+                                        {% elseif estado == '02' %}
+                                            <i class="fa fa-users"></i>
+                                        {% elseif estado == '03' %}
+                                            <i class="fa fa-send"></i>
+                                        {% elseif estado == '04' %}
+                                            <i class="fa fa-check-square"></i>
+                                        {% elseif estado == '05' %}
+                                            <i class="fa fa-remove"></i>
+                                        {% endif %}
+                                    {% elseif log.action == 'create' %}
+                                        <i class="fa fa-credit-card-alt"></i>
+                                    {% elseif log.action == 'update' %}
+                                        <i class="fa fa-pencil-square-o"></i>
+                                    {% endif %}
+                                </div>
+
+                                <div class="vertical-timeline-content">
+                                    <div class="col-sm-4 col-xs-12">
+                                        <h2>
+                                            {% if log.data.estado is defined and log.data.estado['id'] is not null %}
+                                                {% set estado = findEstadoTransferencia(log.data.estado['id']) %}
+                                                {% if estado == '01' %}
+                                                    Creada
+                                                {% elseif estado == '02' %}
+                                                    Asignada
+                                                {% elseif estado == '03' %}
+                                                    Enviada
+                                                {% elseif estado == '04' %}
+                                                    Entregada
+                                                {% elseif estado == '05' %}
+                                                    Cancelada
+                                                {% endif %}
+                                            {% elseif log.action == 'create' %}
+                                                Creada
+                                            {% elseif log.action == 'update' %}
+                                                Modificada
+                                            {% endif %}
+                                        </h2>
+
+                                        <span class="vertical-date pull-left">
+                                            <i class="fa fa-user"></i> {{ log.username }}
+                                            <br>
+                                            <small>{{ log.loggedAt| date('d/m/Y H:i:s') }}</small>
+                                        </span>
+                                    </div>
+
+                                    <div class="col-sm-8 col-xs-12">
+                                        {% if log.data is not null %}
+                                            <p><span>
+                                            {% for key, detail in log.data %}
+                                                {% if key != 'total' and key != 'fecha_entrega' and key != 'porcentajeOpera' and key != 'porcentajeOperaAgente' %}
+                                                    {% if detail is not null or detail !="" %}
+                                                        {% if detail is iterable %}
+                                                            {% if key == 'estado' %}
+                                                                {% set estado = findEstadoTransferencia(detail['id']) %}
+                                                                {% if estado == '01' %}
+                                                                    Estado: <span
+                                                                        class="label label-info">Pendiente</span>
+                                                                {% elseif estado == '02' %}
+                                                                    Estado: <span class="label label-primary">Asignada</span>
+                                                                {% elseif estado == '03' %}
+                                                                    Estado: <span class="label label-warning">Enviada</span>
+                                                                {% elseif estado == '04' %}
+                                                                    Estado: <span class="label label-success">Entregada</span>
+                                                                {% else %}
+                                                                    Estado: <span class="label label-danger">Cancelada</span>
+                                                                {% endif %}
+                                                            {% elseif key == 'agente' %}
+                                                                {% set agente = findAgente(detail['id']) %}
+                                                                Agente: {{ agente }}<br>
+                                                            {% elseif key == 'agencia' %}
+                                                                {% set agencia = findAgencia(detail['id']) %}
+                                                                Agencia: {{ agencia }}<br>
+                                                            {#{% else %}#}
+                                                                {#{{ key~ " : "~ detail}}<br>#}
+                                                            {% endif %}
+                                                        {% endif %}
+                                                    {% endif %}
+                                                {% endif %}
+                                            {% endfor %}
+                                            </span></p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

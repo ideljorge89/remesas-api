@@ -1,0 +1,32 @@
+
+fos_user:
+    db_driver: orm # other valid values are 'mongodb', 'couchdb' and 'propel'
+    firewall_name: main
+    user_class: App\Entity\TnUser
+    from_email:
+      address: no-reply@telluspros.com
+      sender_name: Quickmoney
+    registration:
+        form:
+            type: App\Form\Registration\RegistrationFormType
+
+        confirmation:
+            enabled: true
+            from_email:
+                address: no-reply@telluspros.com
+                sender_name: Quickmoney
+    resetting:
+        email:
+            from_email:
+               address: no-reply@telluspros.com
+               sender_name: Quickmoney
+
+    profile:
+        form:
+           type: App\Form\Profile\ProfileFormType
+           name: form
+
+#    change_password:
+#        form:
+#           type: App\Form\ChangePassword\ChangePasswordFormType
+#           name: form

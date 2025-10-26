@@ -1,0 +1,94 @@
+{% trans_default_domain 'AppBundle' %}
+<div class="ibox">
+    <div class="ibox-title">
+        <h5> <small></small></h5>
+        <a href="" ></a>
+            <div class="text-left">
+                <h2>Datos Bulto - Contenedor No. {{ izl.manifiesto.noContainer }}</h2>
+            </div>
+    </div>
+    <div class="ibox-content">
+
+        <div class="row">
+
+            <div class="col-md-6">
+                <label for="">{{ 'home.show.codigoBulto'|trans }}</label>
+                <div class="">{{ izl.codigoBulto }}</div>
+            </div>
+            <div class="col-md-6">
+                <label for="">{{ 'home.show.remitente'|trans }}</label>
+                <div class="">{{ izl.remitente }}</div>
+            </div>
+            <div class="col-md-6">
+                <label for="">{{ 'home.show.consignado'|trans }}</label>
+                <div class="">{{ izl.consignado.nombre }}</div>
+            </div>
+            <div class="col-md-6">
+                <label for="">{{ 'home.show.ci'|trans }}</label>
+                <div class="">{{ izl.consignado.noIdentidad }}</div>
+            </div>
+            <div class="col-xs-12">
+                <label for="">{{ 'home.show.direccion'|trans }}</label>
+                <div class="">{{ izl.consignadoPersonalData.direccion }}</div>
+            </div>
+            <div class="col-md-6">
+                <label for="">{{ 'home.show.telefono'|trans }}</label>
+                <div class="">{{ izl.consignadoPersonalData.telefono }}</div>
+            </div>
+            <div class="col-md-6">
+                <label for="">{{ 'home.show.cantBulto'|trans }}</label>
+                <div class="">{{ izl.cantBulto }}</div>
+            </div>
+            <div class="col-md-6">
+                <label for="">{{ 'home.show.kg'|trans }}</label>
+                <div class="">{{ izl.kg }}</div>
+            </div>
+            <div class="col-md-6">
+                <label for="">{{ 'home.show.cbm'|trans }}</label>
+                <div class="">{{ izl.cbm }}</div>
+            </div>
+            <div class="col-xs-12">
+                <label for="">{{ 'home.show.contenido'|trans }}</label>
+                <div class="">{{ izl.contenido }}</div>
+            </div>
+            <div class="col-md-6">
+                <label for="">{{ 'home.show.tipo'|trans }}</label>
+                <div class="">{{ izl.type }}</div>
+            </div><div class="col-md-6">
+                <label for="">{{ 'home.show.mbl'|trans }}</label>
+                <div class="">{{ izl.mbl }}</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="ibox-content">
+
+    <div class="row">
+
+        <div class="col-md-6">
+            <label for="">{{ 'manifiestos.table.no_sello'|trans }}</label>
+            <div class="">{{ izl.manifiesto.noSello }}</div>
+        </div>
+        <div class="col-md-6">
+            <label for="">{{ 'manifiestos.table.mbl'|trans }}</label>
+            <div class="">{{ izl.manifiesto.mbl }}</div>
+        </div>
+        <div class="col-md-6">
+            <label for="">{{ 'manifiestos.table.containercode'|trans }}</label>
+            <div class="">{{ izl.manifiesto.containerCode }}</div>
+        </div>
+        <div class="col-md-6">
+            <label for="">{{ 'manifiestos.table.vapor'|trans }}</label>
+            <div class="">{{ izl.manifiesto.vapor }}</div>
+        </div>
+        <div class="col-md-6">
+            <label for="">{{ 'manifiestos.table.salida'|trans }}</label>
+            <div class="">{{ izl.manifiesto.salida|date('d/m/Y') }}</div>
+        </div>
+        <div class="col-md-6">
+            <label for="">{{ 'manifiestos.table.document'|trans }}</label>
+            <div class="">{{ izl.manifiesto.premanifiesto.originalname }}</div>
+        </div>
+    </div>
+</div>

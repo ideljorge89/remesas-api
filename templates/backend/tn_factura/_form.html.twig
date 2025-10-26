@@ -1,0 +1,158 @@
+{% trans_default_domain 'AppBundle' %}
+
+{% import "backend/macros/form_collection_remesa.html.twig" as macro_remesa %}
+
+<p>
+    {% if form_errors(form) %}
+
+    <div class="alert alert-danger" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+        <span class="fa fa-exclamation"
+              aria-hidden="true"></span>
+        <span class="sr-only">Error:</span>
+        {{ form_errors(form) | striptags }}
+    </div>
+{% endif %}
+</p>
+
+<div class="row">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="col-md-4 col-sm-12 col-xs-12 required">
+            <label class="font-noralm"><b>{{ form_label(form.emisor)|striptags }}<sup>*</sup></b></label>
+            <div class="row col-md-12 col-xs-12 input-group">
+                <div class="col-md-10 col-sm-12 col-xs-12">
+                    {{ form_widget(form.emisor,{'attr':{'class':'form-control'}}) }}
+                    {% if form_errors(form.emisor) %}
+                        <div class="alert alert-danger" role="alert">
+                            <button type="button" class="close" data-dismiss="alert"
+                                    aria-hidden="true">&times;
+                            </button>
+                            <span class="fa fa-exclamation"
+                                  aria-hidden="true"></span>
+                            <span class="sr-only">Error:</span>
+                            {{ form_errors(form.emisor) | striptags }}
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="col-sm-2 col-xs-12">
+                    <button type="button" id='destinatarios-add' class="btn btn-sm btn-warning"
+                            data-toggle="tooltip"
+                            title="Añadir destinario"><i class="fa fa-plus"></i></button>
+                </div>
+            </div>
+        </div>
+        {% if app.user and is_granted("ROLE_SUPER_ADMIN") %}
+            <div class="col-md-2 col-sm-12 col-xs-12 required">
+                <div class="form-group">
+                    <label class="font-noralm"><b>{{ form_label(form.estado)|striptags }}<sup>*</sup></b></label>
+                    <div class="col-md-12 col-xs-12 input-group">
+                        {{ form_widget(form.estado,{'attr':{'class':'form-control'}}) }}
+                        {% if form_errors(form.estado) %}
+                            <div class="alert alert-danger" role="alert">
+                                <button type="button" class="close" data-dismiss="alert"
+                                        aria-hidden="true">&times;
+                                </button>
+                                <span class="fa fa-exclamation"
+                                      aria-hidden="true"></span>
+                                <span class="sr-only">Error:</span>
+                                {{ form_errors(form.estado) | striptags }}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-12 col-xs-12 required">
+                <div class="form-group">
+                    <label class="font-noralm"><b>{{ form_label(form.agencia)|striptags }}</b></label>
+                    <div class="col-md-12 col-xs-12 input-group">
+                        {{ form_widget(form.agencia,{'attr':{'class':'form-control'}}) }}
+                        {% if form_errors(form.agencia) %}
+                            <div class="alert alert-danger" role="alert">
+                                <button type="button" class="close" data-dismiss="alert"
+                                        aria-hidden="true">&times;
+                                </button>
+                                <span class="fa fa-exclamation"
+                                      aria-hidden="true"></span>
+                                <span class="sr-only">Error:</span>
+                                {{ form_errors(form.agencia ) | striptags }}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-12 col-xs-12 required">
+                <div class="form-group">
+                    <label class="font-noralm"><b>{{ form_label(form.agente)|striptags }}</b></label>
+                    <div class="col-md-12 col-xs-12 input-group">
+                        {{ form_widget(form.agente,{'attr':{'class':'form-control'}}) }}
+                        {% if form_errors(form.agente) %}
+                            <div class="alert alert-danger" role="alert">
+                                <button type="button" class="close" data-dismiss="alert"
+                                        aria-hidden="true">&times;
+                                </button>
+                                <span class="fa fa-exclamation"
+                                      aria-hidden="true"></span>
+                                <span class="sr-only">Error:</span>
+                                {{ form_errors(form.agente) | striptags }}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% elseif app.user and is_granted("ROLE_AGENCIA") %}
+            <div class="col-md-4 col-sm-12 col-xs-12 required">
+                <div class="form-group">
+                    <label class="font-noralm"><b>{{ form_label(form.agente)|striptags }}</b></label>
+                    <div class="col-md-12 col-xs-12 input-group">
+                        {{ form_widget(form.agente,{'attr':{'class':'form-control'}}) }}
+                        {% if form_errors(form.agente) %}
+                            <div class="alert alert-danger" role="alert">
+                                <button type="button" class="close" data-dismiss="alert"
+                                        aria-hidden="true">&times;
+                                </button>
+                                <span class="fa fa-exclamation"
+                                      aria-hidden="true"></span>
+                                <span class="sr-only">Error:</span>
+                                {{ form_errors(form.agente) | striptags }}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+        <div class="col-md-12 col-sm-12 col-xs-12 {{ tn_factura.id is null ? 'filter-show' : 'filter-hidden' }}"
+             id="container-filter">
+            <div id='destinatarios' class="table-responsive">
+
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-12 col-xs-12">
+        <fieldset class="form-horizontal">
+            <div class="panel-body">
+                <div id="datos-remesa" class="row"
+                     data-prototype="{{ macro_remesa.widget_prototype_tn_remesa(form.remesas,'col-md-12')|escape }}">
+                    {% for widget in form.remesas.children %}
+                        {{ macro_remesa.widget_prototype_tn_remesa(widget,'col-md-12') }}
+                    {% endfor %}
+                </div>
+                <div class="col-sm-12 col-xs-12 text-center">
+                    <strong>Añadir Remesa</strong>
+                    <i class="fa fa-hand-o-right" style="font-size: 2em;"></i>
+                    <button type="button" data-target="datos-remesa"
+                            class="btn btn-add-remesa btn-success dim">
+                        <i class="fa fa-plus"></i></button>
+                </div>
+            </div>
+        </fieldset>
+    </div>
+    <div class="col-xs-12 col-xs-12 text-right">
+        <div class="hr-line-dashed"></div>
+        <a class="btn btn-warning" href="{{ path('tn_factura_index') }}"><i
+                    class="fa fa-reply"></i> {{ 'backend.comun.form.to_list'|trans }}</a>
+
+        <button class="btn btn-primary pull-right" type="submit" style="margin-left: 5px;"><i
+                    class="fa fa-save"></i> {{ 'backend.comun.table.save'|trans }}</button>
+    </div>
+</div>
+</form>

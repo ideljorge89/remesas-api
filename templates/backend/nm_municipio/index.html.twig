@@ -1,0 +1,80 @@
+{% extends 'base_backend.html.twig' %}
+{% trans_default_domain 'AppBundle' %}
+
+{% block breadcrumb %}
+    <div class="col-lg-12">
+        <h2>{{ 'backend.user_menu.administrator.nomencladores.municipio.title'|trans({},'FOSUserBundle') }}</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="{{ path('homepage_backend') }}"><i
+                            class="fa fa-home"></i> {{ 'backend.user_menu.breadcrumb.home'|trans({},'FOSUserBundle') }}
+                </a>
+            </li>
+            <li class="">
+                {{ 'backend.user_menu.administrator.nomencladores.title'|trans({},'FOSUserBundle') }}
+            </li>
+            <li class="active">
+                <strong>{{ 'backend.user_menu.administrator.nomencladores.municipio.title'|trans({},'FOSUserBundle') }}</strong>
+            </li>
+        </ol>
+    </div>
+{% endblock %}
+{% block body %}
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox">
+                <div class="ibox-content">
+                    {#<a class="btn btn-primary pull-right" href="{{ path('nm_municipio_new') }}">
+                        <i class="fa fa-plus"></i>
+                        {{ 'backend.user_menu.administrator.nomencladores.municipio.add'|trans({},'FOSUserBundle') }}
+                    </a>#}
+                    <div id='table' class="table-responsive">
+                        <table class="footable footable-paging footable-paging-center  table table-stripped table-hover  toggle-arrow-tiny" data-paging-size="50" data-paging="true" data-filtering="true" data-sorting="true">
+                            <thead>
+                            <tr>
+                                <th data-breakpoints="all">{{ 'backend.municipio.table.id'|trans }}</th>
+                                <th>{{ 'backend.municipio.table.nombre'|trans }}</th>
+                                <th>{{ 'backend.municipio.table.provincia'|trans }}</th>
+                                <th width="10%">{{ 'backend.municipio.table.codigo'|trans }}</th>
+                                <th width="15%">{{ 'backend.municipio.table.tasa'|trans }}</th>
+                                <th width="15%">{{ 'backend.municipio.table.moneda'|trans }}</th>
+                                <th data-breakpoints="all">{{ 'backend.municipio.table.created'|trans }}</th>
+                                <th data-breakpoints="all">{{ 'backend.municipio.table.updated'|trans }}</th>
+                                <th class="text-right" width="10%"
+                                    data-sort-ignore="true">{{ 'backend.comun.table.actions'|trans }}</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for nm_municipio in nm_municipios %}
+                                <tr>
+                                    <td>{{ nm_municipio.id }}</td>
+                                    <td>{{ nm_municipio.name }}</td>
+                                    <td>{{ nm_municipio.provincia!=null?nm_municipio.provincia.name }}</td>
+                                    <td>{{ nm_municipio.codigo ? nm_municipio.codigo }}</td>
+                                    <td>{{ nm_municipio.tasaFija ? nm_municipio.tasaFija }} {{ moneda }}</td>
+                                    <td>
+                                        <ul>
+                                        {% for moneda in nm_municipio.monedasEntrega %}
+                                            <li>{{ moneda.simbolo }}</li>
+                                        {% endfor %}
+                                        </ul>
+                                    </td>
+                                    <td>{{ nm_municipio.created ? nm_municipio.created|date('Y-m-d') : '' }}</td>
+                                    <td>{{ nm_municipio.updated ? nm_municipio.updated|date('Y-m-d') : '' }}</td>
+                                    <td class="text-right">
+                                        <a class="btn btn-warning btn-xs" data-toggle="tooltip"
+                                           title="Editar muncipio"
+                                           href="{{ path('nm_municipio_edit', {'id': nm_municipio.id}) }}"><i
+                                                    class="fa fa-pencil-square-o"></i></a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+{% endblock %}

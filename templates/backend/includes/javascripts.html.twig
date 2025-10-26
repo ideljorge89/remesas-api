@@ -1,0 +1,42 @@
+<!-- Mainly scripts -->
+<script src="{{ asset('assets/backend/js/jquery-2.1.1.js') }}"></script>
+<script src="{{ asset('assets/backend/js/bootstrap.min.js') }}"></script>
+<script src="{{ asset('assets/backend/js/plugins/metisMenu/jquery.metisMenu.js') }}"></script>
+<script src="{{ asset('assets/backend/js/plugins/slimscroll/jquery.slimscroll.min.js') }}"></script>
+<script src="{{ asset('assets/backend/js/plugins/toastr/toastr.min.js') }}"></script>
+<script src="{{ asset('assets/backend/js/plugins/sweetalert/sweetalert.min.js') }}"></script>
+<script src="{{ asset('assets/backend/js/plugins/chosen/chosen.jquery.js') }}"></script>
+<script src="{{ asset('assets/backend/js/plugins/chosen/chosen.jquery.min_.js') }}"></script>
+<script src="{{ asset('assets/backend/js/plugins/chosen/ImageSelect.jquery.js') }}"></script>
+<script src="{{ asset('assets/backend/js/plugins/form/jquery.form.js') }}"></script>
+<script src="{{ asset('assets/backend/js/plugins/validate/jquery.validate.min.js') }}"></script>
+<script src="{{ asset('assets/backend/js/plugins/validate/additional-methods.js') }}"></script>
+<script src="{{ asset('assets/backend/js/plugins/validate/messages_es.js') }}"></script>
+<script src="{{ asset('assets/backend/js/plugins/validate/inputmask/jquery.inputmask.js') }}"></script>
+{#<script src="{{ asset('assets/backend/js/plugins/datapicker/bootstrap-datepicker.js') }}"></script>#}
+{#<script src="{{ asset('assets/backend/js/plugins/daterangepicker/daterangepicker.js') }}"></script>#}
+<script type="text/javascript" src="{{ asset("assets/backend/js/plugins/datepicker/bootstrap-datepicker.js") }}"></script>
+<!-- Custom and plugin javascript -->
+<script src="{{ asset('assets/backend/js/plugins/jquery.cookie.js') }}"></script>
+<script src="{{ asset('assets/backend/js/plugins/switchery/switchery.js') }}"></script>
+<script src="{{ asset('assets/backend/js/plugins/footable/footable-bootstrap.latest/js/footable.js') }}"></script>
+<script src="{{ asset('assets/backend/js/plugins/mask_money.min.js') }}"></script>
+<script src="{{ asset('assets/backend/js/plugins/lazy/jquery.lazy.min.js') }}"></script>
+<script src="{{ asset('assets/backend/js/plugins/jqGrid/jquery.jqGrid.min.js') }}"></script>
+<script src="{{ asset('assets/backend/js/plugins/jqGrid/i18n/grid.locale-es.js') }}"></script>
+<script src="{{ asset('assets/backend/js/inspinia.js') }}"></script>
+<script src="{{ asset('assets/backend/js/plugins/pace/pace.min.js') }}"></script>
+
+<script src="{{ asset('assets/backend/js/plugins/disable-on-submit/dist/disable-form-on-submit.min.js') }}"></script>
+
+<script>
+    // if ( window.history.replaceState ) {
+    //     window.history.replaceState( null, null, window.location.href );
+    // }
+
+    $('form.disable-on-submit').disableOnSubmit({
+        duration: 2000,
+        buttonTemplate: '<span class="fa fa-fw fa-spinner fa-spin"></span>',
+        submitInputText: 'Por favor espere...'
+    });
+</script>

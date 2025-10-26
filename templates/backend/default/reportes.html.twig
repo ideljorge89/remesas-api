@@ -1,0 +1,17 @@
+{% if options['avatar'] is defined and options['avatar'] !=""  %}
+    <table cellpadding="3px" width="785px">
+        <tr>
+            <td width="150px" align="left" style="font-size: 10px"><img src="{{ asset(options['avatar']) }}" alt="Avatar" style="width: 50px; height: 50px;"></td>
+            <td width="360px" align="center" style="font-size: 10px;"><strong>{{ options['title'] }} {{ options['date'] is defined ? "(Copia)"  }}</strong><br>{{ options['user'] is defined ? options['user'] }}</td>
+            <td width="215px" align="center" style="font-size: 10px"><strong>FECHA: </strong> {{ options['date'] is defined ?  options['date']['fecha'] : ('now' | date('d/m/Y')) }}<br><strong>HORA: </strong> {{ options['date'] is defined ?  options['date']['hora'] : ('now' | date('H:i:s A')) }}</td>
+        </tr>
+    </table>
+{% else %}
+<table cellpadding="3px" width="785px">
+    <tr>
+        <td width="260px" align="left" style="font-size: 11px"><strong>{{ options['title'] }} {{ options['date'] is defined ? "(Copia)"  }}</strong><br>{{ options['user'] is defined ? options['user'] }}</td>
+        <td width="260px" align="left" style="font-size: 11px;"><strong>FECHA: </strong> {{ options['date'] is defined ?  options['date']['fecha'] : ('now' | date('d/m/Y')) }}</td>
+        <td width="215px" align="center" style="font-size: 11px"><strong>HORA: </strong> {{ options['date'] is defined ?  options['date']['hora'] : ('now' | date('H:i:s A')) }}</td>
+    </tr>
+</table>
+{% endif %}

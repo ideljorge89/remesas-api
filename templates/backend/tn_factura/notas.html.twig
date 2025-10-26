@@ -1,0 +1,49 @@
+{% trans_default_domain 'AppBundle' %}
+<div class="panel-default">
+    <div class="panel-heading">
+        <label class="label label-primary">Editar notas Factura: {{ tnFactura.noFactura }}</label>
+    </div>
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="col-sm-12 well well-sm">
+                    <form id="notasForm" action="{{ path('tn_factura_notas_edit', {'token': tnFactura.token }) }}" method="post">
+                        <textarea name="notas" class="form-control"  id="notas" cols="30" rows="10" placeholder="Notas factura">{{ tnFactura.notas }}</textarea>
+                        <br/>
+
+                        <div class="">
+                            <div class="">
+                                <button id="btn_submit" class="btn btn-primary pull-right" type="submit"
+                                        data-factura="{{ tnFactura.id }}"><i
+                                            class="fa fa-save"></i> Guardar
+                                </button>
+                                <div style="clear:both"></div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    $("#notasForm").on('submit', function (e) {
+        e.preventDefault();
+        $(this).ajaxSubmit({
+            target: '#notas_{{ tnFactura.id }}',
+            success: function () {
+                dataLink();
+
+                $("#modal-form").modal("hide");
+
+                showToastr('success', 'Notas factura', 'Notas de la factura {{ tnFactura.noFactura }} editada correctamente.');
+            }
+        });
+    });
+
+</script>
+
+
+

@@ -1,0 +1,109 @@
+security:
+  # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
+  encoders:
+    FOS\UserBundle\Model\UserInterface: bcrypt
+
+  role_hierarchy:
+    ROLE_AGENTE:      ROLE_USER
+    ROLE_AGENCIA:     ROLE_USER
+    ROLE_ADMIN:     ROLE_USER
+    ROLE_DISTRIBUIDOR:     ROLE_USER
+    ROLE_ENTREGA:     ROLE_USER
+    ROLE_SUPER_ADMIN: ROLE_USER
+    ROLE_ASESOR: ROLE_SUPER_ADMIN
+
+  providers:
+    fos_userbundle:
+      id: fos_user.user_provider.username_email
+
+  firewalls:
+    dev:
+      pattern: ^/(_(profiler|wdt)|css|images|js)/
+      security: false
+
+    api_auth:
+      anonymous: true
+      pattern: ^/api/token
+      json_login:
+        check_path: /api/token
+        success_handler: lexik_jwt_authentication.handler.authentication_success
+        failure_handler: lexik_jwt_authentication.handler.authentication_failure
+
+    refresh:
+      pattern:  ^/api/token/refresh
+      stateless: true
+      anonymous: true
+
+    api:
+      pattern: ^/api/
+      stateless: true
+      anonymous: true
+      guard:
+        authenticators:
+          - lexik_jwt_authentication.jwt_token_authenticator
+
+
+    main:
+      pattern: ^/
+      context: security_context
+      form_login:
+        provider: fos_userbundle
+        login_path:     /backend/login
+        check_path:     /backend/login_check
+        default_target_path: /remesas/facturas
+
+      logout:
+        path:           /backend/logout
+        target:         /backend/login
+      anonymous:    true
+
+
+      # activate different ways to authenticate
+      # https://symfony.com/doc/current/security.html#firewalls-authentication
+
+      # https://symfony.com/doc/current/security/impersonating_user.html
+      # switch_user: true
+
+  # Easy way to control access for large sections of your site
+  # Note: Only the *first* access control that matches will be used
+  access_control:
+    #    - { path: ^/login$, role: IS_AUTHENTICATED_ANONYMOUSLY }
+    #    - { path: ^/logout$, role: IS_AUTHENTICATED_ANONYMOUSLY }
+    #        - { path: ^/register, role: IS_AUTHENTICATED_ANONYMOUSLY }
+    #        - { path: ^/resetting, role: IS_AUTHENTICATED_ANONYMOUSLY }
+    - { path: ^/api/docs, roles: IS_AUTHENTICATED_ANONYMOUSLY } # Allows accessing the Swagger UI
+    - { path: ^/api/token, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+    - { path: ^/api/token/refresh, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+    - { path: ^/backend/api-docs, roles: ROLE_USER } # Allows accessing the Swagger UI
+
+    - { path: ^/backend/login$, role: IS_AUTHENTICATED_ANONYMOUSLY}
+    - { path: ^/backend/logout$, role: IS_AUTHENTICATED_ANONYMOUSLY}
+    - { path: ^/backend/login_check$, role: IS_AUTHENTICATED_ANONYMOUSLY}
+    - { path: ^/backend/datascope/, role: IS_AUTHENTICATED_ANONYMOUSLY}
+    - { path: ^/backend/soap/, role: IS_AUTHENTICATED_ANONYMOUSLY}
+    - { path: ^/backend/nom/*, role: [ROLE_AGENCIA, ROLE_SUPER_ADMIN]}
+    - { path: ^/super/nom/tn/documento/*, role: [ROLE_SUPER_ADMIN, ROLE_AGENCIA]}
+    - { path: ^/super/nom/*, role: [ROLE_SUPER_ADMIN]}
+    - { path: ^/remesas/facturas/*, role: [ROLE_SUPER_ADMIN, ROLE_AGENCIA, ROLE_AGENTE]}
+    - { path: ^/remesas/facturas/distribuir/*, role: [ROLE_SUPER_ADMIN]}
+    - { path: ^/remesas/facturas/distribucion/*, role: [ROLE_SUPER_ADMIN]}
+    - { path: ^/remesas/facturas/aprobacion/*, role: [ROLE_SUPER_ADMIN]}
+    - { path: ^/remesas/facturas/aprobar/*, role: [ROLE_SUPER_ADMIN]}
+    - { path: ^/backend/contabiliad/*, role: [ROLE_SUPER_ADMIN]}
+
+    - { path: ^/backend/reportes/distrubuidor/remesas, role: [ROLE_DISTRIBUIDOR]}
+    - { path: ^/backend/reportes/admin/distribuidor/remesas, role: [ROLE_SUPER_ADMIN]}
+    - { path: ^/backend/configuration/*, role: [ROLE_SUPER_ADMIN]}
+    - { path: ^/backend/saldo/agencias, role: [ROLE_SUPER_ADMIN]}
+    - { path: ^/backend/saldo/agencia/*, role: [ROLE_SUPER_ADMIN]}
+    - { path: ^/backend/saldo/agentes, role: [ROLE_SUPER_ADMIN, ROLE_AGENCIA]}
+    - { path: ^/backend/saldo/agente/*, role: [ROLE_SUPER_ADMIN, ROLE_AGENCIA]}
+    - { path: ^/backend/reportes/admin/agencias/remesas, role: [ROLE_SUPER_ADMIN]}
+    - { path: ^/backend/reportes/agentes/remesas, role: [ROLE_AGENCIA, ROLE_SUPER_ADMIN]}
+    - { path: ^/backend/reportes/utilidades/remesas, role: [ROLE_AGENCIA]}
+    - { path: ^/backend/reportes/agente/utilidades/remesas, role: [ROLE_AGENTE]}
+    - { path: ^/backend/reportes/agencias/costos, role: [ROLE_AGENCIA]}
+    - { path: ^/backend/contabiliad/*, role: [ROLE_SUPER_ADMIN]}
+    - { path: ^/backend/admin/*, role: [ROLE_SUPER_ADMIN, ROLE_AGENCIA, ROLE_AGENTE]}
+    - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }
+    - { path: ^/, role: [ROLE_USER]}

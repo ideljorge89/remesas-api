@@ -1,0 +1,69 @@
+<table cellpadding="3px" width="785px">
+    <tr>
+        <td width="180px" align="left"
+            style="font-size: 11px; border-top: 1px solid black;">
+            <u><i><b>Cliente</b></i></u></td>
+        <td width="280px" align="right"
+            style="font-size: 11px; border-top: 1px solid black;">
+            <u><i><b>Destinatario</b></i></u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>{{ prov | upper }}</b>
+        </td>
+        <td width="230px" align="center"
+            style="font-size: 11px; border-top: 1px solid black;">
+            <strong>REMESAS</strong></td>
+    </tr>
+</table>
+{% set totalProv = 0 %}
+{% set totalProvCUP = 0 %}
+{% set totalProvUSD = 0 %}
+{% set totalProvEUR = 0 %}
+{% set countRemesas = 0 %}
+{% for remesa in array_remesas %}
+    <table cellpadding="4px" cellspacing="4" width="785px">
+        <tr>
+            <td width="180px" align="left"
+                style="font-size: 11px; border-top: 1px solid black; ">
+                {% if remesa.factura and remesa.factura.btnEmisor %}
+                    {{ remesa.factura.emisor.descFactura() }}
+                {% endif %}
+            </td>
+            <td width="280px" style="font-size: 11px; border-top: 1px solid black; text-align: justify">{{ (remesa.destinatario | upper ~( remesa.destinatario.alias ? (" ("~ remesa.destinatario.alias) ~")") )  }}<br><span style="font-size: 10px">{{ remesa.destinatario.direccionEntrega() }}</span><br>
+
+                <br><span style="font-size: 9px"><b>Tel:</b> </span>{{ remesa.destinatario.phone }}<br><span style="font-size: 9px"><b>2 Persona:</b> </span></td>
+            <td width="220px" style="font-size: 10px; border-top: 1px solid black; text-align: justify"><b><span style="font-size: 9px">Fecha:</span></b> {{ remesa.reporteEnvio.created | date('d/m/Y ') }}&nbsp;&nbsp;&nbsp;<b><span style="font-size: 9px">Enviado:</span></b> <span style="font-size: 11px">{{ remesa.importeEntregar | number_format(2) }}</span><br><br><b><span style="font-size: 9px">Factura: </span></b><span style="font-size: 9px">{{ remesa.factura ? remesa.factura.noFactura }}</span>&nbsp;&nbsp;&nbsp;<b><span style="font-size: 9px">Prov: </span></b><span style="font-size: 9px">{{ remesa.destinatario.municipio.provincia.acronimo }}</span>&nbsp;&nbsp;&nbsp;<b><span style="font-size: 11px">{{ remesa.moneda.simbolo }}</span></b><br><span style="font-size: 9px">CI:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;__________________________</span><br><span style="font-size: 9px">CTRL: __________________________</span><br><span style="font-size: 9px">Firma: </span>
+            </td>
+        </tr>
+    </table>
+    {% set countRemesas = countRemesas + 1 %}
+    {% if remesa.moneda.simbolo == "CUC" %}
+        {% set totalProv = totalProv + remesa.importeEntregar %}
+    {% elseif remesa.moneda.simbolo == "CUP" %}
+        {% set totalProvCUP = totalProvCUP + remesa.importeEntregar %}
+    {% elseif remesa.moneda.simbolo == "EUR" %}
+        {% set totalProvEUR = totalProvEUR + remesa.importeEntregar %}
+    {% else %}
+        {% set totalProvUSD = totalProvUSD + remesa.importeEntregar %}
+    {% endif %}
+{% endfor %}
+
+{% if not last %}
+<table cellpadding="4px" cellspacing="4" width="785px">
+    <tr>
+        <td width="180px" align="left"  align="left"
+            style="font-size: 11px; border-top: 1px solid black; "><br><span style="font-size: 8px">Página {{ page }}</span><br><span style="font-size: 10px"><b>Total de envíos&nbsp;&nbsp;&nbsp;</b>{{ array_remesas | length }}</span>
+        </td>
+        <td width="280px" style="font-size: 11px; border-top: 1px solid black; text-align: justify"><span style="font-size: 10px"><b>Total Página CUC</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="font-size: 10px">{{ totalProv | number_format(2) }}</span><br><span style="font-size: 10px"><b>Total Página CUP</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="font-size: 10px">{{ totalProvCUP | number_format(2) }}</span><br><span style="font-size: 10px"><b>Total Página USD</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="font-size: 10px">{{ totalProvUSD | number_format(2) }}</span><br><span style="font-size: 10px"><b>Total Página EUR</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="font-size: 10px">{{ totalProvEUR | number_format(2) }}</span></td>
+        <td width="220px" style="font-size: 10px; border-top: 1px solid black; text-align: justify"><span style="font-size: 10px"><b>Total de envíos CUC&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b></span><span style="font-size: 10px">{{ totalProv | number_format(2) }}</span><br><span style="font-size: 10px"><b>Total de envíos CUP&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b></span><span style="font-size: 10px">{{ totalProvCUP | number_format(2) }}</span><br><span style="font-size: 10px"><b>Total de envíos USD&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b></span><span style="font-size: 10px">{{ totalProvUSD | number_format(2) }}</span><br><span style="font-size: 10px"><b>Total de envíos EUR&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b></span><span style="font-size: 10px">{{ totalProvEUR | number_format(2) }}</span></td>
+    </tr>
+</table>
+{% else %}
+    <table cellpadding="4px" cellspacing="4" width="785px">
+        <tr>
+            <td width="180px" align="left"  align="left"
+                style="font-size: 11px; border-top: 1px solid black; "><br><span style="font-size: 10px"><b>{{ prov | upper }}</b></span><br><span style="font-size: 10px"><b>Total de envíos&nbsp;&nbsp;&nbsp;</b>{{ totalProvincia }}</span>
+            </td>
+            <td width="280px" style="font-size: 11px; border-top: 1px solid black; text-align: justify"><span style="font-size: 10px"><b>Total Prov. Enviado CUC</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="font-size: 10px">{{ montoProvincia | number_format(2) }}</span><br><span style="font-size: 10px"><b>Total Prov. Enviado CUP</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="font-size: 10px">{{ montoProvinciaCUP | number_format(2) }}</span><br><span style="font-size: 10px"><b>Total Prov. Enviado USD</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="font-size: 10px">{{ montoProvinciaUSD | number_format(2) }}</span><br><span style="font-size: 10px"><b>Total Prov. Enviado EUR</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="font-size: 10px">{{ montoProvinciaEUR | number_format(2) }}</span>
+            </td>
+            <td width="220px" style="font-size: 10px; border-top: 1px solid black; text-align: justify"><span style="font-size: 10px"><b>Total Envíos CUC&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b></span><span style="font-size: 10px">{{ montoProvincia | number_format(2) }}</span><br><span style="font-size: 10px"><b>Total Envíos CUP&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b></span><span style="font-size: 10px">{{ montoProvinciaCUP | number_format(2) }}</span><br><span style="font-size: 10px"><b>Total Envíos USD&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b></span><span style="font-size: 10px">{{ montoProvinciaUSD | number_format(2) }}</span><br><span style="font-size: 10px"><b>Total Envíos EUR&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b></span><span style="font-size: 10px">{{ montoProvinciaEUR | number_format(2) }}</span></td>
+        </tr>
+    </table>
+{% endif %}

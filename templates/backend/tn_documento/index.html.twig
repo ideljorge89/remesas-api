@@ -1,0 +1,338 @@
+{% extends 'base_backend.html.twig' %}
+{% trans_default_domain 'AppBundle' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+
+    <link rel="stylesheet" type="text/css" href="{{ asset('bundles/stflagiconcss/css/flag-icon.min.css') }}"
+          xmlns="http://www.w3.org/1999/html"/>
+{% endblock %}
+{% block breadcrumb %}
+    <div class="col-lg-12">
+        <h2>Ficheros</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="{{ path('homepage_backend') }}"><i
+                            class="fa fa-home"></i> {{ 'backend.user_menu.breadcrumb.home'|trans({},'FOSUserBundle') }}
+                </a>
+            </li>
+            <li>
+                {{ 'backend.reportes.title'|trans({}) }}
+            </li>
+            <li class="active">
+                <strong>{{ 'backend.documento.title'|trans({}) }}</strong>
+            </li>
+        </ol>
+    </div>
+{% endblock %}
+{% block body %}
+    <div class="ibox">
+        <div class="ibox-content">
+            <div class="row">
+                <div class="col-md-12">
+                    {{ form_start(form,{'attr':{
+                        'id':form.vars.id
+                    }}) }}
+
+                    {{ form_widget(form._token) }}
+                    {% if form_errors(form) %}
+                        <div class="alert alert-danger" role="alert">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
+                                &times;
+                            </button>
+                            <span class="fa fa-exclamation"
+                                  aria-hidden="true"></span>
+                            <span class="sr-only">Error:</span>
+                            {{ form_errors(form) | striptags }}
+                        </div>
+                    {% endif %}
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="col-md-3 required">
+                                <div class="form-group">
+                                    <label class="font-noralm">{{ form_label(form.agencia)|striptags }}
+                                        <sup>*</sup></label>
+                                    <div class="col-md-12 col-xs-12 input-group">
+                                        {{ form_widget(form.agencia,{'attr':{'class':'form-control'}}) }}
+                                        {% if form_errors(form.agencia) %}
+                                            <div class="alert alert-danger" role="alert">
+                                                <button type="button" class="close" data-dismiss="alert"
+                                                        aria-hidden="true">&times;
+                                                </button>
+                                                <span class="fa fa-exclamation"
+                                                      aria-hidden="true"></span>
+                                                <span class="sr-only">Error:</span>
+                                                {{ form_errors(form.agencia) | striptags }}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 required">
+                                <div class="form-group">
+                                    <label class="font-noralm">{{ form_label(form.emisor)|striptags }}
+                                        <sup>*</sup></label>
+                                    <div class="col-md-12 col-xs-12 input-group">
+                                        {{ form_widget(form.emisor,{'attr':{'class':'form-control','disabled': 'disabled'}}) }}
+                                        {% if form_errors(form.emisor) %}
+                                            <div class="alert alert-danger" role="alert">
+                                                <button type="button" class="close" data-dismiss="alert"
+                                                        aria-hidden="true">&times;
+                                                </button>
+                                                <span class="fa fa-exclamation"
+                                                      aria-hidden="true"></span>
+                                                <span class="sr-only">Error:</span>
+                                                {{ form_errors(form.emisor) | striptags }}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 required">
+                                <div class="form-group">
+                                    <label class="font-noralm">{{ form_label(form.tipo)|striptags }}
+                                        <sup>*</sup></label>
+                                    <div class="col-md-12 col-xs-12 input-group">
+                                        {{ form_widget(form.tipo,{'attr':{'class':'form-control'}}) }}
+                                        {% if form_errors(form.tipo) %}
+                                            <div class="alert alert-danger" role="alert">
+                                                <button type="button" class="close" data-dismiss="alert"
+                                                        aria-hidden="true">&times;
+                                                </button>
+                                                <span class="fa fa-exclamation"
+                                                      aria-hidden="true"></span>
+                                                <span class="sr-only">Error:</span>
+                                                {{ form_errors(form.tipo) | striptags }}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 required">
+                                <div class="form-group">
+                                    <label class="font-noralm">{{ form_label(form.url)|striptags }} <sup>*</sup></label>
+                                    <div class="col-md-12 col-xs-12 input-group" style="width: 100%;">
+                                        {{ form_widget(form.url,{'attr':{
+                                            'class':'form-control'}}) }}
+                                        {% if form_errors(form.url) %}
+                                            <div class="alert alert-danger" role="alert">
+                                                <button type="button" class="close" data-dismiss="alert"
+                                                        aria-hidden="true">&times;
+                                                </button>
+                                                <span class="fa fa-exclamation"
+                                                      aria-hidden="true"></span>
+                                                <span class="sr-only">Error:</span>
+                                                {{ form_errors(form.url) | striptags }}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12 col-xs-12 text-right">
+                            <div class="col-md-12 col-xs-12">
+                                <button class="btn btn-primary pull-right" type="submit">
+                                    <i class="fa fa-upload"></i> {{ 'backend.documento.save'|trans }}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    </form>
+                </div>
+            </div>
+            <div class="row">
+                <div class="hr-line-dashed"></div>
+                <div id='table' class="col-md-12 table-responsive">
+                    <table id="contenedores"
+                           class="footable footable-paging footable-paging-center   table table-stripped table-hover  toggle-arrow-tiny"
+                           data-paging-size="50" data-paging="true" data-filtering="true" data-sorting="true">
+                        <thead>
+                        <tr>
+                            <th>{{ 'backend.documento.table.fecha' | trans }}</th>
+                            <th>{{ 'backend.documento.table.agencia' | trans }}</th>
+                            <th>{{ 'backend.documento.table.emisor' | trans }}</th>
+                            <th>{{ 'backend.documento.table.tipo' | trans }}</th>
+                            <th>{{ 'backend.documento.table.file' | trans }}</th>
+                            <th>{{ 'backend.documento.table.estado' | trans }}</th>
+                            <th>{{ 'backend.documento.table.result' | trans }}</th>
+                            <th>{{ 'backend.comun.table.actions' | trans }}</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for document in tn_documentos %}
+                            <tr>
+                                <td>{{ document.created | date('d/m/Y H:i:s') }}</td>
+                                <td>{{ document.agencia }}</td>
+                                <td>{{ document.emisor }}</td>
+                                <td>
+                                    {% if document.tipo == 'factura-TE' or document.tipo == 'factura-CA' or document.tipo == 'factura-TP' %}
+                                        <label class="label label-info"
+                                               for="Tipo">{{ tipo_fichero(document.tipo) }}</label>
+                                    {% else %}
+                                        <label class="label label-warning"
+                                               for="Tipo">{{ tipo_fichero(document.tipo) }}</label>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <a href="{{ asset('uploads/files/' ~ document.url) }}" data-toggle="tooltip"
+                                       title="Ver archivo subido"
+                                       target="_blank"><i class="fa fa-file-excel-o"></i></a>
+                                </td>
+                                <td>
+                                    {% if document.estado == 'pendiente' %}
+                                        <label class="label label-warning" for="Estado">{{ document.estado }}</label>
+                                    {% else %}
+                                        <label class="label label-success" for="Estado">{{ document.estado }}</label>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if document.estado == 'registrado' %}
+                                        <div data-toggle="buttons" class="btn-group">
+                                            <label class="btn btn-xs btn-success active" data-toggle="tooltip"
+                                                   title="Total">{{ document.totalProcesado ? document.totalProcesado : 0 }}</label>
+                                            <label class="btn btn-xs btn-primary" data-toggle="tooltip"
+                                                   title="Válido">{{ document.totalValido ? document.totalValido : 0 }}</label>
+                                            <label class="btn btn-xs btn-danger" data-toggle="tooltip"
+                                                   title="No Válido">{{ document.totalNoValido ? document.totalNoValido : 0 }}</label>
+                                        </div>
+                                    {% endif %}
+                                </td>
+                                <td class="text-center">
+                                    {% if document.estado == 'pendiente' %}
+                                        <form class="form-inline" method="post"
+                                              action="{{ path('tn_documento_delete', {'id': document.id}) }}"
+                                              onsubmit="return confirm('Está seguro desea eliminar el documento y su fichero?');">
+
+                                            {% if is_granted("ROLE_SUPER_ADMIN") or state == "HABILITADO" %}
+                                                {% if document.tipo == 'destinatario' %}
+                                                    <a class="btn btn-primary btn-xs proccess-file"
+                                                       data-toggle="tooltip"
+                                                       title="Procesar fichero {{ document.tipo }}"
+                                                       href="{{ path('tn_documento_procesar_fichero_destinatarios', {'id': document.id}) }}"><i
+                                                                class="fa fa-file-excel-o"></i></a>
+                                                {% else %}
+                                                    <a class="btn btn-primary btn-xs proccess-file"
+                                                       data-toggle="tooltip"
+                                                       title="Procesar fichero {{ document.tipo }}"
+                                                       href="{{ path('tn_documento_procesar_fichero_facturas', {'id': document.id }) }}"><i
+                                                                class="fa fa-file-excel-o"></i></a>
+                                                {% endif %}
+                                            {% endif %}
+
+                                            <input type="hidden" name="_method" value="DELETE">
+                                            <input type="hidden" name="_token"
+                                                   value="{{ csrf_token('delete' ~ document.id) }}">
+                                            <button class="btn btn-danger btn-xs" data-toggle="tooltip"
+                                                    title="Eliminar documento"><i class="fa fa-times"></i>
+                                            </button>
+                                        </form>
+
+                                    {% else %}
+                                        <a class="btn btn-info btn-xs" data-toggle="tooltip"
+                                           title="Descargar fallidos"
+                                           href="{{ path('tn_documento_validation_invalid_print', {'id': document.id}) }}"><i
+                                                    class="fa fa-download"></i></a>
+
+                                        <a class="btn btn-warning btn-xs" data-toggle="tooltip"
+                                           title="Mostrar fallidos"
+                                           href="{{ path('tn_documento_validation_invalid', {'id': document.id}) }}"><i
+                                                    class="fa fa-ban"></i></a>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                        <tfoot class="hide-if-no-paging">
+                        <tr>
+                            <td colspan="9" class="text-center">
+                                <ul class="pagination">
+
+                                </ul>
+                                <div class="pagination pull-right">{{ knp_pagination_render(tn_documentos,'@KnpPaginator/Pagination/sliding_backend.html.twig') }}</div>
+                            </td>
+                        </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+    {% block javascripts %}
+        {{ parent() }}
+
+        <script type="application/javascript">
+            $(function () {
+
+                $('.proccess-file').on('click', function (e) {
+                    e.preventDefault();
+                    var url = $(this).attr("href");
+                    swal({
+                        title: 'Procesar fichero',
+                        text: "¿Está seguro desea procesar este fichero?",
+                        type: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#F8C886",
+                        confirmButtonText: "Ok",
+                        cancelButtonText: "Cancelar",
+                        closeOnConfirm: true
+                    }, function (confirmed) {
+                        if (confirmed) {
+                            $(location).attr('href', url);
+                        }
+                    });
+
+                });
+
+                function load() {
+                    if ($("#{{ form.agencia.vars.id }} option:selected").val() != "") {
+                        updateEmisoresAgencia($("#{{ form.agencia.vars.id }} option:selected").data('user-id'));
+                    }
+                }
+
+                load();
+
+                function updateEmisoresAgencia(idAgencia) {
+                    if (idAgencia != "") {
+                        $.post("{{ url('admin_find_emisores_agencia') }}", {
+                            idAgencia: idAgencia,
+                        }, function (data) {
+                            $('#{{ form.emisor.vars.id }}').find('option').remove();
+                            var result = $.parseJSON(data);
+                            if (result.emisores.length == 0) {
+                                showToastr('warning', 'Búsqueda', 'La agencia seleccionada no tienes emisores registrados.');
+                            } else {
+                                $('#{{ form.emisor.vars.id }}').removeAttr('disabled');
+                                $.each(result.emisores, function (i, v) {
+                                    var group = ($("<option></option>").attr("value", v.value).text(v.text));
+                                    $('#{{ form.emisor.vars.id }}').append(group);
+                                })
+                            }
+                            $('#{{ form.emisor.vars.id }}').trigger("chosen:updated");
+                        });
+                    }
+                }
+
+                //Para buscar los emisores de la agencia que se selecione
+                $('#{{ form.agencia.vars.id }}').change(function () {
+                    updateEmisoresAgencia($("#{{ form.agencia.vars.id }} option:selected").data('user-id'));
+                });
+
+                $("#{{ form.vars.id }}").validate({
+                    rules: {
+                        '{{ form.agencia.vars.full_name }}': {
+                            required: true
+                        },
+                        '{{ form.agencia.vars.full_name }}': {
+                            required: true
+                        },
+                        '{{ form.url.vars.full_name }}': {
+                            required: true
+                        }
+                    }
+                });
+
+                dataLink()
+            })
+        </script>
+    {% endblock %}

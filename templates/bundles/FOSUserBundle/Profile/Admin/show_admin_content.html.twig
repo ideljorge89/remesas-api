@@ -1,0 +1,154 @@
+{% trans_default_domain 'FOSUserBundle' %}
+{% extends "@FOSUser/layout_backend.html.twig" %}
+
+{% block breadcrumb %}
+    <div class="col-lg-12">
+        <h2>{{ 'profile.show.pages_show_profile'|trans({},'FOSUserBundle') }}</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="{{ path('fos_user_profile_show') }}">{{ 'profile.show.extra_pages'|trans({},'FOSUserBundle') }}</a>
+            </li>
+            <li class="active">
+                <strong>{{ 'profile.show.pages_show_profile'|trans({},'FOSUserBundle') }}</strong>
+            </li>
+        </ol>
+    </div>
+{% endblock %}
+{% block fos_user_content %}
+    <div class="wrapper wrapper-content animated fadeInRight">
+
+
+        <div class="row m-b-lg m-t-lg">
+            <div class="col-md-6">
+
+                <div class="profile-image">
+                    {% set avatar = app.user.avatar !=null ?app.user.avatar : asset('assets/backend/img/profile_medium.jpg') %}
+                    <img src="{{ avatar }}" class="img-circle circle-border m-b-md" alt="profile">
+                </div>
+                <div class="profile-info">
+                    <div class="">
+                        <div>
+                            <h2 class="no-margins">
+                                {{ app.user.username|capitalize }}
+                            </h2>
+                            <h4><i class="fa fa-user"></i> {{ app.user.username }}</h4>
+                            <h4><i class="fa fa-envelope"></i> {{ app.user.email }}</h4>
+                            {% if is_granted("ROLE_AGENTE") or is_granted("ROLE_AGENCIA") %}
+                                {% if is_granted("ROLE_AGENTE") %}
+                                    <h4><i class="fa fa-percent"> Operación: </i>
+                                        {% for porciento in app.user.agente.porcentajes %}
+                                            {% if porciento.porcentaje %}
+                                                <label class="label label-primary">{{ porciento.porcentaje }}
+                                                    % {{ porciento.grupoPagoAgente.moneda.simbolo }}</label>
+                                            {% else %}
+                                                <label class="label label-danger">No
+                                                    definido {{ porciento.grupoPagoAgente.moneda.simbolo }}</label>
+                                            {% endif %}
+                                        {% endfor %}
+                                        {% for porciento in app.user.agente.porcentajesTransferencias %}
+                                            {% if porciento.porcentaje %}
+                                                <label class="label label-success">{{ porciento.porcentaje }}
+                                                    % {{ porciento.grupoPago.moneda.simbolo }}</label>
+                                            {% else %}
+                                                <label class="label label-danger">No
+                                                    definido {{ porciento.grupoPago.moneda.simbolo }}</label>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </h4>
+                                    <h4><i class="fa fa-dollar"> Agente: </i>
+                                        {% for grupo in app.user.agente.gruposPago %}
+                                            {% if grupo.utilidad %}
+                                                <label class="label label-warning">{{ grupo.utilidad }}
+                                                    USD</label>
+                                            {% else %}
+                                                <label class="label label-warning">{{ grupo.porcentaje }} -
+                                                    Moneda: {{ grupo.moneda }}</label>
+                                            {% endif %}
+                                        {% endfor %}
+                                        {% for grupo in app.user.agente.gruposPagoTransferencias %}
+                                            <label class="label label-success">{{ grupo.porcentaje }} -
+                                                Moneda: {{ grupo.moneda }}</label>
+                                        {% endfor %}
+                                    </h4>
+                                {% else %}
+                                    <h4><i class="fa fa-percent"> Operación: </i>
+                                        {% for porciento in app.user.agencia.porcentajes %}
+                                            {% if porciento.porcentaje %}
+                                                <label class="label label-primary">{{ porciento.porcentaje }}
+                                                    % {{ porciento.grupoPago.moneda.simbolo }}</label>
+                                            {% else %}
+                                                <label class="label label-danger">No
+                                                    definido {{ porciento.grupoPago.moneda.simbolo }}</label>
+                                            {% endif %}
+                                        {% endfor %}
+                                        {% for porciento in app.user.agencia.porcentajesTransferencias %}
+                                            {% if porciento.porcentaje %}
+                                                <label class="label label-success">{{ porciento.porcentaje }}
+                                                    % {{ porciento.grupoPago.moneda.simbolo }}</label>
+                                            {% else %}
+                                                <label class="label label-danger">No
+                                                    definido {{ porciento.grupoPago.moneda.simbolo }}</label>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </h4>
+                                    <h4><i class="fa fa-percent"> Agencia: </i>
+                                        {% for grupo in app.user.agencia.gruposPago %}
+                                            <label class="label label-warning">{{ grupo.porcentaje }} -
+                                                Moneda: {{ grupo.moneda }}</label>
+                                        {% endfor %}
+                                        {% for grupo in app.user.agencia.gruposPagoTransferencias %}
+                                            <label class="label label-success">{{ grupo.porcentaje }} -
+                                                Moneda: {{ grupo.moneda }}</label>
+                                        {% endfor %}
+                                    </h4>
+                                {% endif %}
+                                <h4>
+                                    {% if app.user.auth %}
+                                        <i class="fa fa-toggle-on"> Cálculo x porciento</i>
+                                    {% else %}
+                                        <i class="fa fa-toggle-off"> Cálculo x porciento</i>
+                                    {% endif %}
+                                </h4>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <table class="table small m-b-xs">
+                    <tbody>
+                    <tr>
+                        <td>
+                            {#<strong>{{ 'profile.show.products'|transchoice(counter_menu.bussinesCountProducts,{}) }}</strong>#}
+                        </td>
+                        <td>
+                            {#<strong>22</strong> Followers#}
+                        </td>
+
+                    </tr>
+                    <tr>
+                        <td>
+                            {#<strong>{{ 'profile.show.messages'|transchoice(counter_menu.bussinesCountMessagesInt,{}) }}</strong>#}
+                        </td>
+                        <td>
+                            {#<strong>54</strong> Articles#}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            {#<strong>154</strong> Tags#}
+                        </td>
+                        <td>
+                            {#<strong>32</strong> Friends#}
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <a href="{{ path('fos_user_profile_edit') }}" class="btn btn-primary pull-right"><i
+                        class="fa fa-edit"></i> {{ 'profile.show.pages_edit_profile'|trans }}</a>
+        </div>
+
+    </div>
+{% endblock fos_user_content %}
+

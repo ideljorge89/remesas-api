@@ -1,0 +1,234 @@
+{% extends 'base_backend.html.twig' %}
+{% trans_default_domain 'AppBundle' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+
+    <link rel="stylesheet" type="text/css" href="{{ asset('bundles/stflagiconcss/css/flag-icon.min.css') }}"
+          xmlns="http://www.w3.org/1999/html"/>
+{% endblock %}
+{% block breadcrumb %}
+    <div class="col-lg-12">
+        <h2>Reportes</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="{{ path('homepage_backend') }}"><i
+                            class="fa fa-home"></i> {{ 'backend.user_menu.breadcrumb.home'|trans({},'FOSUserBundle') }}
+                </a>
+            </li>
+            <li>
+                {{ 'backend.reportes.title'|trans({}) }}
+            </li>
+            <li class="active">
+                <strong>{{ 'backend.user_menu.administrator.contabilidad.cierres'|trans({},'FOSUserBundle') }}</strong>
+            </li>
+        </ol>
+    </div>
+{% endblock %}
+{% block body %}
+    <div class="ibox">
+        <div class="ibox-content">
+            <div class="row">
+                <div class="col-md-12">
+                    {{ form_start(form,{'attr':{
+                        'id':form.vars.id
+                    }}) }}
+
+                    {{ form_widget(form._token) }}
+                    {% if form_errors(form) %}
+                        <div class="alert alert-danger" role="alert">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
+                                &times;
+                            </button>
+                            <span class="fa fa-exclamation"
+                                  aria-hidden="true"></span>
+                            <span class="sr-only">Error:</span>
+                            {{ form_errors(form) | striptags }}
+                        </div>
+                    {% endif %}
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="col-md-4 required">
+                                <div class="form-group">
+                                    <label class="font-noraml"><strong>{{ 'backend.reportes.distribuidor_remesas.fields.fechas'|trans }}</strong>:</label>
+                                    <div class="input-daterange input-group">
+                                        {{ form_widget(form.fechaInicio,{
+                                            'attr':{
+                                                'class':'form-control'
+                                            }
+                                        }) }}
+                                        <span class="input-group-addon"> - </span>
+                                        {{ form_widget(form.fechaFin,{
+                                            'attr':{
+                                                'class':'form-control'
+                                            }
+                                        }) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 required">
+                                <div class="form-group">
+                                    <label class="font-noralm">{{ form_label(form.distribuidor)|striptags }}:</label>
+                                    <div class="col-xs-12 input-group">
+                                        {{ form_widget(form.distribuidor,{'attr':{'class':'form-control', 'data-placeholder': "Seleccione los distribuidores"}}) }}
+                                        {% if form_errors(form.distribuidor) %}
+                                            <div class="alert alert-danger" role="alert">
+                                                <button type="button" class="close" data-dismiss="alert"
+                                                        aria-hidden="true">&times;
+                                                </button>
+                                                <span class="fa fa-exclamation"
+                                                      aria-hidden="true"></span>
+                                                <span class="sr-only">Error:</span>
+                                                {{ form_errors(form.distribuidor) | striptags }}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 required">
+                                <div class="form-group">
+                                    <label class="font-noralm">{{ form_label(form.moneda)|striptags }}:</label>
+                                    <div class="col-xs-12 input-group">
+                                        {{ form_widget(form.moneda,{'attr':{'class':'form-control', 'data-placeholder': "Monedas"}}) }}
+                                        {% if form_errors(form.moneda) %}
+                                            <div class="alert alert-danger" role="alert">
+                                                <button type="button" class="close" data-dismiss="alert"
+                                                        aria-hidden="true">&times;
+                                                </button>
+                                                <span class="fa fa-exclamation"
+                                                      aria-hidden="true"></span>
+                                                <span class="sr-only">Error:</span>
+                                                {{ form_errors(form.moneda) | striptags }}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 text-right">
+                            <div class="hr-line-dashed"></div>
+                            <button class="btn btn-primary pull-right" type="submit" style="margin-left: 5px;">
+                                <i
+                                        class="fa fa-search"></i> {{ 'backend.reportes.btn_search'|trans }}
+                            </button>
+                        </div>
+                    </div>
+                    </form>
+                </div>
+            </div>
+            <div class="row">
+
+                <div id='table' class="col-md-12 table-responsive">
+                    <table id="contenedores"
+                           class="footable footable-paging footable-paging-center   table table-stripped table-hover  toggle-arrow-tiny"
+                           data-paging-size="50" data-paging="true" data-filtering="true" data-sorting="true">
+                        <thead>
+                        <tr>
+                            <th>{{ 'backend.operacion.table.diario.fecha'|trans }}</th>
+                            <th>{{ 'backend.operacion.table.diario.distribuidor'|trans }}</th>
+                            <th>{{ 'backend.operacion.table.diario.moneda'|trans }}</th>
+                            <th>{{ 'backend.operacion.table.diario.saldo_inicial'|trans }}</th>
+                            <th data-breakpoints="all">{{ 'backend.operacion.table.diario.recibido'|trans }}</th>
+                            <th>{{ 'backend.operacion.table.diario.entregado'|trans }}</th>
+                            <th>{{ 'backend.operacion.table.diario.envios'|trans }}</th>
+                            <th>{{ 'backend.operacion.table.diario.comision'|trans }}</th>
+                            <th data-breakpoints="all">{{ 'backend.operacion.table.diario.cancelado'|trans }}</th>
+                            <th data-breakpoints="all">{{ 'backend.operacion.table.diario.transferido'|trans }}</th>
+                            <th data-breakpoints="all">{{ 'backend.operacion.table.diario.gastos'|trans }}</th>
+                            <th>{{ 'backend.operacion.table.diario.credito'|trans }}</th>
+                            <th>{{ 'backend.operacion.table.diario.actions'|trans }}</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for cierre in cierres %}
+                            <tr>
+                                <td>{{ cierre.created | date('d/m/Y') }}</td>
+                                <td>{{ cierre.distribuidor }}</td>
+                                <td>{{ cierre.moneda.simbolo }}</td>
+                                <td>
+                                    <span class="label label-warning">$ {{ cierre.saldoInicial | number_format(2, '.', ',') }}</strong></span>
+                                </td>
+                                <td>$ {{ cierre.recibido | number_format(2, '.', ',') }}</td>
+                                <td>
+                                    <span class="label label-primary"><strong>$ {{ cierre.entregado | number_format(2, '.', ',') }}</strong></span>
+                                </td>
+                                <td>{{ cierre.envios }}</td>
+                                <td>$ {{ cierre.comision | number_format(2, '.', ',') }}</td>
+                                <td>$ {{ cierre.cancelado | number_format(2, '.', ',') }}</td>
+                                <td>$ {{ cierre.transferido | number_format(2, '.', ',') }}</td>
+                                <td>$ {{ cierre.gastos | number_format(2, '.', ',') }}</td>
+                                <td>
+                                    {% if cierre.credito >= 0 %}
+                                        <span class="label label-success"><strong>$ {{ cierre.credito ? cierre.credito | number_format(2, '.', ',') : 0.00 }}</strong></span>
+                                    {% else %}
+                                        <span class="label label-danger"><strong>$ {{ cierre.credito ? cierre.credito | number_format(2, '.', ',') : 0.00 }}</strong></span>
+                                    {% endif %}
+                                </td>
+                                <td class="text-right">
+                                    <a href="{{ path('tn_cierre_distribuidor_print', {'id': cierre.id }) }}"
+                                       data-toggle="tooltip" title="Exportar cierre" target="_blank">
+                                        <img src="{{ asset('assets/backend/img/pdf.png') }}"
+                                             style="width: 45px; height: 25px" alt="">
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12">
+                    <table class="table table-responsive">
+                        {% for key, total in totales %}
+                            <tr>
+                                <td><strong>RESUMEN</strong></td>
+                                <td><strong>{{ total['distribuidores'] }} distribuidores</strong></td>
+                                <td>{{ key }}</td>
+                                <td>{{ total['inicial'] | number_format(2, '.', ',') }}</td>
+                                <td>{{ total['entregado'] | number_format(2, '.', ',') }}</td>
+                                <td>{{ total['envios'] }}</td>
+                                <td>{{ total['comision'] | number_format(2, '.', ',') }}</td>
+                                <td>{{ total['disponible'] | number_format(2, '.', ',') }}</td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+
+    <script type="application/javascript">
+        $(function () {
+            $('.input-daterange').datepicker({
+                keyboardNavigation: false,
+                forceParse: false,
+                autoclose: true,
+                format: 'dd/mm/yyyy',
+                todayBtn: true,
+                language: 'es',
+                endDate: 'today',
+                todayHighlight: true
+            }).on('keypress paste', function (e) {
+                e.preventDefault();
+                return false;
+            });
+
+            $("#{{ form.vars.id }}").validate({
+                rules: {
+                    '{{ form.fechaInicio.vars.full_name }}': {
+                        required: true
+                    },
+                    '{{ form.fechaFin.vars.full_name }}': {
+                        required: true
+                    }
+                }
+            });
+
+            dataLink()
+        })
+    </script>
+{% endblock %}

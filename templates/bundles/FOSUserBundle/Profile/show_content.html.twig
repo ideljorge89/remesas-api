@@ -1,0 +1,160 @@
+{% trans_default_domain 'FOSUserBundle' %}
+{% extends "@FOSUser/layout.html.twig" %}
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('assets/frontend/js/plugins/cropper/crop-avatar/css/main.css') }}"/>
+    <link href="{{ asset('assets/frontend/css/cropper/cropper.min.css') }}" rel="stylesheet">
+    {{ parent() }}
+
+{% endblock %}
+
+{% block breadcrumbs %}
+    <ol class="breadcrumb">
+        <li class="active">{{ 'profile.show.pages_show_profile'|trans }}</li>
+    </ol>
+{% endblock %}
+
+{% block fos_user_content %}
+    {#<div class="title">
+        <h1>{{ 'profile.edit.edit_title'|trans({'%name%':app.user.profile.name}) }}</h1>
+    </div>#}
+    <!--end title-->
+    <div class="row">
+        <div class="col-md-3">
+            <div id="collapsible-sidebar" class="sidebar">
+                <div class="box filter">
+                    <i data-toggle="collapsible-sidebar" class="collapsible-toggle fa fa-chevron-down"></i>
+                    <h2>
+                        {{ 'profile.show.pages_show_profile'|trans }}
+                    </h2>
+                    <ul class="links" id="accordion">
+                        <li class="active" id="about_us">
+                            <a href="{{ path('fos_user_profile_show') }}" class="about_us_menu">
+                                {{ 'profile.show.pages_show_profile'|trans }}
+                            </a>
+                        </li>
+                        <li class="" id="terms_us">
+                            <a href="{{ path('fos_user_change_password') }}" class="terms_menu">
+                                {{ 'change_password.title'|trans }}
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <!--end filter-->
+            </div>
+            <!--end sidebar-->
+        </div>
+        <div class="col-md-9">
+            <div class="row">
+                    <!--Profile Picture-->
+                    <div class="col-md-3 col-sm-3">
+                        <section>
+                            <h2>{{ 'profile.edit.profile_avatar'|trans }}</h2>
+                                <div class="avatar-view " style="border-radius: 50%;cursor: unset; width: auto!important;height: 100%;max-width:200px;">
+                                    {% set avatar = app.user.avatar !=null ?app.user.avatar : asset('assets/backend/img/profile_medium.jpg') %}
+                                    <img src="{{ avatar }}" class="img-circle circle-border m-b-md" alt="profile">
+                                </div>
+                        </section>
+                    </div>
+                    <!--end col-md-3-->
+                    <!--Contact Info-->
+                    <div class="col-md-9 col-sm-9">
+                        <section>
+                            <h2>{{ 'profile.edit.personal_info'|trans }}</h2>
+                            <div class="row">
+                                <div class="col-md-6 col-sm-6">
+                                    <div class="form-group">
+                                        <label class="">{{ 'form.name'|trans }}</label>
+                                        {{ app.user.profile.name }}
+                                    </div>
+                                    <!--end form-group-->
+                                </div>
+                                <!--end col-md-3-->
+                                <div class="col-md-6 col-sm-6">
+                                    <div class="form-group">
+                                        <label class="">
+                                            {{ 'form.email'|trans }}
+                                        </label>
+                                        {{ app.user.email }}
+                                    </div>
+                                    <!--end form-group-->
+                                </div>
+                                <!--end col-md-3-->
+                                <div class="col-md-6 col-sm-6">
+                                    <div class="form-group">
+                                        <label class="">{{ 'form.phone'|trans }}
+                                        </label>
+                                        {{ app.user.profile.phone }}
+                                    </div>
+                                    <!--end form-group-->
+                                </div>
+                                <!--end col-md-3-->
+                                <div class="col-md-6 col-sm-6">
+                                    <div class="form-group">
+                                        <label class="">{{ 'form.pasaporte'|trans }}</label>
+                                        {{ app.user.profile.pasaporte }}
+                                    </div>
+                                    <!--end form-group-->
+                                </div>
+                                <!--end col-md-3-->
+                            </div>
+                        </section>
+                        <section>
+                            <h2>{{ 'form.factura_info'|trans }}</h2>
+                            <div class="row">
+                                <div class="col-md-6 col-sm-6">
+                                    <div class="form-group">
+                                        <label class="">{{ 'form.name_empresa'|trans }}</label>
+                                        {{ app.user.profile.contactPerson }}
+                                    </div>
+                                    <!--end form-group-->
+                                </div>
+                                <div class="col-md-6 col-sm-6">
+                                    <div class="form-group">
+                                        <label class="">{{ 'form.cif'|trans }}</label>
+                                        {{ app.user.profile.cif }}
+                                    </div>
+                                    <!--end form-group-->
+                                </div>
+                                <div class="col-md-6 col-sm-6">
+                                    <div class="form-group">
+                                        <label class="">{{ 'form.dir'|trans }}</label>
+                                        {{ app.user.profile.direccion }}
+                                    </div>
+                                    <!--end form-group-->
+                                </div>
+                                <div class="col-md-6 col-sm-6">
+                                    <div class="form-group">
+                                        <label class="">{{ 'form.cp'|trans }}</label>
+                                        {{ app.user.profile.codigoPostal }}
+                                    </div>
+                                    <!--end form-group-->
+                                </div>
+                                <div class="col-md-6 col-sm-6">
+                                    <div class="form-group">
+                                        <label class="">{{ 'form.city'|trans }}</label>
+                                        {{ app.user.profile.ciudad }}
+                                    </div>
+                                    <!--end form-group-->
+                                </div>
+                                <div class="col-md-6 col-sm-6">
+                                    <div class="form-group">
+                                        <label class="">{{ 'form.pais'|trans }}</label>
+                                        {#{{ app.user.profile.pais }}#}
+                                        {{ app.user.profile.pais  | country(app.request.locale) }}
+                                    </div>
+                                    <!--end form-group-->
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                    <!--end col-md-6-->
+                </div>
+            <div class="form-group pull-right">
+                <a href="{{ path('fos_user_profile_edit') }}" class="btn btn-warning btn-rounded" style="background-color: #be3b6d">
+                    <i class="fa fa-pencil"></i> {{ 'profile.edit.submit'|trans }}
+                </a>
+            </div>
+        </div>
+        <!--Password-->
+    </div>
+{% endblock fos_user_content %}

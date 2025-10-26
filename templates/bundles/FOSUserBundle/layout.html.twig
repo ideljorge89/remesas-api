@@ -1,0 +1,37 @@
+{% extends 'base_frontend.html.twig' %}
+{% block title %}
+    {{ 'frontend.title'|trans }} {{ 'frontend.welcome'|trans }}
+{% endblock %}
+{% block breadcrumbs %}
+
+    <ol class="breadcrumb">
+        <li>
+            <a href="{{ path('homepage') }}">
+                {{ 'frontend.breadcrumb.home'|trans({},'messages') }}
+            </a>
+        </li>
+        <li>
+            {{ 'registration.breadcrum.client'|trans({}, 'FOSUserBundle') }}
+        </li>
+    </ol>
+{% endblock %}
+{% block body %}
+        {% block flash %}
+            {% if app.request.hasPreviousSession %}
+                {% for type, messages in app.session.flashbag.all() %}
+                    {% for message in messages %}
+                        <div role="alert" class="alert alert-{{ type }} pgray  alert-lg alert-dismissable">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                            <p>
+                                {{ message }}
+                            </p>
+                        </div>
+                    {% endfor %}
+                {% endfor %}
+            {% endif %}
+        {% endblock %}
+        <div class="main-content">
+                {% block fos_user_content %}
+                {% endblock fos_user_content %}
+        </div>
+{% endblock %}

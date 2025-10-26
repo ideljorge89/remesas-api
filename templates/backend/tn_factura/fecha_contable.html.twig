@@ -1,0 +1,93 @@
+{% trans_default_domain 'AppBundle' %}
+<div class="panel-default">
+    <div class="panel-heading">
+        <label class="label label-primary">Modificar fecha contable Factura {{ tnFactura.noFactura }}</label>
+    </div>
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="col-sm-12 well well-sm">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <label>{{ 'backend.factura.table.orden'|trans }}
+                                : </label> {{ tnFactura.noFactura }}
+                            <br>
+                            <label>{{ 'backend.factura.table.estado'|trans }}
+                                : </label> {% if tnFactura.estado.codigo == '01' %}
+                                <span class="label label-info">Pendiente</span>
+                            {% elseif tnFactura.estado.codigo == '02' %}
+                                <span class="label label-warning">Aprobada</span>
+                            {% elseif tnFactura.estado.codigo == '03' %}
+                                <span class="label label-primary">Distribución</span>
+                            {% elseif tnFactura.estado.codigo == '04' %}
+                                <span class="label label-success">Entregada</span>
+                            {% else %}
+                                <span class="label label-danger">Cancelada</span>
+                            {% endif %}
+                            <br>
+                            <label>Fecha Contable: </label>
+                            {{ tnFactura.fechaContable | date('d-m-Y') }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="col-sm-12 well well-sm">
+                    <input type="text" name="fechaContable" id="fechaContable" class="form-control"/>
+                    <input type="hidden" id="valueFecha" value="{{ tnFactura.fechaContable | date('d-m-Y') }}"/>
+                    <br/>
+
+                    <div class="">
+                        <div class="">
+                            <button id="btn_submit" class="btn btn-primary pull-right" type="button"
+                                    data-factura="{{ tnFactura.id }}"><i
+                                        class="fa fa-save"></i> {{ 'backend.comun.table.save'|trans }}
+                            </button>
+                            <div style="clear:both"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $('#fechaContable').datepicker({
+            todayBtn: "linked",
+            keyboardNavigation: false,
+            forceParse: false,
+            calendarWeeks: true,
+            autoclose: true,
+            endDate: 'today',
+            format: "dd-mm-yyyy"
+        });
+        $('#fechaContable').datepicker('setDate', $('#valueFecha').val());
+
+        dataLink();
+
+        $('#btn_submit').click(function () {
+            var div_contable = $('#date_contable_' + $(this).attr('data-factura'));
+            var factura = $(this).attr('data-factura');
+            var fecha = $('#fechaContable').val();
+            $.post('{{ url('admin_factura_change_fecha_contable_ajax') }}', {
+                factura: factura,
+                fechaContable: fecha
+            }, function (data) {
+                if (data.success) {
+                    div_contable.html(data.div_content);
+
+                    dataLink();
+
+                    showToastr('success', 'Fecha contable', data.msg);
+
+                    $("#modal-form").modal("hide");
+                }
+            });
+        });
+    });
+</script>
+
+
+

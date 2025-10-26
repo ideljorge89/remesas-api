@@ -1,0 +1,700 @@
+backend:
+  title: Quickmoney
+  tabs_traduccion:
+    change_photo: Cambiar foto
+    select_photo: Seleccione una foto
+    rotate_photo_left: Rotar izq.
+    rotate_photo_right: Rotar der.
+    accept: Aceptar
+  comun:
+    tabs_traduccion:
+      en: Ingles
+      es: Español
+    form:
+      select_placeholder: Seleccione en lista
+      to_list: Volver al listado
+    search: Buscar
+    confirm: 
+    print: Imprimir
+    download: Descargar
+    empty: No se encontraron registros
+    table:
+      actions: Acciones
+      show: Mostrar
+      edit: Editar
+      delete: Eliminar
+      yes: Sí
+      no: No
+      save: Guardar
+      cancel: Cancelar
+      messages:
+        delete_confirm_question: Eliminar
+        delete_confirm_sub_text: ¿Esta seguro que desea eliminar el registro?
+  configurations:
+    attributes:
+      admin_email: Admin Email
+      price: Precio
+      factura_code: No. Factura
+      currency_rate_CUC_USD: Cambio CUC a USD
+      currency_rate_CUP_USD: Cambio CUP a USD
+      dias_entrega: Dias de entrega
+      percent: Porciento asignado
+      saldo_usd: Saldo USD
+      saldo_cup: Saldo CUP
+      saldo_eur: Saldo EUR
+      saldo_cad: Saldo CAD
+      transferencia_code: Código transferencia
+      last_check_factura: Última factura chequeda
+      status_new_factura: Registrar Nuevas facturas
+    table:
+      atributo: Atributo
+      valor: Valor
+    error: Ha ocurrido un error o configuracion no encontrada
+  reportes:
+    title: Reportes
+    btn_export: Exportar
+    panel: Panel estadísticas
+    pdf: PDF
+    excel: EXCEL
+    btn_search: Buscar
+    distribuidor_remesas:
+      title: Reporte Remesas
+      fields:
+        fechas: Rango de fechas
+    admin_distribuidor:
+      title: Reporte Distribuidor
+      fields:
+        fechas: Rango de fechas
+    admin_destinatario:
+      title: Reporte destinatario
+      fields:
+        fechas: Rango de fechas
+    admin_agencia:
+      title: Reporte Agencia
+      fields:
+        fechas: Rango de fechas
+    admin_agencia_transf:
+      title: Reporte Agencia
+      list: Reporte de Agencias en Transferencias
+      fields:
+        fechas: Rango de fechas
+    admin_agencia_dist:
+      title: Reporte Agencia distribución
+      fields:
+        fechas: Rango de fechas
+    agencia_costos:
+      title: Reporte de costos
+      fields:
+        fechas: Rango de fechas
+    agencia_costos_transf:
+      title: Reporte de costos transferencias
+      fields:
+        fechas: Rango de fechas
+    agencia_agentes_transf:
+      title: Reporte de agentes transferencias
+      fields:
+        fechas: Rango de fechas
+    admin_agente:
+      title: Reporte Agente
+      fields:
+        fechas: Rango de fechas
+    admin_apoderado:
+      title: Reporte Apoderado
+      fields:
+        fechas: Rango de fechas
+        apoderado: Apoderado
+    utilidad:
+      title: Reporte utilidad
+      fields:
+        fechas: Rango de fechas
+    admin_pendientes:
+      title: Pendientes Distribuidor
+    admin_reportes:
+      title: Reportes de Envío Distribuidor
+    editar_reporte:
+      distrubuidor: Distribuidor
+      reportes: Reportes Envío
+      remesas: Remesas
+  users:
+    table:
+      type: Tipo
+      email: Email
+      username: Usuario
+      tipo: Agencia|Agente|Distribuidor
+      agencia: Agencia
+      agente: Agente
+      distrubuidor: Distribuidor
+      avatar: Imagen
+    form:
+      placeholder:
+        search: Buscar usuarios
+  provincia:
+    table:
+      id: Id
+      acronimo: Acronimo
+      nombre: Nombre
+      codigo: Código
+      created: Creado
+      updated: Actualizado
+    form:
+      fields:
+        name: Nombre
+        codigo: Código
+      placeholder:
+        search: Buscar provincia
+  municipio:
+    table:
+      id: Id
+      nombre: Nombre
+      codigo: Código
+      tasa: Tasa Distribución
+      provincia: Provincia
+      moneda: Monedas entrega
+      created: Creado
+      updated: Actualizado
+    form:
+      fields:
+        name: Nombre
+        codigo: Código
+        tasa: Tasa Distribución
+        moneda: Monedas entrega
+        provincia: Provincia
+      placeholder:
+        search: Buscar municipio
+        moneda_placeholder: Seleccione las monedas
+  moneda:
+    table:
+      id: Id
+      simbolo: Símbolo
+      codigo: Codigo
+      descripcion: Descripcion
+      enabled: Activo
+      created: Creado
+      updated: Actualizado
+      tasa: Tasa de cambio
+      contable: Contable
+      comision: Comisión
+      aviable: Habilitado
+    form:
+      fields:
+        simbolo: Símbolo
+        codigo: Codigo
+        descripcion: Descripcion
+        fletes: Fletes
+        enabled: Activo
+        tasa: Tasa de cambio
+        contable: Contable
+        comision: Comisión
+        aviable: Habilitado
+      placeholder:
+        search: Buscar naviera
+  grupo_pago:
+    table:
+      id: Id
+      nombre: Nombre
+      porciento: Porciento
+      minimo: Monto mínimo
+      tipo: Tipo Utilidad
+      utilidad_fija: Utilidad fija
+      moneda: Moneda
+      agencias: Agencias
+      enabled: Activo
+      created: Creado
+      updated: Actualizado
+    form:
+      fields:
+        nombre: Nombre
+        porciento: Porciento
+        minimo: Monto mínimo
+        utilidad_fija: Utilidad
+        tipo: Tipo Utilidad
+        moneda: Moneda
+        enabled: Activo
+      placeholder:
+        search: Buscar grupo
+  grupo_pago_transf:
+    table:
+      id: Id
+      nombre: Nombre
+      porciento: Porciento
+      moneda: Moneda
+      agencias: Agencias
+      agentes: Agentes
+      enabled: Activo
+      created: Creado
+      updated: Actualizado
+    form:
+      fields:
+        nombre: Nombre
+        porciento: Porciento
+        moneda: Moneda
+        enabled: Activo
+      placeholder:
+        search: Buscar grupo
+  grupo_pago_agente:
+    table:
+      id: Id
+      nombre: Nombre
+      porciento: Porciento
+      utilidad: Utilidad
+      agentes: Agentes
+      enabled: Activo
+      created: Fecha Creado
+      agencia: Agencia
+      updated: Fecha Actualizado
+    form:
+      fields:
+        nombre: Nombre
+        porciento: Porciento
+        utilidad: Utilidad
+        enabled: Activo
+      placeholder:
+        search: Buscar grupo
+  agencia:
+    table:
+      id: Id
+      nombre: Nombre
+      telefono: Teléfono
+      email: Email
+      direccion: Dirección
+      direccion1: Dirección 1
+      direccion2: Dirección 2
+      direccion3: Dirección 3
+      saldo: Saldo monedas
+      saldo_moneda: Saldo
+      ciudad: Ciudad
+      estado: Estado
+      zip: Zip
+      pais: País
+      grupo: Grupos pago
+      grupo_transf: Grupos transf.
+      saldos: Saldos
+      enabled: Activo
+      retenida: Retenida
+      agentes: Agentes
+      created: Creado
+      updated: Actualizado
+    form:
+      fields:
+        nombre: Nombre
+        telefono: Teléfono
+        email: Email
+        saldo: Saldo monedas
+        porcientos: Porcientos operación
+        saldo_moneda: Saldo
+        porciento: Porciento %
+        editar: Editar saldo Agencia %agencia%
+        editar_agente: Editar saldo Agente %agente%
+        direccion1: Dirección 1
+        direccion2: Dirección 2
+        direccion3: Dirección 3
+        ciudad: Ciudad
+        estado: Estado
+        pais: País
+        grupo: Grupos pago
+        grupo_transf: Grupos transf.
+        zip: Zip
+        enabled: Activo
+        retenida: Retenida
+      placeholder:
+        search: Buscar Agencia
+  agente:
+    table:
+      id: Id
+      nombre: Nombre
+      telefono: Teléfono
+      email: Email
+      direccion: Dirección
+      direccion1: Dirección 1
+      direccion2: Dirección 2
+      direccion3: Dirección 3
+      tipo: Tipo A.
+      ciudad: Ciudad
+      estado: Estado
+      zip: Zip
+      pais: País
+      grupo: Grupo pago
+      grupo_tranf: Grupo Transf.
+      agencia: Agencia
+      enabled: Activo
+      created: Creado
+      updated: Actualizado
+    form:
+      fields:
+        nombre: Nombre
+        telefono: Teléfono
+        email: Email
+        direccion1: Dirección 1
+        direccion2: Dirección 2
+        direccion3: Dirección 3
+        tipo: Tipo Agente
+        ciudad: Ciudad
+        estado: Estado
+        pais: País
+        grupo: Grupo pago
+        agencia: Agencia
+        agente: Agente
+        zip: Zip
+        enabled: Activo
+      placeholder:
+        search: Buscar Agente
+  emisor:
+    table:
+      id: Id
+      nombre: Nombre
+      telefono: Teléfono
+      email: Email
+      direccion: Dirección
+      direccion1: Dirección 1
+      direccion2: Dirección 2
+      direccion3: Dirección 3
+      ciudad: Ciudad
+      estado: Estado
+      zip: Zip
+      pais: País
+      destinatarios: Destinatarios
+      user: Creado
+      enabled: Activo
+      created: Creado
+      updated: Actualizado
+    form:
+      fields:
+        nombre: Nombre
+        apellidos: Apellidos
+        telefono: Teléfono
+        email: Email
+        direccion1: Dirección 1
+        direccion2: Dirección 2
+        direccion3: Dirección 3
+        ciudad: Ciudad
+        estado: Estado
+        pais: País
+        user: Creado
+        zip: Zip
+        enabled: Activo
+      placeholder:
+        search: Buscar Emisor
+  distribuidor:
+    table:
+      id: Id
+      nombre: Nombre
+      ci: CI
+      telefono: Teléfono
+      email: Email
+      direccion: Dirección
+      direccion1: Dirección 1
+      municipio: Municipio
+      provincia: Provincia
+      licencia: Datos licencia
+      zonas: Zonas distribución
+      pais: País
+      enabled: Activo
+      created: Creado
+      updated: Actualizado
+    form:
+      fields:
+        nombre: Nombre(s)
+        apellidos: Apellidos
+        ci: CI
+        telefono: Teléfono
+        email: Email
+        direccion: Dirección
+        direccion1: Dirección 1
+        municipio: Municipio
+        provincia: Provincia
+        licencia: Datos licencia
+        pais: País
+        zonas: Zonas distribución
+        enabled: Activo
+      placeholder:
+        search: Buscar Distribuidor
+  destinatario:
+    table:
+      id: Id
+      nombre: Nombre
+      ci: CI
+      telefono: Teléfono
+      email: Email
+      direccion: Dirección
+      direccion1: Dirección 1
+      municipio: Municipio
+      provincia: Provincia
+      licencia: Datos licencia
+      pais: País
+      nombre_alt: Nombre alternativo
+      apellidos_alt: Apellidos alternativo
+      ci_alt: CI alternativo
+      phone_alt: Teléf. Alternativo
+      alias: Alias
+      emisor: Emisor
+      enabled: Activo
+      created: Creado
+      updated: Actualizado
+    form:
+      fields:
+        nombre: Nombre(s)
+        apellidos: Apellidos
+        ci: CI
+        telefono: Teléfono
+        telefono_alt: Teléfono alternativo
+        email: Email
+        direccion: Dirección
+        direccion1: Dirección 1
+        municipio: Municipio
+        provincia: Provincia
+        licencia: Datos licencia
+        pais: País
+        alias: Alias
+        emisor: Emisor
+        nombre_alt: Nombre alternativo
+        apellidos_alt: Apellidos alternativo
+        ci_alt: CI alternativo
+        enabled: Activo
+      placeholder:
+        search: Buscar Destinatario
+  factura:
+    table:
+      orden: Nro.
+      emisor: Emisor
+      destinatario: Destinatario(s)
+      destinatarios: Destinatarios
+      distribuidor: Distribuidor
+      remesas: Remesas
+      total_remesas: "{1} 1 remesa|]1,Inf[ %count% remesas"
+      logs_show: Mostrar logs factura
+      total: Enviado
+      edit_note: Editar notas
+      edit_referencia_old: Editar referencia anterior
+      importe: Importe
+      fecha: Fecha
+      moneda: Moneda
+      creador: Creada
+      estado: Estado
+      notas: Notas:
+      referencia_old: Referencia anterior:
+      fechaContable: Fecha contable:
+      logs: Logs:
+    aprove:
+      title: Seleccione las facturas a aprobar
+      btn: Aprobar
+    dist:
+      title: Seleccione las facturas a distribuir
+      remesas: Distribuir remesas
+      facturaNo: Factura %nro%
+      remesa:
+        destinatario: Destinatario
+        ci: CI
+        direccion: Dirección
+        monto: Entrega
+        distribuidor: Asignar Distribuidor
+        btn: Distribuir
+    form:
+      fields:
+        orden: Orden \#
+        emisor: Emisor
+        add_new: AÑADIR NUEVO EMISOR
+        destinatario: Destinatario
+        remesas: Remesas
+        total: Total
+        moneda: Moneda entrega
+        importe: Importe
+        entrega: Entrega
+        hora: Hora
+        total_pagar: Importe (USD)
+        moneda_entreda: Moneda entrega
+        fecha: Fecha
+        creador: Creada Por
+        estado: Estado
+      placeholder:
+        search: Buscar Factura
+      detalles:
+        destinatario: Destinatario
+        direccion: Dirección
+        telef: Teléfono
+        alias: Alias
+  transferencia:
+    table:
+      codigo: Código.
+      titular: Titular tarjeta
+      phone: Teléfono
+      emisor: Emisor
+      tarjeta: Tarjeta destino
+      logs_show: Mostrar logs transferencia
+      reporte: Reporte de Repartidores
+      repartidor: Repartidor
+      total: Enviado
+      importe: Importe
+      edit_note: Editar notas
+      fecha: Fecha
+      creador: Creada
+      estado: Estado
+      notas: Notas:
+      fechaContable: Fecha contable:
+      logs: Logs:
+    asignar:
+      title: Seleccionar los repartidores
+      transfNro: Transferencia %codigo%
+      repartidor: Asignar repartidores
+      asignaciones: Reportes envío transferencias
+      btn: Asignar
+    form:
+      fields:
+        codigo: Código.
+        titular: Titular tarjeta
+        repartidor: Repartidor
+        emisor: Emisor
+        tarjeta: Número de tarjeta
+        phone: Teléfono de contacto
+        total: Total
+        importe: Total a cobrar
+        entrega: Importe a entregar
+        total_pagar: Importe (USD)
+        fecha: Fecha
+        creador: Creada Por
+        estado: Estado
+      placeholder:
+        search: Buscar transferencia
+  remesa:
+    table:
+      orden: Fact No.
+      destinatario: Destinatario
+      direccion: Dirección
+      mun: Municipio
+      prov: Provincia
+      total: Total
+      fecha: Fecha
+      moneda: Moneda
+      creador: Creada
+      estado: Estado
+  documento:
+    title: Ficheros
+    invalid: Destinatarios no insertados
+    save: Subir
+    table:
+      estado: Estado
+      file: Fichero
+      agencia: Agencia
+      emisor: Emisor
+      tipo: Tipo
+      fecha: Fecha
+      result: Resultado
+      updated: Actualizado
+    form:
+      fields:
+        estado: Estado
+        file: Archivo
+        agencia: Agencia
+        tipo: Tipo
+        emisor: Emisor
+        fecha: Fecha
+        updated: Actualizado
+      placeholder:
+        search: Buscar documento
+  distribucion:
+    listado: Historiales
+    table:
+      historial:
+        title: Historial
+        nro: Nro.
+        destinatario: Destinatario.
+        entregado: Entregado.
+        moneda: Moneda/Tasa
+        importe: Importe
+        comision: Comisión
+        total: Total
+        estado: Estado
+  operacion:
+    new: Registrar operación
+    listado: Listado de operaciones
+    table:
+      importe: Importe
+      tipo: Tipo Operación
+      moneda: Moneda
+      notas: Notas
+      fecha: Fecha
+      distribuidor: Distribuidor
+      diario:
+        moneda: Moneda
+        fecha: Fecha
+        distribuidor: Distribuidor
+        saldo_inicial: Saldo inicial
+        recibido: Recibido
+        entregado: Entregado
+        envios: Envíos
+        comision: Comisión
+        cancelado: Cancelado
+        transferido: Transferido
+        gastos: Gastos
+        credito: Disponible
+        total: Total
+        facturas: Facturas Canceladas
+        actions: Acciones
+      historial:
+        title: Historial
+        nro: Nro.
+        destinatario: Destinatario.
+        entregado: Entregado.
+        moneda: Moneda
+        importe: Importe
+        comision: Comisión
+        total: Total
+        estado: Estado
+    form:
+      fields:
+        importe: Importe
+        tipo: Tipo Operación
+        moneda: Moneda
+        notas: Notas
+        distribuidor: Distribuidor
+  apoderado:
+    table:
+      id: Id
+      nombre: Nombre
+      agencia: Agencia representa
+      subordinadas: Agencias subordinadas
+      created: Creado
+      updated: Actualizado
+    form:
+      fields:
+        nombre: Nombre
+        agencia: Agencia Representa
+        subordinadas: Subordinadas
+      placeholder:
+        search: Buscar Apoderado
+  lista_negra:
+    table:
+      id: Id
+      nombre: Nombre
+      telefono: Teléfono
+      direccion: Dirección
+      ci: CI
+      enabled: Activo
+      created: Creado
+      updated: Actualizado
+    form:
+      fields:
+        nombre: Nombre
+        apellidos: Apellidos
+        telefono: Teléfono
+        ci: CI
+        direccion: Dirección
+        enabled: Activo
+      placeholder:
+        search: Buscar lista negra
+  repartidor:
+    table:
+      id: Id
+      nombre: Nombre
+      observacion: Observación
+      comision: Comisión
+      enabled: Activo
+      created: Creado
+      updated: Actualizado
+    form:
+      fields:
+        nombre: Nombre
+        observacion: Observación
+        comision: Comisión
+        enabled: Activo
+      placeholder:
+        search: Buscar repartidor

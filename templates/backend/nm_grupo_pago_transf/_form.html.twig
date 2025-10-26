@@ -1,0 +1,122 @@
+{% trans_default_domain 'AppBundle' %}
+{{ form_start(form,{
+    'attr':{
+        'id': form.vars.id,
+        'novalidate':'novalidate'
+    }}) }}
+
+
+    {{ form_widget(form._token) }}
+
+<p>
+    {% if form_errors(form) %}
+
+    <div class="alert alert-danger" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+        <span class="fa fa-exclamation"
+              aria-hidden="true"></span>
+        <span class="sr-only">Error:</span>
+        {{ form_errors(form) | striptags }}
+    </div>
+{% endif %}
+</p>
+
+<div class="row">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="col-md-3 col-sm-12 col-xs-12">
+            <div class="panel panel-warning">
+                <div class="panel-heading">
+                    <i class="fa fa-info-circle"></i> Información
+                </div>
+                <div class="panel-body">
+                    <p style="text-align: justify"><strong>Nombre y Porciento</strong> son valores con que
+                        operan las Agencias y son obligatorios.</p>
+                </div>
+
+            </div>
+        </div>
+        <div class="col-md-9 col-sm-12 col-xs-12">
+            <div class="col-md-12 col-sm-12 col-xs-12 form-group pull-right required">
+                <div class="col-md-6 col-sm-12 col-xs-12">
+                    <label class="col-lg-3 control-label text-right">{{ form_label(form.nombre)|striptags }}<sup>*</sup></label>
+
+                    <div class="col-lg-9">
+                        {{ form_widget(form.nombre,{'attr':{'class':'form-control'}}) }}
+                        {% if form_errors(form.nombre) %}
+                            <div class="alert alert-danger" role="alert">
+                                <button type="button" class="close" data-dismiss="alert"
+                                        aria-hidden="true">&times;
+                                </button>
+                                <span class="fa fa-exclamation"
+                                      aria-hidden="true"></span>
+                                <span class="sr-only">Error:</span>
+                                {{ form_errors(form.nombre) | striptags }}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="col-md-6 col-sm-12 col-xs-12">
+                    <label class="col-lg-3 control-label text-right">{{ form_label(form.enabled)|striptags }}</label>
+
+                    <div class="col-lg-9">
+                        {% if form.vars.data.id == null %}
+                            {{ form_widget(form.enabled,{'attr':{'class':'form-control js-switch', 'checked':'checked'}}) }}
+                        {% else %}
+                            {{ form_widget(form.enabled,{'attr':{'class':'form-control js-switch'}}) }}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12 col-sm-12 col-xs-12 form-group pull-right required">
+                <div class="col-md-6 col-sm-12 col-xs-12">
+                    <label class="col-lg-3 control-label text-right">{{ form_label(form.porcentaje)|striptags }}
+                        <sup>*</sup></label>
+
+                    <div class="col-lg-9">
+                        {{ form_widget(form.porcentaje,{'attr':{'class':'form-control'}}) }}
+                        {% if form_errors(form.porcentaje) %}
+                            <div class="alert alert-danger" role="alert">
+                                <button type="button" class="close" data-dismiss="alert"
+                                        aria-hidden="true">&times;
+                                </button>
+                                <span class="fa fa-exclamation"
+                                      aria-hidden="true"></span>
+                                <span class="sr-only">Error:</span>
+                                {{ form_errors(form.porcentaje) | striptags }}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="col-md-6 col-sm-12 col-xs-12 pull-right form-group ">
+                    <label class="col-lg-3 control-label text-right">{{ form_label(form.moneda)|striptags }}
+                        <sup>*</sup></label>
+                    <div class="col-md-9 col-xs-12">
+                        {{ form_widget(form.moneda,{'attr':{'class':'form-control chosen-select col-sm-12'}}) }}
+                        {% if form_errors(form.moneda) %}
+                            <div class="alert alert-danger" role="alert">
+                                <button type="button" class="close" data-dismiss="alert"
+                                        aria-hidden="true">&times;
+                                </button>
+                                <span class="fa fa-exclamation"
+                                      aria-hidden="true"></span>
+                                <span class="sr-only">Error:</span>
+                                {{ form_errors(form.moneda) | striptags }}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xs-12 text-right">
+        <div class="hr-line-dashed"></div>
+        <a class="btn btn-warning" href="{{ path('nm_grupo_pago_transf_index') }}"><i
+                    class="fa fa-reply"></i> {{ 'backend.comun.form.to_list'|trans }}</a>
+
+        <button class="btn btn-primary pull-right" type="submit" style="margin-left: 5px;"><i
+                    class="fa fa-save"></i> {{ 'backend.comun.table.save'|trans }}</button>
+
+    </div>
+</div>
+</form>

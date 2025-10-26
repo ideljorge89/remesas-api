@@ -1,0 +1,3 @@
+{% if app.user and (is_granted('ROLE_SUPER_ADMIN') or is_granted('ROLE_ADMINISTRADOR') or is_granted('ROLE_AGENCIA') or is_granted('ROLE_AGENTE') or is_granted('ROLE_DISTRIBUIDOR')) %}
+    {% include "@FOSUser/Profile/Admin/edit_admin_content.html.twig" %}
+{% endif %}

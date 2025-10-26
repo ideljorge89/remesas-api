@@ -1,0 +1,93 @@
+{% extends 'base_backend.html.twig' %}
+{% trans_default_domain 'AppBundle' %}
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .note-editor {
+            border: 2px solid #f5f5f5;
+        }
+    </style>
+{% endblock %}
+{% block breadcrumb %}
+    <div class="col-lg-12">
+        <h2>{{ 'backend.user_menu.administrator.configurations'|trans({},'FOSUserBundle') }}</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="{{ path('homepage_backend') }}"><i
+                            class="fa fa-home"></i> {{ 'backend.user_menu.breadcrumb.home'|trans({},'FOSUserBundle') }}
+                </a>
+            </li>
+            <li class="">
+                <a href="{{ path('backend_configurations') }}">{{ 'backend.user_menu.administrator.configurations'|trans({},'FOSUserBundle') }}</a>
+            </li>
+            <li class="active">
+                <strong>{{ 'backend.user_menu.administrator.configurations_edit'|trans({},'FOSUserBundle') }}</strong>
+            </li>
+        </ol>
+    </div>
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+
+    <script type="application/javascript">
+        $(document).ready(function () {
+        });
+    </script>
+
+{% endblock %}
+
+{% block body %}
+
+    <div class="wrapper wrapper-content ">
+        <div class="row">
+            <div class="col-lg-12">
+                <form action="{{ path('backend_configurations_edit', {'config' : config}) }}" method="post">
+                    <div class="ibox">
+                        <div class="ibox-title">
+                            <i class="fa fa-gears pull-left" style="font-size: 2em;"></i>
+                        </div>
+                        <div class="ibox-content">
+                            <div class="panel-body">
+                                <div class="col-sm-8">
+                                    <div class="form-group">
+
+                                        <label class="col-sm-6"
+                                               for="">{{ ('backend.configurations.attributes.'~config)|trans }}:</label>
+
+                                        <div class="col-sm-6">
+                                            {% if config != 'status_new_factura' %}
+                                            <input type="text" class="form-control" name="{{ config }}"
+                                                   value="{{ value }}"
+                                                   required="required"/>
+                                            {% else %}
+                                                <select name="{{ config }}" id="{{ config }}" class="form-control">
+                                                    <option value="HABILITADO" {{ value_config(config) == 'HABILITADO' ? 'selected="selected"': '' }}>HABILITADO</option>
+                                                    <option value="DESABILITADO" {{ value_config(config) == 'DESABILITADO' ? 'selected="selected"': '' }}>DESABILITADO</option>
+                                                </select>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="">
+                            <label class=""></label>
+
+                            <div class="">
+                                <button id="btn_submit" style="margin-left: 5px;" class="btn btn-primary pull-right" type="submit">
+                                    <i class="fa fa-edit"></i> {{ 'backend.comun.table.save'|trans }}
+                                </button>
+
+                                <a class="btn btn-warning pull-right" href="{{ path('backend_configurations') }}">
+                                    <i class="fa fa-mail-reply"></i>
+                                    {{ 'backend.comun.table.cancel'|trans }}
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

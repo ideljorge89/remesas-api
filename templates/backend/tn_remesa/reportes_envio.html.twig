@@ -1,0 +1,111 @@
+{% extends 'base_backend.html.twig' %}
+{% trans_default_domain 'AppBundle' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock %}
+{% block breadcrumb %}
+    <div class="col-lg-12">
+        <h2>{{ 'backend.user_menu.administrator.facutra.remesas.reportes.title'|trans({},'FOSUserBundle') }}</h2>
+        <ol class="breadcrumb">
+            <li class="active">
+                <strong>{{ 'backend.user_menu.administrator.facutra.remesas.reportes.list'|trans({},'FOSUserBundle') }}</strong>
+            </li>
+        </ol>
+    </div>
+{% endblock %}
+{% block body %}
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox">
+                <div class="ibox-content">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div id='table' class="table-responsive">
+                                <table class="footable footable-paging footable-paging-center  footable-paging-center  table table-stripped table-hover  toggle-arrow-tiny"
+                                       data-paging-size="100" data-paging="true" data-filtering="true"
+                                       data-sorting="true">
+                                    <thead>
+                                    <tr>
+                                        <th data-sort-ignore="true">{{ 'backend.user_menu.administrator.facutra.remesas.reportes.fecha'|trans({},'FOSUserBundle') }}</th>
+                                        <th data-sort-ignore="true">{{ 'backend.user_menu.administrator.facutra.remesas.reportes.total'|trans({},'FOSUserBundle') }}</th>
+                                        <th data-sort-ignore="true">{{ 'backend.user_menu.administrator.facutra.remesas.reportes.importe'|trans({},'FOSUserBundle') }}</th>
+                                        <th data-sort-ignore="true">{{ 'backend.user_menu.administrator.facutra.remesas.reportes.remesas'|trans({},'FOSUserBundle') }}</th>
+                                        <th class="text-right"
+                                            data-sort-ignore="true" align="center">Acts
+                                        </th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for reporte in reportesEnvio %}
+                                        <tr>
+                                            <td>{{ reporte.created | date('d/m/Y H:i:s A') }}</td>
+                                            <td>{{ reporte.totalRemesas }}</td>
+                                            <td>
+                                                {% set importe = 0 %}
+                                                {% set importeCUP = 0 %}
+                                                {% set importeUSD = 0 %}
+                                                {% set importeEUR = 0 %}
+                                                {% for remesa in reporte.remesas %}
+                                                    {% if remesa.moneda.simbolo == "CUC" %}
+                                                        {% set importe = importe + remesa.importeEntregar %}
+                                                    {% elseif remesa.moneda.simbolo == "CUP" %}
+                                                        {% set importeCUP = importeCUP + remesa.importeEntregar %}
+                                                    {% elseif remesa.moneda.simbolo == "EUR" %}
+                                                        {% set importeEUR = importeEUR + remesa.importeEntregar %}
+                                                    {% else %}
+                                                        {% set importeUSD = importeUSD + remesa.importeEntregar %}
+                                                    {% endif %}
+                                                {% endfor %}
+                                                {{ importe | number_format(2, '.', ',') }} CUC<br>
+                                                {{ importeCUP | number_format(2, '.', ',') }} CUP<br>
+                                                {{ importeUSD | number_format(2, '.', ',') }} USD<br>
+                                                {{ importeEUR | number_format(2, '.', ',') }} EUR
+                                            </td>
+                                            <td>
+                                                <a data-toggle="tooltip" title="Listado de remesas"
+                                                   data-target="#modal-form"
+                                                   data-width="width-80"
+                                                   target="_blank"
+                                                   href="{{ path('entrega_reporte_envio_show', {'token': reporte.token}) }}">
+                                                    <i class="fa fa-list"></i>
+                                                </a>
+                                            </td>
+                                            <td class="text-center">
+                                                <a href="{{ path('entrega_remesas_reporte_export_pdf', {'token': reporte.token}) }}" target="_blank" data-toggle="tooltip" title="Exportar reporte">
+                                                    <img src="{{ asset('assets/backend/img/pdf.png') }}"
+                                                         style="width: 45px; height: 25px" alt="">
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                    <tfoot class="hide-if-no-paging">
+                                    <tr>
+                                        <td colspan="4" class="text-center">
+                                            <ul class="pagination">
+
+                                            </ul>
+                                            <div class="pagination pull-right">{{ knp_pagination_render(reportesEnvio,'@KnpPaginator/Pagination/sliding_backend.html.twig') }}</div>
+                                        </td>
+                                    </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        $(function () {
+            dataLink()
+        });
+    </script>
+{% endblock %}

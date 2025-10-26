@@ -1,0 +1,255 @@
+{% extends 'base_backend.html.twig' %}
+{% trans_default_domain 'AppBundle' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .filter-hidden {
+            display: none;
+        }
+
+        .filter-show {
+            display: block;
+        }
+    </style>
+{% endblock %}
+
+{% block breadcrumb %}
+    <div class="col-lg-12">
+        <h2>{{ 'backend.user_menu.administrator.nomencladores.destinatario.title'|trans({},'FOSUserBundle') }}</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="{{ path('homepage_backend') }}"><i
+                            class="fa fa-home"></i> {{ 'backend.user_menu.breadcrumb.home'|trans({},'FOSUserBundle') }}
+                </a>
+            </li>
+            <li class="">
+                {{ 'backend.user_menu.administrator.nomencladores.title'|trans({},'FOSUserBundle') }}
+            </li>
+            <li class="active">
+                <strong>{{ 'backend.user_menu.administrator.nomencladores.destinatario.title'|trans({},'FOSUserBundle') }}</strong>
+            </li>
+        </ol>
+    </div>
+{% endblock %}
+{% block body %}
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox advanced-filter filter-hidden">
+                <div class="ibox-content m-b-sm border-bottom">
+                    {{ form_start(form,{'attr':{
+                        'id':form.vars.id,
+                        'action': path('tn_destinatario_advanced_search')
+                    }}) }}
+
+                    {{ form_widget(form._token) }}
+                    {% if form_errors(form) %}
+                        <div class="alert alert-danger" role="alert">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
+                                &times;
+                            </button>
+                            <span class="fa fa-exclamation"
+                                  aria-hidden="true"></span>
+                            <span class="sr-only">Error:</span>
+                            {{ form_errors(form) | striptags }}
+                        </div>
+                    {% endif %}
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                {{ form_widget(form.destinatario,{'attr':{'class':'form-control'}}) }}
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                {{ form_widget(form.emisor,{'attr':{'class':'form-control'}}) }}
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                {{ form_widget(form.phone,{'attr':{'class':'form-control'}}) }}
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                {{ form_widget(form.direccion,{'attr':{'class':'form-control'}}) }}
+                            </div>
+                        </div>
+                    </div>
+                    {% if is_granted("ROLE_SUPER_ADMIN") or is_granted("ROLE_AGENCIA") %}
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    {{ form_widget(form.usuario,{'attr':{'class':'form-control', 'data-placeholder': "Creado por"}}) }}
+                                </div>
+                            </div>
+                            <div class="col-sm-9">
+                                <div class="form-group">
+                                    <button type=submit class="btn btn-primary pull-right" data-toggle="tooltip"
+                                            title="Filtrar datos" data-placement="left" type="button"><i
+                                                class="fa fa-search"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <button type=submit class="btn btn-primary pull-right" data-toggle="tooltip"
+                                            title="Filtrar datos" data-placement="left" type="button"><i
+                                                class="fa fa-search"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox">
+                <div class="ibox-content">
+                    <div class="row col-md-12" style="padding-right: 0">
+                        <div class="pull-right">
+                            <a href="{{ path('tn_destinatario_new') }}" class="btn btn-sm btn-info" data-toggle="tooltip"
+                               title="Nuevo destinatario"> <i class="fa fa-plus"></i> <i class="fa fa-money"></i> </a>
+                            <button type="button" class="filter-action btn btn-sm btn-info" data-toggle="tooltip"
+                                    title="Filtro avanzado"><i class="fa fa-filter"></i></button>
+                            <a href="{{ path('tn_destinatario_index') }}" class="btn btn-sm btn-info" data-toggle="tooltip"
+                               title="Limpiar búsqueda"> <i class="fa fa-repeat"></i> </a>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div id='table' class="table-responsive">
+                                <table class="footable footable-paging footable-paging-center  footable-paging-center  table table-stripped table-hover  toggle-arrow-tiny"
+                                       data-paging-size="100" data-paging="true" data-filtering="true"
+                                       data-sorting="true">
+                                    <thead>
+                                    <tr>
+                                        <th>{{ 'backend.destinatario.table.nombre'|trans }}</th>
+                                        <th>{{ 'backend.destinatario.table.ci'|trans }}</th>
+                                        <th data-breakpoints="xs">{{ 'backend.agencia.table.telefono'|trans }}</th>
+                                        <th>{{ 'backend.agencia.table.enabled'|trans }}</th>
+                                        <th>{{ 'backend.destinatario.table.municipio'|trans }}</th>
+                                        <th>{{ 'backend.destinatario.table.provincia'|trans }}</th>
+                                        <th>{{ 'backend.destinatario.table.emisor'|trans }}</th>
+                                        <th data-breakpoints="all">{{ 'backend.emisor.table.user'|trans }}</th>
+                                        <th data-breakpoints="all">{{ 'backend.destinatario.table.direccion'|trans }}</th>
+                                        <th data-breakpoints="all">{{ 'backend.destinatario.table.nombre_alt'|trans }}</th>
+                                        <th data-breakpoints="all">{{ 'backend.destinatario.table.apellidos_alt'|trans }}</th>
+                                        <th data-breakpoints="all">{{ 'backend.destinatario.table.ci_alt'|trans }}</th>
+                                        <th data-breakpoints="all">{{ 'backend.destinatario.table.phone_alt'|trans }}</th>
+                                        <th data-breakpoints="all">{{ 'backend.destinatario.table.created'|trans }}</th>
+                                        <th data-breakpoints="all">{{ 'backend.destinatario.table.updated'|trans }}</th>
+                                        <th class="text-right"
+                                            data-sort-ignore="true">{{ 'backend.comun.table.actions'|trans }}</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for destinatario in tn_destinatarios %}
+                                        <tr>
+                                            <td>{{ destinatario.nombre~" "~destinatario.apellidos~(destinatario.alias ? " ("~destinatario.alias~")") }}</td>
+                                            <td>{{ destinatario.ci ? destinatario.ci : '-' }}</td>
+                                            <td>{{ destinatario.phone }}</td>
+                                            <td>{{ destinatario.enabled==true?'<i class="fa fa-check-square-o"></i>':'<i class="fa fa-square-o"></i>' }}</td>
+                                            <td>{{ destinatario.municipio ? destinatario.municipio.name }}</td>
+                                            <td>{{ destinatario.provincia ? destinatario.provincia.name }}</td>
+                                            <td>{{ destinatario.emisor ? destinatario.emisor }}</td>
+                                            <td>
+                                                {% if destinatario.usuario %}
+                                                    <a data-placement="top" title="Datos usuario"
+                                                       data-toggle="tooltip" data-target='#modal-form'
+                                                       href="{{ path('home_users_show', {'token': destinatario.usuario.token }) }}">
+                                                        {{ destinatario.usuario.agencia ? destinatario.usuario.agencia : destinatario.usuario.agente }}
+                                                    </a>
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                {{ destinatario.direccion~", "~(destinatario.direccion1 ? (destinatario.direccion1~", "))~destinatario.municipio.name~", "~destinatario.provincia.name~", "~(destinatario.country | country) }}
+                                            </td>
+                                            <td>{{ destinatario.nombreAlternativo ? destinatario.nombreAlternativo }}</td>
+                                            <td>{{ destinatario.apellidosAlternativo ? destinatario.apellidosAlternativo }}</td>
+                                            <td>{{ destinatario.ciAlternativo ? destinatario.ciAlternativo }}</td>
+                                            <td>{{ destinatario.phoneAlternativo ? destinatario.phoneAlternativo }}</td>
+                                            <td>{{ destinatario.created ? destinatario.created|date('Y-m-d') : '' }}</td>
+                                            <td>{{ destinatario.updated ? destinatario.updated|date('Y-m-d') : '' }}</td>
+                                            <td class="text-right">
+                                                {% if destinatario.remesas | length == 0 %}
+                                                    <form class="form-inline" method="post"
+                                                          action="{{ path('tn_destinatario_delete', {'token': destinatario.token}) }}"
+                                                          onsubmit="return confirm('Está seguro desea eliminar el destinatario?');">
+
+                                                        <a class="btn btn-warning btn-xs"
+                                                           href="{{ path('tn_destinatario_edit', {'token': destinatario.token}) }}"><i
+                                                                    class="fa fa-pencil-square-o"></i></a>
+
+                                                        <input type="hidden" name="_method" value="DELETE">
+                                                        <input type="hidden" name="_token"
+                                                               value="{{ csrf_token('delete' ~ destinatario.token) }}">
+                                                        <button class="btn btn-danger btn-xs" data-toggle="tooltip"
+                                                                title="Eliminar destinatario"><i
+                                                                    class="fa fa-times"></i>
+                                                        </button>
+                                                    </form>
+                                                {% else %}
+                                                    <a class="btn btn-warning btn-xs"
+                                                       href="{{ path('tn_destinatario_edit', {'token': destinatario.token}) }}"><i
+                                                                class="fa fa-pencil-square-o"></i></a>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                    <tfoot class="hide-if-no-paging">
+                                    <tr>
+                                        <td colspan="8" class="text-center">
+                                            <ul class="pagination">
+
+                                            </ul>
+                                            <div class="pagination pull-right">{{ knp_pagination_render(tn_destinatarios,'@KnpPaginator/Pagination/sliding_backend.html.twig') }}</div>
+                                        </td>
+                                    </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        $(function () {
+            dataLink();
+
+            $(".filter-action").click(function (ev) {
+                if ($(".advanced-filter").hasClass("filter-hidden")) {
+                    $(".advanced-filter").removeClass("filter-hidden");
+                    $(".advanced-filter").addClass("filter-show");
+                } else {
+                    $(".advanced-filter").removeClass("filter-show");
+                    $(".advanced-filter").addClass("filter-hidden");
+                }
+            });
+
+            $("#{{ form.vars.id }}").on('submit', function (e) {
+                e.preventDefault();
+                $(this).ajaxSubmit({
+                    target: '#table',
+                    success: function () {
+                        dataLink();
+                    }
+                });
+            });
+        });
+
+    </script>
+{% endblock %}

@@ -1,0 +1,39 @@
+{% extends "@FOSUser/layout.html.twig" %}
+
+{% trans_default_domain 'FOSUserBundle' %}
+{% block breadcrumbs %}
+
+    <ol class="breadcrumb">
+        <li>
+            <a href="{{ path('homepage') }}">
+                {{ 'frontend.breadcrumb.home'|trans({},'messages') }}
+            </a>
+        </li>
+        <li>
+            {{ user.profile.getTypeProfile()=='Agencia'?('registration.breadcrum.agency'|trans):('registration.breadcrum.client'|trans) }}
+        </li>
+    </ol>
+{% endblock %}
+
+{% block fos_user_content %}
+    <div class="row">
+        <div class="col-md-12 page-content">
+            <div class="inner-box category-content">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div role="alert" class="alert alert-success pgray  alert-lg">
+                            <h2 class="no-margin no-padding">✔ {{ 'registration.confirmed'|trans({'%username%': user.username}) }}</h2>
+                            <p>
+                                {% if targetUrl %}
+                                    <a href="{{ targetUrl }}">{{ 'registration.back'|trans }}</a>
+                                {% endif %}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /.page-content -->
+        </div>
+        <!-- /.row -->
+    </div>
+{% endblock fos_user_content %}

@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+
+<!--[if IE 8]>
+<html lang="en" class="ie8 no-js"> <![endif]-->
+<!--[if IE 9]>
+<html lang="en" class="ie9 no-js"> <![endif]-->
+<!--[if !IE]><!-->
+<html lang="en" class="no-js">
+<!--<![endif]-->
+<!-- BEGIN HEAD -->
+<head>
+    <meta charset="UTF-8"/>
+    <!-- BEGIN GLOBAL MANDATORY STYLES -->
+    {#
+    <link href="............/web/assets/global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
+    <link href="............/web/assets/global/plugins/simple-line-icons/simple-line-icons.min.css" rel="stylesheet" type="text/css"/>
+    <link href="............/web/assets/global/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
+    <link href="............/web/assets/global/plugins/uniform/css/uniform.default.css" rel="stylesheet" type="text/css"/>
+    #}
+
+</head>
+<!-- END HEAD -->
+<!-- BEGIN BODY -->
+<body class="page-header-fixed page-sidebar-closed-hide-logo page-sidebar-closed-hide-logo">
+<div class="portlet box blue-soft">
+
+    <div class="portlet-body form">
+        <table style="font-size: 14px">
+            <tr>
+                <td style=" width: 55%">
+                    <h2 style="text-align: left">
+                        <strong>FACTURA</strong>
+                    </h2>
+                </td>
+                <td style=" width: 20%">
+
+                </td>
+
+                <td style="text-align: left; width: 45%">
+                    <label style="float: left"><strong>Nro. </strong>{{ factura.noFactura }}</label>
+                    <label style="float: left"><strong>Fecha: </strong> {{ factura.created |date('d/m/Y') }}
+                    </label>
+                </td>
+
+            </tr>
+
+        </table>
+        <table style="margin-top: -20px; font-size: 14px">
+            <tr>
+                <td style="text-align: left; width: 40%">
+                    <p><strong>EMISOR:</strong></p>
+                    <p style="margin-top: -12px">
+                        {{ emisor.nombre~" "~emisor.apellidos }}
+                    </p>
+                </td>
+                <td style="text-align: left; width: 20%">
+                    <p><strong>TELEFONO:</strong></p>
+                    <p style="margin-top: -12px">
+                        {{ emisor.phone }}
+                    </p>
+                </td>
+                <td style="text-align: left; width: 40%"><br>
+                    <p><strong>DIRECCION:</strong></p>
+                    <p style="margin-top: -12px">
+                        {{ emisor.dirLine1~", "~(emisor.dirLine2 ? (emisor.dirLine2~", "))~(emisor.dirLine3 ? emisor.dirLine3~", ")~emisor.city~", "~(emisor.state | state )~", "~(emisor.country | country) }}
+                    </p>
+                </td>
+            </tr>
+
+        </table>
+        {% for remesa in remesas %}
+            <table border="1" style="width: 100%; font-size: 14px">
+                <tr>
+                    <th style="text-align: center">
+                        Factura
+                    </th>
+                    <th style="text-align: center">
+                        Destinatario
+                    </th>
+                    <th style="text-align: center">
+                        CI
+                    </th>
+                    <th style="text-align: center">
+                        Teléfono
+                    </th>
+                    <th style="text-align: center">
+                        Dirección
+                    </th>
+                    <th style="text-align: center">
+                        Importe
+                    </th>
+                    <th style="text-align: center">
+                        Enviado
+                    </th>
+                </tr>
+                <tr>
+                    <td align="center">{{ factura.noFactura }}</td>
+                    <td align="center">{{ remesa.destinatario~( remesa.destinatario.alias ? (" ("~ remesa.destinatario.alias) ~")") }}</td>
+                    <td align="center">{{ remesa.destinatario.ci ? remesa.destinatario.ci : '-' }}</td>
+                    <td align="center">{{ remesa.destinatario.phone }}</td>
+                    <td align="center">{{ remesa.destinatario.direccionEntrega() }}</td>
+                    <td align="center">
+                        {{ remesa.totalPagar | number_format(2) }} USD
+                    </td>
+                    <td align="center">
+                        {{ remesa.importeEntregar | number_format(2) }} CUC $
+                    </td>
+                </tr>
+                {% set destinatario = remesa.destinatario %}
+                {% if destinatario.phoneAlternativo is not null and destinatario.nombreAlternativo is not null and destinatario.apellidosAlternativo is not null and destinatario.ciAlternativo is not null %}
+                    <tr>
+                        <td align="center"></td>
+                        <td align="center">{{ destinatario.nombreAlternativo ~" "~ destinatario.apellidosAlternativo }}</td>
+                        <td align="center">{{ destinatario.ciAlternativo }}</td>
+                        <td align="center">{{ destinatario.phoneAlternativo }}</td>
+                        <td align="center"></td>
+                        <td align="center"></td>
+                        <td align="center"></td>
+                    </tr>
+                {% endif %}
+                {#<tr>#}
+                {#<td align="center" colspan="6">&nbsp;</td>#}
+                {#</tr>#}
+                {#<tr>#}
+                {#<td align="center">&nbsp;</td>#}
+                {#<th align="center" colspan="2">Entregado por:</th>#}
+                {#<td align="center">&nbsp;</td>#}
+                {#<th align="center">Recibido por:</th>#}
+                {#<td align="center">&nbsp;</td>#}
+                {#</tr>#}
+                {#<tr>#}
+                {#<th align="right">Nombre:</th>#}
+                {#<td align="center"#}
+                {#colspan="2">{{ remesa.distribuidor.nombre~" "~remesa.distribuidor.apellidos }}</td>#}
+                {#<th align="right">CI:</th>#}
+                {#<td align="center">&nbsp;</td>#}
+                {#<td align="center">&nbsp;</td>#}
+                {#</tr>#}
+                {#<tr>#}
+                {#<th align="right">Firma:</th>#}
+                {#<td align="center" colspan="2"></td>#}
+                {#<th align="right">Firma:</th>#}
+                {#<td align="center">&nbsp;</td>#}
+                {#<td align="center">&nbsp;</td>#}
+                {#</tr>#}
+                {#<tr>#}
+                {#<th align="right">Fecha:</th>#}
+                {#<th align="center" colspan="2">&nbsp;</th>#}
+                {#<th align="right">Fecha:</th>#}
+                {#<td align="center">&nbsp;</td>#}
+                {#<td align="center">&nbsp;</td>#}
+                {#</tr>#}
+            </table><br>
+        {% endfor %}
+    </div>
+</div>
+</body>
+<!-- END BODY -->
+</html>
+

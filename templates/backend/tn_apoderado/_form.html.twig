@@ -1,0 +1,118 @@
+{% trans_default_domain 'AppBundle' %}
+{{ form_start(form,{
+    'attr':{
+        'id': form.vars.id,
+        'novalidate':'novalidate'
+    }}) }}
+
+
+    {{ form_widget(form._token) }}
+
+<p>
+    {% if form_errors(form) %}
+
+    <div class="alert alert-danger" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+        <span class="fa fa-exclamation"
+              aria-hidden="true"></span>
+        <span class="sr-only">Error:</span>
+        {{ form_errors(form) | striptags }}
+    </div>
+{% endif %}
+</p>
+
+<div class="row">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="col-md-3 col-sm-12 col-xs-12">
+            <div class="panel panel-warning">
+                <div class="panel-heading">
+                    <i class="fa fa-info-circle"></i> Información
+                </div>
+                <div class="panel-body">
+                    <p style="text-align: justify"><strong>Agencia y Subordinadas</strong> son los valores obligatorios
+                        y significa la agencia
+                        representa por la cual se calcularán los valores. <strong>Subordinadas es la que ese Apoderado
+                            verá la información</strong>
+                        Debe especificar la Agencia representada tanto en Agencia como Subordinadas.</p>
+                </div>
+
+            </div>
+        </div>
+        <div class="col-md-9 col-sm-12 col-xs-12">
+            <div class="col-md-12 col-sm-12 col-xs-12 form-group pull-right required">
+                <div class="col-md-6 col-sm-12 col-xs-12">
+                    <label class="col-lg-3 control-label text-right">{{ form_label(form.nombre)|striptags }}<sup>*</sup></label>
+
+                    <div class="col-lg-9">
+                        {{ form_widget(form.nombre,{'attr':{'class':'form-control'}}) }}
+                        {% if form_errors(form.nombre) %}
+                            <div class="alert alert-danger" role="alert">
+                                <button type="button" class="close" data-dismiss="alert"
+                                        aria-hidden="true">&times;
+                                </button>
+                                <span class="fa fa-exclamation"
+                                      aria-hidden="true"></span>
+                                <span class="sr-only">Error:</span>
+                                {{ form_errors(form.nombre) | striptags }}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="col-md-6 col-sm-12 col-xs-12 pull-right form-group ">
+                    <label class="col-lg-3 control-label text-right">{{ form_label(form.agencia)|striptags }}
+                        <sup>*</sup></label>
+                    <div class="col-md-9 col-xs-12">
+                        {{ form_widget(form.agencia,{'attr':{'class':'form-control chosen-select col-sm-12'}}) }}
+                        {% if form_errors(form.agencia) %}
+                            <div class="alert alert-danger" role="alert">
+                                <button type="button" class="close" data-dismiss="alert"
+                                        aria-hidden="true">&times;
+                                </button>
+                                <span class="fa fa-exclamation"
+                                      aria-hidden="true"></span>
+                                <span class="sr-only">Error:</span>
+                                {{ form_errors(form.agencia) | striptags }}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12 col-sm-12 col-xs-12 required">
+                <div class="col-md-6 col-sm-12 col-xs-12">
+                    <div class="form-group">
+                        <label class="col-lg-3 control-label text-right">{{ form_label(form.subordinadas)|striptags }}
+                            <sup>*</sup></label>
+
+                        <div class="col-lg-9">
+                            {{ form_widget(form.subordinadas,{'attr':{'class':'form-control', 'data-placeholder': 'Seleccione las zonas'}}) }}
+                            {% if form_errors(form.subordinadas) %}
+                                <div class="alert alert-danger" role="alert">
+                                    <button type="button" class="close" data-dismiss="alert"
+                                            aria-hidden="true">&times;
+                                    </button>
+                                    <span class="fa fa-exclamation"
+                                          aria-hidden="true"></span>
+                                    <span class="sr-only">Error:</span>
+                                    {{ form_errors(form.subordinadas) | striptags }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-sm-12 col-xs-12">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xs-12 text-right">
+        <div class="hr-line-dashed"></div>
+        <a class="btn btn-warning" href="{{ path('tn_apoderado_index') }}"><i
+                    class="fa fa-reply"></i> {{ 'backend.comun.form.to_list'|trans }}</a>
+
+        <button class="btn btn-primary pull-right" type="submit" style="margin-left: 5px;"><i
+                    class="fa fa-save"></i> {{ 'backend.comun.table.save'|trans }}</button>
+
+    </div>
+</div>
+</form>

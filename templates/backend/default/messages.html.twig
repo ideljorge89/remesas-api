@@ -1,0 +1,48 @@
+{% trans_default_domain 'AppBundle' %}
+<li class="dropdown">
+    <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
+        <i class="fa fa-envelope"></i> <span class="label label-warning">{{ total }}</span>
+    </a>
+    <ul class="dropdown-menu dropdown-messages">
+        {% set i= 1 %}
+        {% for message in messages if i <=5 %}
+            <li>
+                <div class="dropdown-messages-box">
+                    {% set days = daysDiff(message.created) %}
+                    <small class="pull-left"
+                           style="margin-right: 10px">{{ days == 0 ? 'Hoy' :  days*24~'h' }}</small>
+                    <div class="media-body">
+
+                        <strong>{{ message.nombre }}</strong> ha enviado un mensaje, responder a <strong>
+                            {{ message.email }}
+                        </strong><a href="{{ path('admin_contacto_show',{'id': message.id}) }}"
+                                    data-target='#modal-form' class="show-option"
+                                    title="{{ 'message.tooltips.detalles'|trans }}">
+                            <small class="text-info"><i class="fa fa-eye"></i></small>
+                        </a> <br>
+                        <small class="text-muted">{{ days == 0 ? 'Hoy' :  days~' días antes a las' }}  {{ message.created | date('H:i A') }}
+                            - {{ message.created | date('d/m/Y') }}</small>
+                    </div>
+                </div>
+            </li>
+            <li class="divider"></li>
+            {% set i = i + 1 %}
+        {% else %}
+            <li>
+                <div class="dropdown-messages-box">
+                    <div class="media-body" style="text-align: center">
+                        <p>En estos momentos no tiene nuevos mensajes de contacto</p>
+                    </div>
+                </div>
+            </li>
+            <li class="divider"></li>
+        {% endfor %}
+        <li>
+            <div class="text-center link-block">
+                <a href="{{ path('admin_contacto_index') }}">
+                    <i class="fa fa-envelope"></i> <strong>Leer todos los mensajes</strong>
+                </a>
+            </div>
+        </li>
+    </ul>
+</li>

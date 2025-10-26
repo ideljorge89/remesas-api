@@ -1,0 +1,301 @@
+{% extends 'base_backend.html.twig' %}
+{% trans_default_domain 'AppBundle' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        label.remesas:hover {
+            cursor: pointer;
+        }
+
+        .onoffswitch-inner:before {
+            content: "SI";
+        }
+
+        .onoffswitch-inner:after {
+            content: "OK";
+        }
+    </style>
+{% endblock %}
+{% block breadcrumb %}
+    <div class="col-lg-12">
+        <h2>{{ 'backend.user_menu.administrator.facutra.remesas.title'|trans({},'FOSUserBundle') }}</h2>
+        <ol class="breadcrumb">
+            <li class="active">
+                <strong>{{ 'backend.user_menu.administrator.facutra.remesas.list'|trans({},'FOSUserBundle') }}</strong>
+            </li>
+        </ol>
+    </div>
+{% endblock %}
+{% block body %}
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox advanced-filter filter-show">
+                <div class="ibox-content m-b-sm border-bottom">
+                    {{ form_start(form,{'attr':{
+                        'id':form.vars.id,
+                        'action': path('tn_remesas_advanced_search')
+                    }}) }}
+
+                    {{ form_widget(form._token) }}
+                    {% if form_errors(form) %}
+                        <div class="alert alert-danger" role="alert">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
+                                &times;
+                            </button>
+                            <span class="fa fa-exclamation"
+                                  aria-hidden="true"></span>
+                            <span class="sr-only">Error:</span>
+                            {{ form_errors(form) | striptags }}
+                        </div>
+                    {% endif %}
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                {{ form_widget(form.orden,{'attr':{'class':'form-control'}}) }}
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <div class="input-group">
+                                    {{ form_widget(form.destinatario,{'attr':{'class':'form-control'}}) }}
+                                    <span class="input-group-addon" data-toggle="tooltip" data-placement="bottom"
+                                          title="Para filtrar especifique de la siguiente forma: nombre(s)/apellidos(s). Ej. Jose/Perez Perez. Si solo quiere filtre por nombre o apellidos no ponga /."><i
+                                                class="fa fa-info-circle" style="color: red"></i></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                {{ form_widget(form.direccion,{'attr':{'class':'form-control'}}) }}
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                {{ form_widget(form.estado,{'attr':{'class':'form-control', 'data-placeholder': "Estados"}}) }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <div class="input-daterange input-group">
+                                {{ form_widget(form.fechaInicio,{
+                                    'attr':{
+                                        'class':'form-control', 'placeholder': "Fecha inicio"
+                                    }
+                                }) }}
+                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                {{ form_widget(form.fechaFin,{
+                                    'attr':{
+                                        'class':'form-control', 'placeholder': "Fecha fin"
+                                    }
+                                }) }}
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                {{ form_widget(form.municipio,{'attr':{'class':'form-control', 'data-placeholder': "Zonas"}}) }}
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                {{ form_widget(form.provincia,{'attr':{'class':'form-control', 'data-placeholder': "Provincias"}}) }}
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+
+                                <a class="btn btn-success pull-right" href="{{ path('entrega_distribuidor_index') }}" data-toggle="tooltip"
+                                   title="Todas" data-placement="left"><i
+                                            class="fa fa-refresh"></i></a>
+
+
+                                <button type=submit class="btn btn-primary" data-toggle="tooltip"
+                                        title="Filtrar datos" data-placement="right" type="button"><i
+                                            class="fa fa-search"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox">
+                <div class="ibox-content">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div id='table' class="table-responsive">
+                                <table class="footable footable-paging footable-paging-center  footable-paging-center  table table-stripped table-hover  toggle-arrow-tiny"
+                                       data-paging-size="100" data-paging="true" data-filtering="true"
+                                       data-sorting="true">
+                                    <thead>
+                                    <tr>
+                                        <th data-sort-ignore="true">{{ 'backend.remesa.table.orden'|trans }}</th>
+                                        <th data-sort-ignore="true"
+                                            width="20%">{{ 'backend.remesa.table.destinatario'|trans }}</th>
+                                        <th data-sort-ignore="true"
+                                            width="20%">{{ 'backend.remesa.table.direccion'|trans }}</th>
+                                        <th data-sort-ignore="true">{{ 'backend.remesa.table.mun'|trans }}</th>
+                                        <th data-sort-ignore="true">{{ 'backend.remesa.table.prov'|trans }}</th>
+                                        <th>{{ 'backend.factura.table.total'|trans }}</th>
+                                        <th>{{ 'backend.factura.table.fecha'|trans }}</th>
+                                        <th data-sort-ignore="true">{{ 'backend.factura.table.estado'|trans }}</th>
+                                        <th class="text-right"
+                                            data-sort-ignore="true" align="center">Acts
+                                        </th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for remesa in remesas %}
+                                        {% set factura = remesa.factura %}
+                                        <tr>
+                                            <td>{{ factura.noFactura }} {{ remesa.reporteEnvio ? ('<i class="fa fa-file-pdf-o" style="color:blue" data-toggle="tooltip" title="Reporte '~(remesa.reporteEnvio.created | date('d/m/Y H:i:s A'))~'"></i>') | raw }}</td>
+                                            <td width="20%">
+                                                {{ remesa.destinatario ~" - "~remesa.destinatario.phone }}
+                                            </td>
+                                            <td width="20%">{{ remesa.destinatario.direccion~( remesa.destinatario.direccion1 ? (". "~ remesa.destinatario.direccion1)) }}</td>
+                                            <td>{{ remesa.destinatario.municipio }}</td>
+                                            <td>{{ remesa.destinatario.provincia }}</td>
+                                            <td>{{ remesa.importeEntregar | number_format(2, '.', ',') }} {{ remesa.moneda.simbolo }}</td>
+                                            <td>{{ factura.created | date('d/m/Y') }}</td>
+                                            <td>
+                                                <div id="state_{{ remesa.id }}">
+                                                    {% if remesa.entregada %}
+                                                        <span class="label label-primary">Entregada</span>
+                                                    {% else %}
+                                                        {% if factura.estado.codigo == '05' %}
+                                                            <span class="label label-warning">Cancelada</span>
+                                                        {% else %}
+                                                            <span class="label label-danger">Pendiente</span>
+                                                        {% endif %}
+                                                    {% endif %}
+                                                </div>
+                                            </td>
+                                            <td class="text-center">
+                                                <div>
+                                                    {% if factura.estado.codigo == '03' or factura.estado.codigo == '02' %}
+                                                        {% if not remesa.entregada and remesa. reporteEnvio is not null %}
+                                                            <div class="switch inline"
+                                                                 id="chante_state_{{ remesa.id }}">
+                                                                <div class="onoffswitch">
+                                                                    <input data-check-remesa="{{ path('entrega_change_state_remesa',{'id':remesa.id}) }}"
+                                                                           {% if remesa.entregada %}checked{% endif %}
+                                                                           type="checkbox"
+                                                                           class="onoffswitch-checkbox"
+                                                                           data-remesa="{{ remesa.id }}"
+                                                                           id="check-{{ remesa.id }}">
+                                                                    <label class="onoffswitch-label"
+                                                                           for="check-{{ remesa.id }}">
+                                                                        <span class="onoffswitch-inner"></span>
+                                                                        <span class="onoffswitch-switch"></span>
+                                                                    </label>
+                                                                </div>
+                                                                {#<a class="btn btn-warning btn-xs"#}
+                                                                   {#data-toggle="tooltip"#}
+                                                                   {#title="Descargar remesa" target="_blank"#}
+                                                                   {#href="{{ path('entrega_remesa_export_pdf', {'id': remesa.id, 'action': 'print'}) }}"><i#}
+                                                                            {#class="fa fa-print"></i></a>#}
+
+                                                            </div>
+                                                        {% endif %}
+                                                    {% endif %}
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                    <tfoot class="hide-if-no-paging">
+                                    <tr>
+                                        <td colspan="8" class="text-center">
+                                            <ul class="pagination">
+
+                                            </ul>
+                                            <div class="pagination pull-right">{{ knp_pagination_render(remesas,'@KnpPaginator/Pagination/sliding_backend.html.twig') }}</div>
+                                        </td>
+                                    </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        $(function () {
+            $('.input-daterange').datepicker({
+                keyboardNavigation: false,
+                forceParse: false,
+                autoclose: true,
+                format: "dd-mm-yyyy",
+                todayBtn: true,
+                language: 'es',
+                endDate: 'today',
+                todayHighlight: true,
+            }).on('keypress paste', function (e) {
+                e.preventDefault();
+                return false;
+            });
+
+            $('.onoffswitch-checkbox').change(function (e) {
+                var remesa = $(this).data('check-remesa');
+                var div_state = $('#state_' + $(e.currentTarget).data("remesa"));
+                var div_btn = $('#chante_state_' + $(e.currentTarget).data("remesa"));
+                swal({
+                    title: "Confirmar entrega",
+                    text: "Está seguro quiere cambiar a entregada esta remesa?",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#F8C886",
+                    confirmButtonText: "SI",
+                    cancelButtonText: "NO",
+                    closeOnConfirm: true
+                }, function (confirmed) {
+                    if (confirmed) {
+                        $.ajax({
+                            url: remesa,
+                            method: 'post',
+                            success: function () {
+                                div_state.html('<span class="label label-primary">Entregada</span>');
+                                div_btn.html("");
+
+                                swal({
+                                    title: "Remesa",
+                                    text: "El estado de la remesa ha sido cambiado satisfactoriamente.",
+                                    type: "success",
+                                    showCancelButton: false,
+                                    confirmButtonColor: "##A5DC86",
+                                    confirmButtonText: "OK",
+                                    closeOnConfirm: true
+                                });
+                            }
+                        })
+                    } else {
+                        $(e.currentTarget).trigger('click');
+                    }
+                });
+            });
+
+            $("#{{ form.vars.id }}").on('submit', function (e) {
+                e.preventDefault();
+                $(this).ajaxSubmit({
+                    target: '#table',
+                    success: function () {
+                        dataLink();
+                    }
+                });
+            });
+
+            dataLink()
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,102 @@
+{% extends 'base_backend.html.twig' %}
+{% trans_default_domain 'AppBundle' %}
+
+{% block breadcrumb %}
+    <div class="col-lg-12">
+        <h2>{{ 'backend.user_menu.administrator.nomencladores.distribuidor.edit'|trans({'%name%': distribuidor.nombre },'FOSUserBundle') }}</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="{{ path('homepage_backend') }}"><i
+                            class="fa fa-home"></i> {{ 'backend.user_menu.breadcrumb.home'|trans({},'FOSUserBundle') }}
+                </a>
+            </li>
+            <li class="">
+                {{ 'backend.user_menu.administrator.nomencladores.title'|trans({},'FOSUserBundle') }}
+            </li>
+            <li class="active">
+                <strong>{{ 'backend.user_menu.administrator.nomencladores.distribuidor.edit'|trans({'%name%': distribuidor.nombre },'FOSUserBundle') }}</strong>
+            </li>
+        </ol>
+    </div>
+{% endblock %}
+
+{% block body %}
+    <div class="ibox">
+        <div class="ibox-title">
+            <h5>
+                <small></small>
+            </h5>
+        </div>
+        <div class="ibox-content">
+            {{ include('backend/tn_distribuidor/_form.html.twig') }}
+        </div>
+    </div>
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        $(function () {
+            function updateMunicipiosProvincia(idProvincia) {
+                if (idProvincia != "") {
+                    $.post("{{ url('admin_find_municipios_provincia') }}", {
+                        idProvincia: idProvincia,
+                    }, function (data) {
+                        $('#{{ form.municipio.vars.id }}').find('option').remove();
+                        var result = $.parseJSON(data);
+                        if (result.municipios.length == 0) {
+                            showToastr('info', 'Búsqueda', 'La provicia seleccionada no tienes municipios registrados.');
+                        } else {
+                            $('#{{ form.municipio.vars.id }}').removeAttr('disabled');
+                            $.each(result.municipios, function (i, v) {
+                                var group = ($("<option></option>").attr("value", v.value).text(v.text));
+                                $('#{{ form.municipio.vars.id }}').append(group);
+                            })
+                        }
+                        $('#{{ form.municipio.vars.id }}').trigger("chosen:updated");
+                    });
+                }
+            }
+
+            //Para buscar los municipios de la provincia que selecione el cliente
+            $('#{{ form.provincia.vars.id }}').change(function () {
+                updateMunicipiosProvincia($("#{{ form.provincia.vars.id }} option:selected").val());
+            });
+
+            $("#{{ form.vars.id }}").validate({
+                rules: {
+                    '{{ form.provincia.vars.full_name }}': {
+                        required: true
+                    },
+                    '{{ form.nombre.vars.full_name }}': {
+                        required: true
+                    },
+                    '{{ form.apellidos.vars.full_name }}': {
+                        required: true
+                    },
+                    '{{ form.datosLicencia.vars.full_name }}': {
+                        required: true
+                    },
+                    '{{ form.phone.vars.full_name }}': {
+                        required: true,
+                        number: true,
+                        digits: true,
+                        minlength: 8,
+                        maxlength: 8
+                    },
+                    '{{ form.email.vars.full_name }}': {
+                        required: true,
+                        email: true
+                    },
+                    '{{ form.ci.vars.full_name }}': {
+                        required: true,
+                        number: true,
+                        digits: true,
+                        minlength: 11,
+                        maxlength: 11
+                    }
+                }
+            });
+        });
+
+    </script>
+{% endblock %}

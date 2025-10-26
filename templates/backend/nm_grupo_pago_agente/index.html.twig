@@ -1,0 +1,116 @@
+{% extends 'base_backend.html.twig' %}
+{% trans_default_domain 'AppBundle' %}
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" type="text/css" href="{{ asset('bundles/stflagiconcss/css/flag-icon.min.css') }}"/>
+{% endblock %}
+{% block breadcrumb %}
+    <div class="col-lg-12">
+        <h2>{{ 'backend.user_menu.administrator.nomencladores.grupo_pago_agente.title'|trans({},'FOSUserBundle') }}</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="{{ path('homepage_backend') }}"><i
+                            class="fa fa-home"></i> {{ 'backend.user_menu.breadcrumb.home'|trans({},'FOSUserBundle') }}
+                </a>
+            </li>
+            <li class="">
+                {{ 'backend.user_menu.administrator.nomencladores.title'|trans({},'FOSUserBundle') }}
+            </li>
+            <li class="active">
+                <strong>{{ 'backend.user_menu.administrator.nomencladores.grupo_pago_agente.title'|trans({},'FOSUserBundle') }}</strong>
+            </li>
+        </ol>
+    </div>
+{% endblock %}
+{% block body %}
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox">
+                <div class="ibox-content">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <a class="btn btn-primary pull-right" href="{{ path('nm_grupo_pago_agente_new') }}">
+                                <i class="fa fa-plus"></i>
+                                {{ 'backend.user_menu.administrator.nomencladores.grupo_pago_agente.add'|trans({},'FOSUserBundle') }}
+                            </a>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div id='table' class="table-responsive">
+                                <table class="footable footable-paging footable-paging-center   table table-stripped table-hover  toggle-arrow-tiny"
+                                       data-paging-size="50" data-paging="true" data-filtering="true"
+                                       data-sorting="true">
+                                    <thead>
+                                    <tr>
+                                        <th>{{ 'backend.grupo_pago_agente.table.nombre'|trans }}</th>
+                                        <th >{{ 'backend.grupo_pago.table.moneda'|trans }}</th>
+                                        <th>{{ 'backend.grupo_pago_agente.table.porciento'|trans }}</th>
+                                        <th>{{ 'backend.grupo_pago_agente.table.utilidad'|trans }}</th>
+                                        <th>{{ 'backend.grupo_pago.table.minimo'|trans }}</th>
+                                        <th>{{ 'backend.grupo_pago.table.tipo'|trans }}</th>
+                                        <th>{{ 'backend.grupo_pago.table.utilidad_fija'|trans }}</th>
+                                        <th  data-breakpoints="all">{{ 'backend.grupo_pago_agente.table.agentes'|trans }}</th>
+                                        <th>{{ 'backend.grupo_pago_agente.table.enabled'|trans }}</th>
+                                        {% if is_granted("ROLE_SUPER_ADMIN") %}
+                                            <th data-breakpoints="all">{{ 'backend.grupo_pago_agente.table.agencia'|trans }}</th>
+                                        {% endif %}
+                                        <th data-breakpoints="all">{{ 'backend.grupo_pago_agente.table.created'|trans }}</th>
+                                        <th data-breakpoints="all">{{ 'backend.grupo_pago_agente.table.updated'|trans }}</th>
+                                        <th class="text-right"
+                                            data-sort-ignore="true">{{ 'backend.comun.table.actions'|trans }}</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for grupo in nm_grupo_pago_agentes %}
+                                        <tr>
+                                            <td>{{ grupo.nombre }}</td>
+                                            <td>{{ grupo.moneda ? grupo.moneda.simbolo : '-' }}</td>
+                                            <td>{{ grupo.porcentaje~" %" }} </td>
+                                            <td>{{ grupo.utilidad !="" ? grupo.utilidad~" USD" }} </td>
+                                            <td>{{ grupo.minimo is not null ? grupo.minimo~" USD" : '-' }}</td>
+                                            <td>{{ grupo.tipoUtilidad is not null ? grupo.tipoUtilidad : '-' }}</td>
+                                            <td>{{ grupo.utilidadFija is not null ? grupo.utilidadFija : '-' }}</td>
+                                            <td>{{ grupo.agentes | length }}</td>
+                                            <td>{{ grupo.enabled==true?'<i class="fa fa-check-square-o"></i>':'<i class="fa fa-square-o"></i>' }}</td>
+                                            {% if is_granted("ROLE_SUPER_ADMIN") %}
+                                                <td>
+                                                    {% if grupo.usuario and grupo.usuario.agencia %}
+                                                        <a data-placement="top" title="Datos usuario"
+                                                           data-toggle="tooltip" data-target='#modal-form'
+                                                           href="{{ path('home_users_show', {'token': grupo.usuario.token }) }}">
+                                                            {{ grupo.usuario.agencia }}
+                                                        </a>
+                                                    {% endif %}
+                                                </td>
+                                            {% endif %}
+                                            <td>{{ grupo.created ? grupo.created|date('Y-m-d') : '' }}</td>
+                                            <td>{{ grupo.updated ? grupo.updated|date('Y-m-d') : '' }}</td>
+                                            <td class="text-right">
+                                                <a class="btn btn-warning btn-xs"
+                                                   href="{{ path('nm_grupo_pago_agente_edit', {'token': grupo.token}) }}"><i
+                                                            class="fa fa-pencil-square-o"></i></a>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        $(function () {
+            dataLink()
+        });
+
+    </script>
+{% endblock %}
+

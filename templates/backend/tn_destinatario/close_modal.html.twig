@@ -1,0 +1,9 @@
+{% trans_default_domain 'AppBundle' %}
+<script type="application/javascript">
+    $(document).ready(function () {
+        //reload and select the new element
+        $($('#modal-form').data('target')).trigger("change");
+
+        $('#modal-form').modal('hide')
+    })
+</script>

@@ -1,0 +1,136 @@
+{{ form_start(form) }}
+{% set reportesEnvio = form.reportes.children %}
+<div class="col-md-12 col-xs-12">
+    {% if form_errors(form.reportes) %}
+        <div class="alert alert-danger" role="alert">
+            <button type="button" class="close" data-dismiss="alert"
+                    aria-hidden="true">&times;
+            </button>
+            <span class="fa fa-exclamation"
+                  aria-hidden="true"></span>
+            <span class="sr-only">Error:</span>
+            {{ form_errors(form.reportes) | striptags }}
+        </div>
+    {% endif %}
+</div>
+<div class="col-md-12 col-xs-12">
+    {% if reportesEnvio |length > 0 %}
+        <i id="checkAll" class="fa fa-2x fa-check-square" data-toggle="tooltip" title="Seleccionar todas"
+           data-placement="right"></i>
+        <button type="submit" class="btn btn-primary pull-right" id="export">
+            <i class="fa fa-file-pdf-o"></i> Exportar mutiple
+        </button>
+    {% else %}
+        <button type="submit" class="btn btn-warning pull-right disabled" disabled id="export">
+            <i class="fa fa-file-pdf-o"></i> Exportar mutiple
+        </button>
+    {% endif %}
+</div>
+<table class="table table-stripped table-hover  toggle-arrow-tiny">
+    <thead>
+    <tr>
+        <th align="center"></th>
+        <th>{{ 'backend.user_menu.administrator.facutra.remesas.reportes.fecha'|trans({},'FOSUserBundle') }}</th>
+        <th>{{ 'backend.user_menu.administrator.facutra.remesas.reportes.total'|trans({},'FOSUserBundle') }}</th>
+        <th>{{ 'backend.user_menu.administrator.facutra.remesas.reportes.importe'|trans({},'FOSUserBundle') }}</th>
+        <th>{{ 'backend.user_menu.administrator.facutra.remesas.reportes.remesas'|trans({},'FOSUserBundle') }}</th>
+        <th class="text-right" align="center">Acts</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for choice in reportesEnvio %}
+        {% set reporte = form.reportes.vars.choices[choice.vars.value] is defined? form.reportes.vars.choices[choice.vars.value].data %}
+        <tr>
+            <td align="center">
+                {{ form_widget(choice, {'attr': {'class': 'report-check'}}) }}
+            </td>
+            <td>{{ reporte.created | date('d/m/Y H:i:s A') }}</td>
+            <td>{{ reporte.remesas | length }}</td>
+            <td>
+                {% set importe = 0 %}
+                {% set importeCUP = 0 %}
+                {% set importeUSD = 0 %}
+                {% set importeEUR = 0 %}
+                {% for remesa in reporte.remesas %}
+                    {% if remesa.moneda.simbolo == "CUC" %}
+                        {% set importe = importe + remesa.importeEntregar %}
+                    {% elseif remesa.moneda.simbolo == "CUP" %}
+                        {% set importeCUP = importeCUP + remesa.importeEntregar %}
+                    {% elseif remesa.moneda.simbolo == "EUR" %}
+                        {% set importeEUR = importeEUR + remesa.importeEntregar %}
+                    {% else %}
+                        {% set importeUSD = importeUSD + remesa.importeEntregar %}
+                    {% endif %}
+                {% endfor %}
+                {{ importe | number_format(2, '.', ',') }} CUC<br>
+                {{ importeCUP | number_format(2, '.', ',') }} CUP<br>
+                {{ importeUSD | number_format(2, '.', ',') }} USD<br>
+                {{ importeEUR | number_format(2, '.', ',') }} EUR
+            </td>
+            <td>
+                <a data-toggle="tooltip" title="Listado de remesas"
+                   data-target="#modal-form"
+                   data-width="width-80"
+                   target="_blank"
+                   href="{{ path('entrega_reporte_envio_show', {'token': reporte.token}) }}">
+                    <i class="fa fa-list"></i>
+                </a>
+            </td>
+            <td class="text-center">
+                <a href="{{ path('entrega_remesas_reporte_export_pdf', {'token': reporte.token}) }}" target="_blank"
+                   data-toggle="tooltip" title="Exportar reporte">
+                    <img src="{{ asset('assets/backend/img/pdf.png') }}"
+                         style="width: 45px; height: 25px" alt="">
+                </a>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{{ form_widget(form._token) }}
+</form>
+
+<script type="application/javascript">
+    $(function () {
+        dataLink();
+
+        function init() {
+            $('input:checkbox.report-check').each(function (i, v) {
+                $(v).trigger("click");
+            });
+            checkAllMarks();
+        }
+
+        init();
+
+        function checkAllMarks() {
+            var total = 0;
+            $(".report-check").each(function (i, v) {
+                if ($(v).is(':checked')) {
+                    total++;
+                }
+            });
+            if (total == 0) {
+                $("#export").addClass('disabled');
+                $("#export").attr('disabled', 'disabled');
+            } else {
+                if ($("#export").hasClass('disabled')) {
+                    $("#export").removeClass('disabled');
+                    $("#export").removeAttr('disabled');
+                }
+            }
+        }
+
+        $('input:checkbox.report-check').click(function () {
+            checkAllMarks();
+        });
+
+        $("#checkAll").click(function () {
+            $('input:checkbox.report-check').each(function (i, v) {
+                $(v).trigger("click");
+            });
+
+            checkAllMarks();
+        });
+    })
+</script>

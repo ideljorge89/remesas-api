@@ -1,0 +1,44 @@
+{% trans_default_domain 'AppBundle' %}
+
+<table class="footable footable-paging footable-paging-center  footable-paging-center  table table-stripped table-hover  toggle-arrow-tiny"
+       data-paging-size="50" data-paging="true" data-filtering="true"
+       data-sorting="true">
+    <thead>
+    <tr>
+        <th>{{ 'backend.operacion.table.fecha'|trans }}</th>
+        <th>{{ 'backend.operacion.table.moneda'|trans }}</th>
+        <th>{{ 'backend.operacion.table.tipo'|trans }}</th>
+        <th>{{ 'backend.operacion.table.importe'|trans }}</th>
+        <th data-breakpoints="all">{{ 'backend.operacion.table.notas'|trans }}</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% if distribuidor is defined and (operaciones | length > 0) %}
+        {% for operacion in operaciones %}
+            <tr>
+                <td>{{ operacion.created | date('d/m/Y H:i') }}</td>
+                <td>{{ operacion.moneda ? operacion.moneda.simbolo }}</td>
+                <td>
+                    {% if operacion.tipo == 'recibido' or operacion.tipo == 'transferido' %}
+                        <span class="badge badge-success"><strong>{{ operacion.tipo | upper }}</strong></span>
+                        <i class="fa fa-plus-circle"></i>
+                    {% else %}
+                        <span class="badge badge-danger"><strong>{{ operacion.tipo | upper }}</strong></span>
+                        <i class="fa fa-minus-circle"></i>
+                    {% endif %}
+                </td>
+                <td>
+                    <span class="label label-primary"><strong>{{ operacion.importe | number_format(2, '.', ',') }}</strong></span>
+                </td>
+                <td>{{ operacion.notas }}</td>
+            </tr>
+        {% endfor %}
+    {% endif %}
+    </tbody>
+</table>
+
+<script>
+    $(function () {
+        $('.footable').footable();
+    });
+</script>

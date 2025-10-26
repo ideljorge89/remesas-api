@@ -1,0 +1,293 @@
+{% extends 'base_backend.html.twig' %}
+{% trans_default_domain 'AppBundle' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+
+    <link rel="stylesheet" type="text/css" href="{{ asset('bundles/stflagiconcss/css/flag-icon.min.css') }}"
+          xmlns="http://www.w3.org/1999/html"/>
+{% endblock %}
+{% block breadcrumb %}
+    <div class="col-lg-12">
+        <h2>Reportes</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="{{ path('homepage_backend') }}"><i
+                            class="fa fa-home"></i> {{ 'backend.user_menu.breadcrumb.home'|trans({},'FOSUserBundle') }}
+                </a>
+            </li>
+            <li>
+                {{ 'backend.reportes.title'|trans({}) }}
+            </li>
+            <li class="active">
+                <strong>{{ 'backend.reportes.admin_distribuidor.title'|trans({}) }}</strong>
+            </li>
+        </ol>
+    </div>
+{% endblock %}
+{% block body %}
+    <div class="ibox">
+        <div class="ibox-content">
+            <div class="row">
+                <div class="col-md-12">
+                    {{ form_start(form,{'attr':{
+                        'id':form.vars.id
+                    }}) }}
+
+                    {{ form_widget(form._token) }}
+                    {% if form_errors(form) %}
+                        <div class="alert alert-danger" role="alert">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
+                                &times;
+                            </button>
+                            <span class="fa fa-exclamation"
+                                  aria-hidden="true"></span>
+                            <span class="sr-only">Error:</span>
+                            {{ form_errors(form) | striptags }}
+                        </div>
+                    {% endif %}
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="col-md-4 required">
+                                <div class="form-group">
+                                    <label class="font-noraml"><strong>{{ 'backend.reportes.distribuidor_remesas.fields.fechas'|trans }}</strong>:</label>
+                                    <div class="input-daterange input-group">
+                                        {{ form_widget(form.fechaInicio,{
+                                            'attr':{
+                                                'class':'form-control'
+                                            }
+                                        }) }}
+                                        <span class="input-group-addon"> - </span>
+                                        {{ form_widget(form.fechaFin,{
+                                            'attr':{
+                                                'class':'form-control'
+                                            }
+                                        }) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 required">
+                                <div class="form-group">
+                                    <label class="font-noralm">{{ form_label(form.distribuidor)|striptags }}:</label>
+                                    <div class="col-xs-12 input-group">
+                                        {{ form_widget(form.distribuidor,{'attr':{'class':'form-control', 'data-placeholder': "Seleccione los distribuidores"}}) }}
+                                        {% if form_errors(form.distribuidor) %}
+                                            <div class="alert alert-danger" role="alert">
+                                                <button type="button" class="close" data-dismiss="alert"
+                                                        aria-hidden="true">&times;
+                                                </button>
+                                                <span class="fa fa-exclamation"
+                                                      aria-hidden="true"></span>
+                                                <span class="sr-only">Error:</span>
+                                                {{ form_errors(form.distribuidor) | striptags }}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-2 required">
+                                <div class="form-group">
+                                    <label class="font-noralm">{{ form_label(form.moneda)|striptags }}:</label>
+                                    <div class="col-xs-12 input-group">
+                                        {{ form_widget(form.moneda,{'attr':{'class':'form-control', 'data-placeholder': "Monedas"}}) }}
+                                        {% if form_errors(form.moneda) %}
+                                            <div class="alert alert-danger" role="alert">
+                                                <button type="button" class="close" data-dismiss="alert"
+                                                        aria-hidden="true">&times;
+                                                </button>
+                                                <span class="fa fa-exclamation"
+                                                      aria-hidden="true"></span>
+                                                <span class="sr-only">Error:</span>
+                                                {{ form_errors(form.moneda) | striptags }}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-2 required">
+                                <div class="form-group">
+                                    <label class="font-noralm">{{ form_label(form.estado)|striptags }}:</label>
+                                    <div class="col-xs-12 input-group">
+                                        {{ form_widget(form.estado,{'attr':{'class':'form-control', 'data-placeholder': "Estados"}}) }}
+                                        {% if form_errors(form.estado) %}
+                                            <div class="alert alert-danger" role="alert">
+                                                <button type="button" class="close" data-dismiss="alert"
+                                                        aria-hidden="true">&times;
+                                                </button>
+                                                <span class="fa fa-exclamation"
+                                                      aria-hidden="true"></span>
+                                                <span class="sr-only">Error:</span>
+                                                {{ form_errors(form.estado) | striptags }}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 text-right">
+                            <div class="hr-line-dashed"></div>
+                            <button class="btn btn-primary pull-right" type="submit" style="margin-left: 5px;">
+                                <i
+                                        class="fa fa-search"></i> {{ 'backend.reportes.btn_search'|trans }}
+                            </button>
+                            {% if app.session.has('reportes/admin_reporte_distribuidores') %}
+                                <a class="btn btn-primary" href="{{ path('reportes_admin_distribuidor_remeas_print') }}"
+                                   style="margin-left: 5px;" target="_blank"><i
+                                            class="fa fa-print"></i> {{ 'backend.reportes.btn_export'|trans }}</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                    </form>
+                </div>
+            </div>
+            <div class="row">
+
+                <div id='table' class="col-md-12 table-responsive">
+                    <table id="contenedores"
+                           class="footable footable-paging footable-paging-center   table table-stripped table-hover  toggle-arrow-tiny"
+                           data-paging-size="50" data-paging="true" data-filtering="true" data-sorting="true">
+                        <thead>
+                        <tr>
+                            <th>Factura</th>
+                            <th>Destinatario</th>
+                            <th>CI</th>
+                            <th>Teléfono</th>
+                            <th>Dirección</th>
+                            <th>Enviado</th>
+                            <th>Estado</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% set totalRemesasTotal = 0 %}
+                        {% set importeRemesasTotal = 0 %}
+                        {% set importeRemesasTotalCUP = 0 %}
+                        {% set importeRemesasTotalUSD = 0 %}
+                        {% set importeRemesasTotalEUR = 0 %}
+                        {% for item, values in remesas %}
+                            {% set totalRemesas = 0 %}
+                            {% set importeRemesas = 0 %}
+                            {% set importeRemesasCUP = 0 %}
+                            {% set importeRemesasUSD = 0 %}
+                            {% set importeRemesasEUR = 0 %}
+                            {% for prov, array_remesas in values %}
+                                {% set importProv = 0 %}
+                                {% set importProvCUP = 0 %}
+                                {% set importProvUSD = 0 %}
+                                {% set importProvEUR = 0 %}
+                                {% for remesa  in  array_remesas %}
+                                    <tr>
+                                        <td>{{ remesa.factura.noFactura }}</td>
+                                        <td>{{ remesa.destinatario~( remesa.destinatario.alias ? (" ("~ remesa.destinatario.alias) ~")") }}</td>
+                                        <td>{{ remesa.destinatario.ci ? remesa.destinatario.ci : "-" }}</td>
+                                        <td>{{ remesa.destinatario.phone }}</td>
+                                        <td>{{ remesa.destinatario.direccionEntrega() }}</td>
+                                        <td>{{ remesa.importeEntregar | number_format(2) }} {{ remesa.moneda.simbolo }}</td>
+                                        <td>
+                                            {% if remesa.entregada %}
+                                                <span class="label label-primary">Entregada</span>
+                                            {% else %}
+                                                {% if remesa.factura.estado.codigo == '05' %}
+                                                    <span class="label label-warning">Cancelada</span>
+                                                {% else %}
+                                                    <span class="label label-danger">Pendiente</span>
+                                                {% endif %}
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    {% if remesa.moneda.simbolo == "CUC" %}
+                                        {% set importProv =  importProv + remesa.importeEntregar %}
+                                    {% elseif remesa.moneda.simbolo == "CUP" %}
+                                        {% set importProvCUP =  importProvCUP + remesa.importeEntregar %}
+                                    {% elseif remesa.moneda.simbolo == "EUR" %}
+                                        {% set importProvEUR =  importProvEUR + remesa.importeEntregar %}
+                                    {% else %}
+                                        {% set importProvUSD =  importProvUSD + remesa.importeEntregar %}
+                                    {% endif %}
+                                {% endfor %}
+                                <tr>
+                                    <td><strong>PROVINCIA: <br>{{ prov }}</strong></td>
+                                    <td><strong>{{ array_remesas | length }} remesa(s)</strong></td>
+                                    <td><strong>TOTALES:</strong></td>
+                                    <td><strong>{{ importProv | number_format(2) }} CUC</strong></td>
+                                    <td><strong>{{ importProvCUP | number_format(2) }} CUP</strong></td>
+                                    <td><strong>{{ importProvUSD | number_format(2) }} USD</strong></td>
+                                    <td><strong>{{ importProvEUR | number_format(2) }} EUR</strong></td>
+                                </tr>
+                                {% set importeRemesas = importeRemesas + importProv %}
+                                {% set importeRemesasCUP = importeRemesasCUP + importProvCUP %}
+                                {% set importeRemesasUSD = importeRemesasUSD + importProvUSD %}
+                                {% set importeRemesasEUR = importeRemesasEUR + importProvEUR %}
+                                {% set totalRemesas = totalRemesas + (array_remesas | length) %}
+                            {% endfor %}
+                            <tr>
+                                <td><strong>{{ item }}</strong></td>
+                                <td><strong>{{ totalRemesas }} remesa(s)</strong></td>
+                                <td><strong>TOTALES:</strong></td>
+                                <td><strong>{{ importeRemesas | number_format(2) }} CUC</strong></td>
+                                <td><strong>{{ importeRemesasCUP | number_format(2) }} CUP</strong></td>
+                                <td><strong>{{ importeRemesasUSD | number_format(2) }} USD</strong></td>
+                                <td><strong>{{ importeRemesasEUR | number_format(2) }} EUR</strong></td>
+                            </tr>
+                            {% set totalRemesasTotal = totalRemesasTotal + totalRemesas %}
+                            {% set importeRemesasTotal = importeRemesasTotal + importeRemesas %}
+                            {% set importeRemesasTotalCUP = importeRemesasTotalCUP + importeRemesasCUP %}
+                            {% set importeRemesasTotalUSD = importeRemesasTotalUSD + importeRemesasUSD %}
+                            {% set importeRemesasTotalEUR = importeRemesasTotalEUR + importeRemesasEUR %}
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12">
+                    <table class="table table-responsive">
+                        <tr>
+                            <td><strong>RESUMEN TOTAL:</strong></td>
+                            <td>{{ remesas | length }} distribuidor(s) <br>{{ totalRemesasTotal }} remesa(s)</td>
+                            <td><strong>ENVIADO:</strong></td>
+                            <td>{{ importeRemesasTotal | number_format(2) }} CUC</td>
+                            <td>{{ importeRemesasTotalCUP | number_format(2) }} CUP</td>
+                            <td>{{ importeRemesasTotalUSD | number_format(2) }} USD</td>
+                            <td>{{ importeRemesasTotalEUR | number_format(2) }} EUR</td>
+                            <td></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+
+    <script type="application/javascript">
+        $(function () {
+            $('.input-daterange').datepicker({
+                keyboardNavigation: false,
+                forceParse: false,
+                autoclose: true,
+                format: 'dd/mm/yyyy',
+                todayBtn: true,
+                language: 'es',
+                endDate: 'today',
+                todayHighlight: true
+            }).on('keypress paste', function (e) {
+                e.preventDefault();
+                return false;
+            });
+
+            $("#{{ form.vars.id }}").validate({
+                rules: {
+                    '{{ form.fechaInicio.vars.full_name }}': {
+                        required: true
+                    },
+                    '{{ form.fechaFin.vars.full_name }}': {
+                        required: true
+                    }
+                }
+            });
+
+            dataLink()
+        })
+    </script>
+{% endblock %}

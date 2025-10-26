@@ -1,0 +1,15 @@
+diff:
+    ago:
+        second: " {1} hace 1 segundo|]1,Inf[ hace %count% segundos"
+        minute: " {1} hace 1  minuto|]1,Inf[ hace  %count% minutos"
+        hour: "  {1} hace 1 hora|]1,Inf[ hace %count% horas"
+        day:  " {1} hace 1 día|]1,Inf[ hace %count% días"
+        month:  "  {1} hace 1 mes|]1,Inf[ hace %count% meses"
+        year: "  {1} hace 1 año|]1,Inf[ hace %count% años"
+    in:
+        second: "{1} en 1 segundo|]1,Inf[ en %count% segundos"
+        minute: "{1} en 1  minuto|]1,Inf[ en %count% minutos"
+        hour: "{1} en 1 hora|]1,Inf[ en %count% horas"
+        day:  "{1} en 1 día|]1,Inf[ en %count% días"
+        month:  "{1} en 1 mes|]1,Inf[ en %count% meses"
+        year: "{1} en 1 año|]1,Inf[ en %count% años"

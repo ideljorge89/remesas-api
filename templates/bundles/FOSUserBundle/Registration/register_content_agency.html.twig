@@ -1,0 +1,331 @@
+{% extends '@FOSUser/layout.html.twig' %}
+{% trans_default_domain 'FOSUserBundle' %}
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('assets/frontend/js/plugins/intl-tel-input/intlTelInput.css') }}"
+          type="text/css">
+    <link rel="stylesheet" type="text/css" href="{{ asset('bundles/stflagiconcss/css/flag-icon.min.css') }}" />
+    <style>
+        .chosen-container.chosen-container-single {
+            background-color: #fff;
+            border: medium none;
+            border-radius: 1px;
+            box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1), 1px 0 5px rgba(0, 0, 0, 0.03) inset;
+            font-size: 14px;
+            font-weight: 400;
+            height: inherit;
+            outline: medium none !important;
+            padding: 8px 0 8px 12px;
+            transition: all 0.3s ease 0s;
+            width: 100%;
+        }
+
+        .chosen-container.chosen-container-single > a.chosen-single {
+            background: transparent none repeat scroll 0 0;
+            border: 0 none;
+            border-radius: 0;
+            box-shadow: none !important;
+        }
+
+        .chosen-container.chosen-container-single > .chosen-drop {
+            border: medium none;
+        !important;
+        }
+        .intl-tel-input {
+            display: inherit;
+            position: relative;
+        }
+        .radio-inline, .checkbox-inline {
+            padding-left: 0px;
+        }
+        .mark-circle.right-top {
+            background-color: #be3b6d;
+            color: #fff;
+            cursor: default;
+            right: -22px;
+            top: -27px;
+        }
+        .mark-circle {
+            border-radius: 50%;
+            box-shadow: 1px 1px 8px rgba(0, 0, 0, 0.07);
+            height: 50px;
+            line-height: 53px;
+            position: absolute;
+            text-align: center;
+            width: 50px;
+            z-index: 5;
+        }
+        .flag-icon{
+            margin-right: 5px;
+        }
+        @media (max-width: 991px) {
+            .mark-circle.right-top {
+                right: calc(50% - 25px);
+                top: -36px;
+            }
+        }
+    </style>
+{% endblock %}
+{% block header %}
+    {% include '@FOSUser/Registration/includes/topbar_register.html.twig'  with { 'route': route } %}
+{% endblock %}
+{% block breadcrumbs %}
+    <ol class="breadcrumb">
+        <li><a href="#">{{ 'frontend.breadcrumb.home'|trans({},'messages') }}</a></li>
+        <li>{{ 'registration.breadcrum.agency'|trans }}</li>
+    </ol>
+{% endblock %}
+{% block fos_user_content %}
+    <h2>{{ 'form.create_your_account_agency'|trans }}</h2>
+    <div class="row">
+        <div class="col-md-4" style="background-color: white;padding-bottom: 20px;padding-top: 20px;margin-bottom: 20px;">
+            <p class="well" style="margin-bottom:0;line-height: 1.5; text-align: justify; text-indent: 4px; unicode-bidi: normal;">
+             <span class="col-md-12 center">
+                            <i class="fa fa-5x fa-sign-in" style="color:#AA0258;"></i>
+                        </span>   {{ 'registration.register_text_agency'|trans }}
+            </p>
+        </div>
+        <div class="col-md-offset-1 col-md-5" style="background-color: white;padding-top: 5px;">
+            <span class="mark-circle right-top" data-toggle="tooltip" data-placement="right" title="">
+                <i class="fa fa-2x fa-university"></i>
+            </span>
+            <form id="{{ form.vars.id }}" action="{{ path('fos_user_registration_register',{'element':'register-company'}) }}"  method="POST" >
+                {{ form_row(form._token) }}
+                <div class="form-group required ">
+                    <label class="control-label">{{ form_label(form.username) | striptags }} <sup>*</sup></label>
+                    {{ form_widget(form.username, { 'attr': {'class': 'form-control'} }) }}
+                    {% if form_errors(form.username) %}
+                        <p class="error"><i class="fa fa-exclamation-circle "></i> {{ form_errors(form.username) | striptags }}</p>
+                    {% endif %}
+                </div>
+                <div class="form-group required  ">
+                    <label class="control-label">{{ form_label(form.email) | striptags }} <sup>*</sup></label>
+                    {{ form_widget(form.email, { 'attr': {'class': 'form-control'} }) }}
+                    {% if form_errors(form.email) %}
+                        <p class="error"><i class="fa fa-exclamation-circle "></i> {{ form_errors(form.email) | striptags }}</p>
+                    {% endif %}
+                </div>
+                <div class="form-group required ">
+                    <label class="control-label">{{ form_label(form.plainPassword.first) | striptags }} <sup>*</sup><i class="fa fa-info-circle " style="color: #AA0258" data-toggle='tooltip' data-placement="bottom" title="{{ 'form.password.invalid' | trans }}"></i></label>
+                    {{ form_widget(form.plainPassword.first, { 'attr': {'class': 'form-control'} }) }}
+                    {% if form_errors(form.plainPassword.first) %}
+                        <p class="error"><i class="fa fa-exclamation-circle "></i> {{ form_errors(form.plainPassword.first) | striptags }}</p>
+                    {% endif %}
+
+                </div>
+                <div class="form-group required ">
+                    <label class="control-label">{{ form_label(form.plainPassword.second) | striptags }} <sup>*</sup></label>
+                    {{ form_widget(form.plainPassword.second, { 'attr': {'class': 'form-control'} }) }}
+                    {% if form_errors(form.plainPassword.second) %}
+                        <p class="error"><i class="fa fa-exclamation-circle "></i> {{ form_errors(form.plainPassword.second) | striptags }}</p>
+                    {% endif %}
+                </div>
+                <div class="form-group required ">
+                    <label class="control-label">{{ form_label(form.profile.name) | striptags }} <sup>*</sup></label>
+                    {{ form_widget(form.profile.name, { 'attr': {'class': 'form-control'} }) }}
+                    {% if form_errors(form.profile.name) %}
+                        <p class="error"><i class="fa fa-exclamation-circle "></i> {{ form_errors(form.profile.name) | striptags }}</p>
+                    {% endif %}
+                </div>
+
+
+                {#<div class="form-group required">#}
+                    {#<label class="control-label">{{ form_label(form.profile.pais) | striptags }} <sup>*</sup></label>#}
+                    {#{{ form_widget(form.profile.pais, { 'attr': {'class': 'form-control'} }) }}#}
+                    {#{% if form_errors(form.profile.pais) %}#}
+                        {#<p class="error"><i#}
+                                    {#class="fa fa-exclamation-circle "></i> {{ form_errors(form.profile.pais) | striptags }}#}
+                        {#</p>#}
+                    {#{% endif %}#}
+                {#</div>#}
+                {#<div class="form-group required">#}
+                    {#<label class="control-label">{{ form_label(form.profile.codigoPostal) | striptags }} <sup>*</sup></label>#}
+                    {#{{ form_widget(form.profile.codigoPostal, { 'attr': {'class': 'form-control'} }) }}#}
+                    {#{% if form_errors(form.profile.codigoPostal) %}#}
+                        {#<p class="error"><i#}
+                                    {#class="fa fa-exclamation-circle "></i> {{ form_errors(form.profile.codigoPostal) | striptags }}#}
+                        {#</p>#}
+                    {#{% endif %}#}
+                {#</div>#}
+
+                {#<div class="form-group required">#}
+                    {#<label class="control-label">{{ form_label(form.profile.ciudad) | striptags }} <sup>*</sup>#}
+                        {#<i class="update pull-right" data-toggle="tooltip" title=""></i>#}
+                    {#</label>#}
+                    {#{{ form_widget(form.profile.ciudad, { 'attr': {'class': 'form-control'} }) }}#}
+                    {#{% if form_errors(form.profile.ciudad) %}#}
+                        {#<p class="error"><i#}
+                                    {#class="fa fa-exclamation-circle "></i> {{ form_errors(form.profile.ciudad) | striptags }}#}
+                        {#</p>#}
+                    {#{% endif %}#}
+                {#</div>#}
+                {#<div class="form-group required">#}
+                    {#<label class="control-label">{{ form_label(form.profile.direccion) | striptags }} <sup>*</sup>#}
+                        {#<i class="update pull-right" data-toggle="tooltip" title=""></i>#}
+                    {#</label>#}
+                    {#{{ form_widget(form.profile.direccion, { 'attr': {'class': 'form-control'} }) }}#}
+                    {#{% if form_errors(form.profile.direccion) %}#}
+                        {#<p class="error"><i#}
+                                    {#class="fa fa-exclamation-circle "></i> {{ form_errors(form.profile.direccion) | striptags }}#}
+                        {#</p>#}
+                    {#{% endif %}#}
+                {#</div>#}
+                {#<div class="form-group required">#}
+                    {#<label class="control-label">{{ form_label(form.profile.cif) | striptags }} <sup>*</sup>#}
+                    {#</label>#}
+                    {#{{ form_widget(form.profile.cif, { 'attr': {'class': 'form-control'} }) }}#}
+                    {#{% if form_errors(form.profile.cif) %}#}
+                        {#<p class="error"><i#}
+                                    {#class="fa fa-exclamation-circle "></i> {{ form_errors(form.profile.cif) | striptags }}#}
+                        {#</p>#}
+                    {#{% endif %}#}
+                {#</div>#}
+
+                {#<div class="form-group required">#}
+                    {#<label class="control-label">{{ form_label(form.profile.contactPerson) | striptags }} <sup>*</sup>#}
+                    {#</label>#}
+                    {#{{ form_widget(form.profile.contactPerson, { 'attr': {'class': 'form-control'} }) }}#}
+                    {#{% if form_errors(form.profile.contactPerson) %}#}
+                        {#<p class="error"><i#}
+                                    {#class="fa fa-exclamation-circle "></i> {{ form_errors(form.profile.contactPerson) | striptags }}#}
+                        {#</p>#}
+                    {#{% endif %}#}
+                {#</div>#}
+                {#<div class="form-group required ">#}
+                    {#<label class="control-label">{{ form_label(form.profile.phone) | striptags }} <sup>*</sup></label>#}
+                    {#{{ form_widget(form.profile.phone, { 'attr': {#}
+                        {#'class': 'form-control',#}
+                        {#'data-error-to':'#error_'~form.profile.phone.vars.id#}
+                    {#} }) }}#}
+                    {#{{ form_widget(form.profile.phone_hidden) }}#}
+                    {#<span id="{{ 'error_'~form.profile.phone.vars.id }}">#}
+                            {#{% if form_errors(form.profile.phone) %}#}
+                                {#<p class="error"><i class="fa fa-exclamation-circle "></i> {{ form_errors(form.profile.phone) | striptags }}</p>#}
+                            {#{% endif %}#}
+                        {#</span>#}
+
+                {#</div>#}
+                <div class="form-group">
+                    <div class="">
+                        <label for="checkboxes-1" class="checkbox-inline">
+                            {{ form_widget(form.terms,{'attr':{
+                                'data-error-to':'#error_'~form.terms.vars.id
+                            }}) }}
+                            {{ form.terms.vars.label |trans({'%url%':path('homepage_terms')})| raw }}
+                        </label>
+                        <span id="{{ 'error_'~form.terms.vars.id }}">
+                            {% if form_errors(form.terms) %}
+                                <p class="error"><i class="fa fa-exclamation-circle "></i> {{ form_errors(form.terms) | striptags }}</p>
+                            {% endif %}
+                        </span>
+
+                    </div>
+                </div>
+                {{ form_widget(form.type) }}
+                <!--end form-group-->
+                <div class="clearfix action">
+                    <br>
+                    <div class="form-group text-center">
+                        <button type="submit" class="btn btn-primary btn-lg">{{ 'registration.submit'|trans }}</button>
+                    </div>
+                </div>
+                <!--end action-->
+            </form>
+            <!--end form-sign-in-->
+        </div>
+    </div>
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('assets/frontend/js/plugins/intl-tel-input/intlTelInput.js') }}"></script>
+    <script src="{{ asset('assets/comun/jquery/chosen/ImageSelect.jquery.js') }}"></script>
+    <script>
+        $(function () {
+
+            $("input[type=checkbox]").iCheck();
+
+            $("#{{ form.profile.pais.vars.id }}").chosen({
+                width:'100%'
+            })
+            $.validator.setDefaults({ignore: ":hidden:not(select)"})
+
+            $.validator.addMethod("checkPhone", function (value, element) {
+                return $("#{{ form.profile.phone.vars.id }}").intlTelInput("isValidNumber")
+            }, $.validator.messages.phone);
+
+            $("#{{ form.profile.phone.vars.id }}").intlTelInput({
+                initialCountry: "auto",
+                geoIpLookup: function (callback) {
+                    $.get('https://ipinfo.io', function () {
+                    }, "jsonp").always(function (resp) {
+                        var countryCode = (resp && resp.country) ? resp.country : "";
+                        callback(countryCode);
+                    });
+                },
+                utilsScript: "{{ asset('assets/frontend/js/plugins/intl-tel-input/utils.js') }}" // just for formatting/placeholders etc
+            });
+            $("#{{ form.profile.codigoPostal.vars.id }}").on('blur',function() {
+                var city = $("#{{ form.profile.ciudad.vars.id }}");
+                var pais = $("#{{ form.profile.pais.vars.id }}");
+                var direccion = $("#{{ form.profile.direccion.vars.id }}");
+
+                if (pais.val()&&!city.val() && $(this).valid()) {
+                    $('.update').addClass('fa fa-spinner fa-spin');
+                    $.getJSON("http://www.geonames.org/postalCodeLookupJSON?&country="+pais.val()+"&callback=?", {postalcode: this.value }, function(response) {
+                        if (!city.val() && response && response.postalcodes.length && response.postalcodes[0].placeName) {
+                            {
+                                city.val(response.postalcodes[0].placeName);
+                                if(!direccion.val()&&response.postalcodes[0].adminName3)
+                                    direccion.val(response.postalcodes[0].adminName3);
+                            }
+                        }
+                        $('.update').removeClass('fa fa-spinner fa-spin');
+                    })
+                }
+            });
+
+            $("#{{ form.vars.id }}").validate({
+                validateNonVisibleFields: true,
+                submitHandler: function (form) {
+
+                    $("#{{ form.profile.phone_hidden.vars.id }}")
+                            .val(
+                            $("#{{ form.profile.phone.vars.id }}").intlTelInput("getNumber")
+                    );
+                    form.submit();
+                },
+                rules: {
+                    '{{ form.username.vars.full_name }}': {
+                        required: true,
+                    },
+                    '{{ form.email.vars.full_name }}': {
+                        required: true,
+                    }, '{{ form.plainPassword.first.vars.full_name }}': {
+                        required: true,
+                    }, '{{ form.plainPassword.second.vars.full_name }}': {
+                        required: true,
+                        equalTo:'#{{ form.plainPassword.first.vars.id }}'
+                    }, '{{ form.profile.phone.vars.full_name }}': {
+                        required: true,
+                        checkPhone: true
+                    }
+                },
+                messages:{
+                    '{{ form.plainPassword.first.vars.full_name }}': {
+                        required:'{{ 'fos_user.password.blank'|trans({},'validators') }}'
+                    }, '{{ form.profile.phone.vars.full_name }}': {
+                        required:'{{ 'fos_user.phone.blank'|trans({},'validators') }}',
+                        checkPhone: $.validator.messages.phone
+                    }
+                },
+                errorPlacement: function (error, element) {
+                    if ($(element).data('error-to'))
+                        $($(element).data('error-to')).append(error)
+                    else
+                        error.insertAfter(element)
+                }
+            });
+
+        })
+    </script>
+{% endblock %}

@@ -1,0 +1,22 @@
+{% extends 'backend/includes/topbar.html.twig' %}
+
+{% block topbar_links_left %}
+{% endblock %}
+
+{% block topbar_links_right %}
+    <a class="btn btn-success m-r-sm m-b-sm" href="{{ path('tn_factura_index') }}" data-toggle="tooltip" data-placement="bottom"
+       title="{{ 'backend.user_menu.administrator.facutra.title' | trans({}, 'FOSUserBundle') }}"><i
+                class="fa fa-dollar"></i> {{ 'backend.user_menu.administrator.facutra.title' | trans({}, 'FOSUserBundle') }}
+    </a>
+    <a class="btn btn-danger m-r-sm m-b-sm" href="{{ path('tn_emisor_index') }}" data-toggle="tooltip" data-placement="bottom"
+       title="{{ 'backend.user_menu.administrator.nomencladores.emisor.title' | trans({}, 'FOSUserBundle') }}"><i
+                class="fa fa-user"></i> {{ 'backend.user_menu.administrator.nomencladores.emisor.title' | trans({}, 'FOSUserBundle') }}
+    </a>
+    <a class="btn btn-danger m-r-sm m-b-sm" href="{{ path('tn_destinatario_index') }}" data-toggle="tooltip" data-placement="bottom"
+       title="{{ 'backend.user_menu.administrator.nomencladores.destinatario.title' | trans({}, 'FOSUserBundle') }}"><i
+                class="fa fa-money"></i> {{ 'backend.user_menu.administrator.nomencladores.destinatario.title' | trans({}, 'FOSUserBundle') }}
+    </a>
+    <a class="btn btn-danger m-r-sm m-b-sm" href="{{ path('tn_agente_index') }}" data-toggle="tooltip" data-placement="bottom"
+       title="{{ 'backend.user_menu.administrator.nomencladores.agente.title' | trans({}, 'FOSUserBundle') }}"><i
+                class="fa fa-adn"></i> {{ 'backend.user_menu.administrator.nomencladores.agente.title' | trans({}, 'FOSUserBundle') }}</a>
+{% endblock %}

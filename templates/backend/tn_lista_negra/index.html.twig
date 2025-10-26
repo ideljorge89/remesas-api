@@ -1,0 +1,116 @@
+{% extends 'base_backend.html.twig' %}
+{% trans_default_domain 'AppBundle' %}
+
+{% block breadcrumb %}
+    <div class="col-lg-12">
+        <h2>{{ 'backend.user_menu.administrator.nomencladores.lista_negra.title'|trans({},'FOSUserBundle') }}</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="{{ path('homepage_backend') }}"><i
+                            class="fa fa-home"></i> {{ 'backend.user_menu.breadcrumb.home'|trans({},'FOSUserBundle') }}
+                </a>
+            </li>
+            <li class="">
+                {{ 'backend.user_menu.administrator.nomencladores.title'|trans({},'FOSUserBundle') }}
+            </li>
+            <li class="active">
+                <strong>{{ 'backend.user_menu.administrator.nomencladores.lista_negra.title'|trans({},'FOSUserBundle') }}</strong>
+            </li>
+        </ol>
+    </div>
+{% endblock %}
+{% block body %}
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox">
+                <div class="ibox-content">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <a class="btn btn-primary pull-right" href="{{ path('tn_lista_negra_new') }}">
+                                <i class="fa fa-plus"></i>
+                                {{ 'backend.user_menu.administrator.nomencladores.lista_negra.add'|trans({},'FOSUserBundle') }}
+                            </a>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div id='table' class="table-responsive">
+                                <table class="footable footable-paging footable-paging-center  footable-paging-center  table table-stripped table-hover  toggle-arrow-tiny"
+                                       data-paging-size="100" data-paging="true" data-filtering="true"
+                                       data-sorting="true">
+                                    <thead>
+                                    <tr>
+                                        <th>{{ 'backend.lista_negra.table.nombre'|trans }}</th>
+                                        <th>{{ 'backend.lista_negra.table.telefono'|trans }}</th>
+                                        <th>{{ 'backend.lista_negra.table.ci'|trans }}</th>
+                                        <th>{{ 'backend.lista_negra.table.enabled'|trans }}</th>
+                                        <th data-breakpoints="all">{{ 'backend.lista_negra.table.direccion'|trans }}</th>
+                                        <th data-breakpoints="all">{{ 'backend.lista_negra.table.created'|trans }}</th>
+                                        <th data-breakpoints="all">{{ 'backend.lista_negra.table.updated'|trans }}</th>
+                                        <th class="text-right"
+                                            data-sort-ignore="true"
+                                            width="12%">{{ 'backend.comun.table.actions'|trans }}</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for lista in tn_lista_negras %}
+                                        <tr>
+                                            <td>{{ lista.nombre~" "~lista.apellidos }}</td>
+                                            <td>{{ lista.phone }}</td>
+                                            <td>{{ lista.ci }}</td>
+                                            <td>{{ lista.enabled==true?'<i class="fa fa-check-square-o"></i>':'<i class="fa fa-square-o"></i>' }}</td>
+                                            <td>{{ lista.direccion }}</td>
+                                            <td>{{ lista.created ? lista.created|date('Y-m-d') : '' }}</td>
+                                            <td>{{ lista.updated ? lista.updated|date('Y-m-d') : '' }}</td>
+                                            <td class="text-right">
+                                                <form class="form-inline" method="post"
+                                                      action="{{ path('tn_lista_negra_delete', {'id': lista.id}) }}"
+                                                      onsubmit="return confirm('Está seguro desea eliminar este elemento de la lsita?');">
+
+                                                    <a class="btn btn-warning btn-xs" data-toggle="tooltip"
+                                                       title="Editar lista"
+                                                       href="{{ path('tn_lista_negra_edit', {'id': lista.id}) }}"><i
+                                                                class="fa fa-pencil-square-o"></i></a>
+
+                                                    <input type="hidden" name="_method" value="DELETE">
+                                                    <input type="hidden" name="_token"
+                                                           value="{{ csrf_token('delete' ~ lista.id) }}">
+                                                    <button class="btn btn-danger btn-xs" data-toggle="tooltip"
+                                                            title="Eliminar elemento"><i
+                                                                class="fa fa-times"></i>
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                    <tfoot class="hide-if-no-paging">
+                                    <tr>
+                                        <td colspan="5" class="text-center">
+                                            <ul class="pagination">
+
+                                            </ul>
+                                            <div class="pagination pull-right">{{ knp_pagination_render(tn_lista_negras,'@KnpPaginator/Pagination/sliding_backend.html.twig') }}</div>
+                                        </td>
+                                    </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        $(function () {
+            dataLink()
+        });
+
+    </script>
+{% endblock %}

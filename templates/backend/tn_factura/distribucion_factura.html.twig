@@ -1,0 +1,161 @@
+{% extends 'base_backend.html.twig' %}
+{% trans_default_domain 'AppBundle' %}
+
+ {% set remesas = form.remesas.children %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        i#checkAll:hover {
+            cursor: pointer;
+            color: green;
+        }
+
+        i#checkAll {
+            margin-left: 8px;
+        }
+    </style>
+{% endblock %}
+{% block breadcrumb %}
+    <div class="col-lg-12">
+        <h2>{{ 'backend.user_menu.administrator.facutra.dist'|trans({},'FOSUserBundle') }}</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="{{ path('homepage_backend') }}"><i
+                            class="fa fa-home"></i> {{ 'backend.user_menu.breadcrumb.home'|trans({},'FOSUserBundle') }}
+                </a>
+            </li>
+            <li class="">
+                {{ 'backend.user_menu.administrator.nomencladores.title'|trans({},'FOSUserBundle') }}
+            </li>
+            <li class="active">
+                <strong>{{ 'backend.user_menu.administrator.facutra.dist'|trans({},'FOSUserBundle') }}</strong>
+            </li>
+        </ol>
+    </div>
+{% endblock %}
+{% block body %}
+    <div class="row">
+        <div class="col-md-12 col-xs-12">
+            <div class="ibox">
+                {{ form_start(form,{'attr':{
+                    'id':form.vars.id
+                }}) }}
+
+                <div class="ibox-title">
+                    <h5>
+                        {{ 'backend.factura.dist.facturaNo'|trans({'%nro%': tnFactura.noFactura })|upper }}
+                        <small> {{ form_label(form.remesas)|striptags }} </small>
+                    </h5>
+                </div>
+                <div class="ibox-content">
+                    <div class="row">
+                        <div class="col-md-12">
+                            {% if form_errors(form.remesas) %}
+                                <div class="alert alert-danger" role="alert">
+                                    <button type="button" class="close" data-dismiss="alert"
+                                            aria-hidden="true">&times;
+                                    </button>
+                                    <span class="fa fa-exclamation"
+                                          aria-hidden="true"></span>
+                                    <span class="sr-only">Error:</span>
+                                    {{ form_errors(form.remesas) | striptags }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-12">
+                            <table class="table table-stripped table-hover toggle-arrow-tiny w-auto">
+                                <thead>
+                                <tr>
+                                    <th>{{ 'backend.factura.dist.remesa.destinatario'|trans }}</th>
+                                    <th>{{ 'backend.factura.dist.remesa.ci'|trans }}</th>
+                                    <th>{{ 'backend.factura.dist.remesa.monto'|trans }}</th>
+                                    <th>{{ 'backend.factura.dist.remesa.direccion'|trans }}</th>
+                                    <th>{{ 'backend.factura.dist.remesa.distribuidor'|trans }}</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for choice in remesas %}
+                                    {% set remesa = choice.vars.value %}
+                                    {% if remesa.entregada and remesa.distribuidor is not null %}
+                                        <tr style="border: 2px solid #18A689">
+                                            <td>{{ remesa.destinatario }}</td>
+                                            <td>{{ remesa.destinatario.ci ? remesa.destinatario.ci : '' }}</td>
+                                            <td>{{ remesa.importeEntregar | number_format(2, '.', ',') }} {{ remesa.moneda.simbolo }}</td>
+                                            <td>{{ remesa.destinatario.getDireccionEntrega() }}</td>
+                                            <td>
+                                                {{ remesa.distribuidor }}
+                                                {{ form_widget(choice.distribuidor,{'attr':{
+                                                    'class':'form-control'
+                                                }}) }}
+                                            </td>
+                                        </tr>
+                                    {% else %}
+                                        <tr>
+                                            <td>{{ remesa.destinatario }}</td>
+                                            <td>{{ remesa.destinatario.ci ? remesa.destinatario.ci : '' }}</td>
+                                            <td>{{ remesa.importeEntregar | number_format(2, '.', ',') }} {{ remesa.moneda.simbolo }}</td>
+                                            <td>{{ remesa.destinatario.getDireccionEntrega() }}</td>
+                                            <td>
+                                                {{ form_widget(choice.distribuidor,{'attr':{
+                                                    'class':'form-control'
+                                                }}) }}
+                                            </td>
+                                        </tr>
+                                    {% endif %}
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="col-md-12 col-xs-12">
+                            {% if remesas |length > 0 %}
+                                <button type="submit" class="btn btn-warning pull-right">
+                                    <i class="fa fa-car"></i>
+                                    {{ 'backend.factura.dist.remesa.btn' | trans }}
+                                </button>
+                            {% else %}
+                                <button type="submit" class="btn btn-warning pull-right disabled" disabled>
+                                    <i class="fa fa-car"></i>
+                                    {{ 'backend.factura.dist.remesa.btn' | trans }}
+                                </button>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {{ form_widget(form._token) }}
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        $(function () {
+            $("#{{ form.vars.id }}").validate({
+                ignore: '',
+                rules: {
+                    {% for choice in remesas %}
+                    "{{ choice.distribuidor.vars.full_name }}": {
+                        required: true
+                    },
+                    {% endfor %}
+                },
+                submitHandler: function (form) {
+                    form.submit();
+                },
+                errorPlacement: function (error, element) {
+                    if ($(element).data('error-to'))
+                        error.insertAfter($($(element).data('error-to')))
+                    else {
+                        error.insertAfter(element)
+                        error.insertAfter(element.closest('.input-group'))
+                    }
+                }
+            });
+
+            dataLink();
+        });
+    </script>
+{% endblock %}

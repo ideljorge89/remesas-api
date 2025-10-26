@@ -1,0 +1,98 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}TnTransferencia{% endblock %}
+
+{% block body %}
+    <h1>TnTransferencia</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ tn_transferencium.id }}</td>
+            </tr>
+            <tr>
+                <th>Codigo</th>
+                <td>{{ tn_transferencium.codigo }}</td>
+            </tr>
+            <tr>
+                <th>NumeroTarjeta</th>
+                <td>{{ tn_transferencium.numeroTarjeta }}</td>
+            </tr>
+            <tr>
+                <th>Monto</th>
+                <td>{{ tn_transferencium.monto }}</td>
+            </tr>
+            <tr>
+                <th>TitularTarjeta</th>
+                <td>{{ tn_transferencium.titularTarjeta }}</td>
+            </tr>
+            <tr>
+                <th>Notas</th>
+                <td>{{ tn_transferencium.notas }}</td>
+            </tr>
+            <tr>
+                <th>Importe</th>
+                <td>{{ tn_transferencium.importe }}</td>
+            </tr>
+            <tr>
+                <th>Moneda</th>
+                <td>{{ tn_transferencium.moneda }}</td>
+            </tr>
+            <tr>
+                <th>Created</th>
+                <td>{{ tn_transferencium.created ? tn_transferencium.created|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>FechaContable</th>
+                <td>{{ tn_transferencium.fechaContable ? tn_transferencium.fechaContable|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>Updated</th>
+                <td>{{ tn_transferencium.updated ? tn_transferencium.updated|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>EnviadaAt</th>
+                <td>{{ tn_transferencium.enviadaAt ? tn_transferencium.enviadaAt|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>CanceladaAt</th>
+                <td>{{ tn_transferencium.canceladaAt ? tn_transferencium.canceladaAt|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>PorcentajeOpera</th>
+                <td>{{ tn_transferencium.porcentajeOpera }}</td>
+            </tr>
+            <tr>
+                <th>PorcentajeOperaAgente</th>
+                <td>{{ tn_transferencium.porcentajeOperaAgente }}</td>
+            </tr>
+            <tr>
+                <th>PorcentajeAsignado</th>
+                <td>{{ tn_transferencium.porcentajeAsignado }}</td>
+            </tr>
+            <tr>
+                <th>PorcentajeAsignadoAgente</th>
+                <td>{{ tn_transferencium.porcentajeAsignadoAgente }}</td>
+            </tr>
+            <tr>
+                <th>TotalPagar</th>
+                <td>{{ tn_transferencium.totalPagar }}</td>
+            </tr>
+            <tr>
+                <th>TotalPagarAgente</th>
+                <td>{{ tn_transferencium.totalPagarAgente }}</td>
+            </tr>
+            <tr>
+                <th>Token</th>
+                <td>{{ tn_transferencium.token }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('tn_transferencia_index') }}">back to list</a>
+
+    <a href="{{ path('tn_transferencia_edit', {'id': tn_transferencium.id}) }}">edit</a>
+
+    {{ include('tn_transferencia/_delete_form.html.twig') }}
+{% endblock %}

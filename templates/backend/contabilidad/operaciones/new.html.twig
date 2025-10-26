@@ -1,0 +1,191 @@
+{% extends 'base_backend.html.twig' %}
+{% trans_default_domain 'AppBundle' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+
+    <link rel="stylesheet" type="text/css" href="{{ asset('bundles/stflagiconcss/css/flag-icon.min.css') }}"
+          xmlns="http://www.w3.org/1999/html"/>
+{% endblock %}
+{% block breadcrumb %}
+    <div class="col-lg-12">
+        <h2>Distribución</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="{{ path('homepage_backend') }}"><i
+                            class="fa fa-home"></i> {{ 'backend.user_menu.breadcrumb.home'|trans({},'FOSUserBundle') }}
+                </a>
+            </li>
+            <li>
+                {{ 'backend.reportes.title'|trans({}) }}
+            </li>
+            <li class="active">
+                <strong>{{ 'backend.operacion.new'|trans({}) }}</strong>
+            </li>
+        </ol>
+    </div>
+{% endblock %}
+{% block body %}
+    <div class="ibox">
+        <div class="ibox-content">
+            <div class="row">
+                <div class="col-md-12">
+                    {{ form_start(form,{'attr':{
+                        'id':form.vars.id
+                    }}) }}
+
+                    {{ form_widget(form._token) }}
+                    {% if form_errors(form) %}
+                        <div class="alert alert-danger" role="alert">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
+                                &times;
+                            </button>
+                            <span class="fa fa-exclamation"
+                                  aria-hidden="true"></span>
+                            <span class="sr-only">Error:</span>
+                            {{ form_errors(form) | striptags }}
+                        </div>
+                    {% endif %}
+                    <div class="row">
+                        <div class="col-md-12 col-sm-12 col-xs-12 ">
+                            <div class="col-md-4 col-sm-12 col-xs-12 required">
+                                <div class="form-group">
+                                    <label class="font-noralm">{{ form_label(form.distribuidor)|striptags }}:</label>
+                                    <div class="col-xs-12 input-group">
+                                        {{ form_widget(form.distribuidor,{'attr':{'class':'form-control', 'data-placeholder': "Seleccione el lista"}}) }}
+                                        {% if form_errors(form.distribuidor) %}
+                                            <div class="alert alert-danger" role="alert">
+                                                <button type="button" class="close" data-dismiss="alert"
+                                                        aria-hidden="true">&times;
+                                                </button>
+                                                <span class="fa fa-exclamation"
+                                                      aria-hidden="true"></span>
+                                                <span class="sr-only">Error:</span>
+                                                {{ form_errors(form.distribuidor) | striptags }}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-12 col-xs-12 required">
+                                <div class="form-group">
+                                    <label class="font-noralm">{{ form_label(form.moneda)|striptags }}:</label>
+                                    <div class="col-xs-12 input-group">
+                                        {{ form_widget(form.moneda,{'attr':{'class':'form-control', 'data-placeholder': "Seleccione el lista"}}) }}
+                                        {% if form_errors(form.moneda) %}
+                                            <div class="alert alert-danger" role="alert">
+                                                <button type="button" class="close" data-dismiss="alert"
+                                                        aria-hidden="true">&times;
+                                                </button>
+                                                <span class="fa fa-exclamation"
+                                                      aria-hidden="true"></span>
+                                                <span class="sr-only">Error:</span>
+                                                {{ form_errors(form.moneda) | striptags }}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-12 col-xs-12 required">
+                                <div class="form-group">
+                                    <label class="font-noralm">{{ form_label(form.tipo)|striptags }}:</label>
+                                    <div class="col-xs-12 input-group">
+                                        {{ form_widget(form.tipo,{'attr':{'class':'form-control', 'data-placeholder': "Seleccione el lista"}}) }}
+                                        {% if form_errors(form.tipo) %}
+                                            <div class="alert alert-danger" role="alert">
+                                                <button type="button" class="close" data-dismiss="alert"
+                                                        aria-hidden="true">&times;
+                                                </button>
+                                                <span class="fa fa-exclamation"
+                                                      aria-hidden="true"></span>
+                                                <span class="sr-only">Error:</span>
+                                                {{ form_errors(form.tipo) | striptags }}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-2 col-sm-12 col-xs-12 required">
+                                <div class="form-group">
+                                    <label class="font-noralm">{{ form_label(form.importe)|striptags }}:</label>
+                                    <div class="col-xs-12 input-group">
+                                        {{ form_widget(form.importe,{'attr':{'class':'form-control'}}) }}
+                                        {% if form_errors(form.importe) %}
+                                            <div class="alert alert-danger" role="alert">
+                                                <button type="button" class="close" data-dismiss="alert"
+                                                        aria-hidden="true">&times;
+                                                </button>
+                                                <span class="fa fa-exclamation"
+                                                      aria-hidden="true"></span>
+                                                <span class="sr-only">Error:</span>
+                                                {{ form_errors(form.importe) | striptags }}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12 col-sm-12 col-xs-12">
+                            <div class="col-md-4 col-sm-12 col-xs-12">
+                                <div class="form-group">
+                                    <div class="col-xs-12 input-group">
+                                        {{ form_widget(form.notas,{'attr':{'class':'form-control', 'rows': 4, 'placeholder': 'NOTAS'}}) }}
+                                        {% if form_errors(form.notas) %}
+                                            <div class="alert alert-danger" role="alert">
+                                                <button type="button" class="close" data-dismiss="alert"
+                                                        aria-hidden="true">&times;
+                                                </button>
+                                                <span class="fa fa-exclamation"
+                                                      aria-hidden="true"></span>
+                                                <span class="sr-only">Error:</span>
+                                                {{ form_errors(form.notas) | striptags }}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xs-12 text-right">
+                                <a class="btn btn-warning" href="{{ path('tn_operaciones_distribuidor_index') }}"><i
+                                            class="fa fa-reply"></i> {{ 'backend.comun.form.to_list'|trans }}</a>
+
+                                <button class="btn btn-primary pull-right" type="submit" style="margin-left: 5px;"><i
+                                            class="fa fa-save"></i> {{ 'backend.comun.table.save'|trans }}</button>
+                            </div>
+                        </div>
+                        </form>
+                    </div>
+                    <div class="col-md-12 col-sm-12 col-xs-12 table-responsive">
+                        <div class="hr-line-dashed"></div>
+                        <div id="historial"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+
+    <script type="application/javascript">
+        $(function () {
+            function loadHistorial(distribuidor) {
+                $("#historial").load("{{ url('tn_operaciones_distribuidor_historial') }}", {
+                    distribuidor: distribuidor
+                }, function (a) {
+                });
+            }
+
+            $({{ form.distribuidor.vars.id }}).change(function (e) {
+                if ($(this).val() != '') {
+                    var option = $(this).find('option:selected');
+                    //Recargando el historial
+                    loadHistorial(option.val());
+                } else {
+                    $("#historial").html("");
+                }
+            });
+
+            dataLink()
+        })
+    </script>
+{% endblock %}

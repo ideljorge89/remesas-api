@@ -1,0 +1,101 @@
+{% trans_default_domain 'AppBundle' %}
+<table class="table table-stripped table-hover  toggle-arrow-tiny" data-paging-size="50"
+       data-paging="true" data-filtering="true" data-sorting="true">
+    <thead>
+    <tr>
+        <th>{{ 'backend.users.table.type'|trans }}</th>
+        <th>{{ 'backend.users.table.username'|trans }}</th>
+        <th>{{ 'backend.users.table.tipo'|trans }}</th>
+        <th>{{ 'backend.users.table.email'|trans }}</th>
+        <th>{{ 'backend.users.table.avatar'|trans }}</th>
+        <th class="text-right"
+            data-sort-ignore="true">{{ 'backend.comun.table.actions'|trans }}</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for tnUser in data %}
+        <tr>
+            <td>
+                {% if tnUser.hasRole('ROLE_SUPER_ADMIN') %}
+                    <span class="label label-success">{{ 'backend.user_menu.type.super_administrator'|trans({},'FOSUserBundle') }}</span>
+                {% elseif  tnUser.hasRole('ROLE_AGENCIA') %}
+                    <span class="label label-warning">{{ 'backend.user_menu.type.agencia'|trans({},'FOSUserBundle') }}</span>
+                {% elseif  tnUser.hasRole('ROLE_AGENTE') %}
+                    <span class="label label-primary">{{ 'backend.user_menu.type.agente'|trans({},'FOSUserBundle') }}</span>
+                {% elseif  tnUser.hasRole('ROLE_DISTRIBUIDOR') %}
+                    <span class="label label-danger">{{ 'backend.user_menu.type.distribuidor'|trans({},'FOSUserBundle') }}</span>
+                {% endif %}
+            </td>
+            <td>{{ tnUser.username }}</td>
+            <td>
+                {% if  tnUser.hasRole('ROLE_AGENCIA') %}
+                    {{ tnUser.agencia }}
+                {% elseif  tnUser.hasRole('ROLE_AGENTE') %}
+                    {{ tnUser.agente }}
+                {% elseif  tnUser.hasRole('ROLE_DISTRIBUIDOR') %}
+                    {{ tnUser.distribuidor }}
+                {% endif %}
+            </td>
+            <td>
+                {{ tnUser.email }}
+
+            </td>
+            <td class="text-center">
+                <div style="width: 45px; overflow: hidden;">
+                    {% set foto = asset('assets/backend/img/profile_small.png') %}
+                    {% if tnUser.avatar!='' %}
+                        {% set foto = tnUser.avatar %}
+                        <img style="width: 30px;border-radius: 4px;" alt="" src="{{ foto }}">
+                    {% elseif tnUser.filePath !='' %}
+                        <img style="width: 30px;border-radius: 4px;" alt="" src="{{ asset(tnUser.filePath) }}">
+                    {% endif %}
+                </div>
+            </td>
+            <td class="text-right  tooltip-demo m-t-md">
+                {% if not tnUser.isSuperAdmin %}
+
+                    {% set delete_form=delete_forms[loop.index0] %}
+                    {{ form_start(delete_form) }}
+                    <div class="">
+                        <a class="btn btn-sm btn-outline btn-info " data-placement="top"
+                           data-toggle="tooltip" data-target='#modal-form'
+                           href="{{ path('home_users_show', { 'token': tnUser.token }) }}"
+                           title="{{ 'backend.comun.table.show'|trans }}"><i
+                                    class="fa fa-eye"></i></a>
+                        <a class=" btn btn-sm btn-outline  btn-warning " data-placement="top"
+                           data-toggle="tooltip"
+                           href="{{ path('home_users_edit', { 'token': tnUser.token }) }}"
+                           title="{{ 'backend.comun.table.edit'|trans }}"><i
+                                    class="fa fa-pencil"></i></a>
+                        <a type="submit" data-placement="top" data-toggle="tooltip"
+                           class="btn btn-sm btn-danger btn-outline  delete_form"
+                           title="{{ 'backend.comun.table.delete'|trans }}"><i
+                                    class="fa fa-trash "></i></a>
+                    </div>
+                    {{ form_widget(delete_form) }}
+                    {{ form_rest(delete_form) }}
+                    {{ form_end(delete_form) }}
+                    </form>
+                {% endif %}
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+    <tfoot class="hide-if-no-paging">
+    <tr>
+        <td colspan="7" class="text-center">
+            <ul class="pagination">
+            </ul>
+        </td>
+    </tr>
+    </tfoot>
+</table>
+
+<script>
+    $(".show-option").tooltip({
+        show: {
+            effect: "slideDown",
+            delay: 250
+        }
+    });
+</script>

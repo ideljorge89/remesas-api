@@ -1,0 +1,85 @@
+<table cellpadding="3px" width="785px">
+    <tr>
+        <td width="260px" align="left" style="font-size: 10px"><strong>Rango de fechas:</strong><br>{{ params['fi'] ~" - "~ params['ff'] }}</td>
+        <td width="260px" align="left" style="font-size: 10px;"><strong>Agencia:</strong><br>{{ params['agencias'] }}</td>
+        <td width="215px" align="left" style="font-size: 10px"><strong>Estados:</strong><br>{{ params['estados'] }}</td>
+    </tr>
+</table>
+<table>
+    <tr>
+        <td>&nbsp;</td>
+    </tr>
+</table>
+{% set importeFacturasTotal = 0 %}
+{% set totalAPagarTotal = 0 %}
+{% set cantidadTotal = 0 %}
+{% for item, values in transferencias %}
+{% set importeFacturas = 0 %}
+{% set totalAPagar = 0 %}
+    <table cellpadding="3px" width="785px">
+        <tr>
+            <td align="center" width="680px" style="font-size: 10px; border-top: 1px solid black; border-bottom: 1px solid black"><strong>{{ item }}</strong></td>
+        </tr>
+    </table>
+    <table cellpadding="3px" width="785px">
+        <tr>
+            <td width="70px" align="left" style="font-size: 9px; border-top: 1px solid black; border-bottom: 1px solid black"><strong>Factura</strong></td>
+            <td width="60px" align="left" style="font-size: 9px; border-top: 1px solid black; border-bottom: 1px solid black"><strong>Fecha</strong></td>
+            <td width="140px" align="left" style="font-size: 9px;border-top: 1px solid black; border-bottom: 1px solid black"><strong>Destinatario</strong></td>
+            <td width="140px" align="left" style="font-size: 9px;border-top: 1px solid black; border-bottom: 1px solid black"><strong>Tarjeta</strong></td>
+            <td width="70px" align="left" style="font-size: 9px;border-top: 1px solid black; border-bottom: 1px solid black"><strong>Estado</strong></td>
+            <td width="70px" align="left" style="font-size: 9px;border-top: 1px solid black; border-bottom: 1px solid black"><strong>Enviado</strong></td>
+            <td width="60px" align="left" style="font-size: 9px;border-top: 1px solid black; border-bottom: 1px solid black"><strong>% Asig.</strong></td>
+            <td width="70px" align="left" style="font-size: 9px;border-top: 1px solid black; border-bottom: 1px solid black"><strong>A Pagar</strong></td>
+        </tr>
+    {% for transferencia in values %}
+        <tr>
+            <td width="70px" align="left" style="font-size: 9px;border-top: 1px solid black; border-bottom: 1px solid black">{{ transferencia.codigo }}</td>
+            <td width="60px" align="left" style="font-size: 9px;border-top: 1px solid black; border-bottom: 1px solid black">{{ transferencia.fechaContable | date('d/m/Y') }}</td>
+            <td width="140px" align="left" style="font-size: 9px;border-top: 1px solid black; border-bottom: 1px solid black">{{ transferencia.titularTarjeta }}</td>
+            <td width="140px" align="left" style="font-size: 9px;border-top: 1px solid black; border-bottom: 1px solid black">{{ transferencia.numeroTarjeta }}</td>
+            <td width="70px" align="left" style="font-size: 9px;border-top: 1px solid black; border-bottom: 1px solid black">{{ transferencia.estado }}</td>
+            <td width="70px" align="left" style="font-size: 9px;border-top: 1px solid black; border-bottom: 1px solid black">{{ transferencia.importe | number_format(2) }} {{ transferencia.moneda }}</td>
+            <td width="60px" align="left" style="font-size: 9px;border-top: 1px solid black; border-bottom: 1px solid black">{{ transferencia.porcentajeAsignado }} %</td>
+            <td width="70px" align="left" style="font-size: 9px;border-top: 1px solid black; border-bottom: 1px solid black">{{ transferencia.totalPagar | number_format(2) }} USD</td>
+        </tr>
+        {% set importeFacturas = importeFacturas + transferencia.importe %}
+        {% set totalAPagar = totalAPagar + transferencia.totalPagar %}
+        {% set cantidadTotal = cantidadTotal + 1 %}
+    {% endfor %}
+    {% set importeFacturasTotal = importeFacturasTotal + importeFacturas %}
+    {% set totalAPagarTotal = totalAPagarTotal + totalAPagar %}
+    </table>
+    <table>
+        <tr>
+            <td>&nbsp;</td>
+        </tr>
+    </table>
+    <table cellpadding="3px" width="785px" style="border: 1px solid black">
+        <tr>
+            <td width="100px" align="left" style="font-size: 9px"><strong>{{ item }}</strong></td>
+            <td width="250px" align="center" style="font-size: 9px"><strong>{{ values | length }}</strong> transferencia(s)</td>
+            <td width="70px" align="center" style="font-size: 9px"><strong>IMPORTE:</strong></td>
+            <td width="130px" align="left" style="font-size: 9px">{{ importeFacturas | number_format(2) }} USD</td>
+            <td width="60px" align="center" style="font-size: 9px"><strong>PAGAR:</strong></td>
+            <td width="70px" align="left" style="font-size: 9px">{{ totalAPagar | number_format(2) }} USD</td>
+        </tr>
+    </table>
+    <table>
+        <tr>
+            <td>&nbsp;</td>
+        </tr>
+    </table>
+{% endfor %}
+<table cellpadding="3px" width="785px" style="border: 1px solid black">
+    <tr>
+        <td width="100px" align="left" style="font-size: 9px"><strong>RESUMEN TOTAL</strong></td>
+        <td width="250px" align="center" style="font-size: 9px"><strong>{{ cantidadTotal }} </strong> transferencia(s)</td>
+        <td width="70px" align="center" style="font-size: 9px"><strong>IMPORTE:</strong></td>
+        <td width="130px" align="left" style="font-size: 9px">{{ importeFacturasTotal | number_format(2) }} USD</td>
+        <td width="60px" align="center" style="font-size: 9px"><strong>PAGAR:</strong></td>
+        <td width="70px" align="left" style="font-size: 9px">{{ totalAPagarTotal | number_format(2) }} USD</td>
+    </tr>
+</table>
+
+

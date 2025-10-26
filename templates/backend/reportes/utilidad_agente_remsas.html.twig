@@ -1,0 +1,204 @@
+{% extends 'base_backend.html.twig' %}
+{% trans_default_domain 'AppBundle' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+
+    <link rel="stylesheet" type="text/css" href="{{ asset('bundles/stflagiconcss/css/flag-icon.min.css') }}"
+          xmlns="http://www.w3.org/1999/html"/>
+{% endblock %}
+{% block breadcrumb %}
+    <div class="col-lg-12">
+        <h2>Reportes</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="{{ path('homepage_backend') }}"><i
+                            class="fa fa-home"></i> {{ 'backend.user_menu.breadcrumb.home'|trans({},'FOSUserBundle') }}
+                </a>
+            </li>
+            <li>
+                {{ 'backend.reportes.title'|trans({}) }}
+            </li>
+            <li class="active">
+                <strong>{{ 'backend.reportes.utilidad.title'|trans({}) }}</strong>
+            </li>
+        </ol>
+    </div>
+{% endblock %}
+{% block body %}
+    <div class="ibox">
+        <div class="ibox-content">
+            <div class="row">
+                <div class="col-md-12">
+                    {{ form_start(form,{'attr':{
+                        'id':form.vars.id
+                    }}) }}
+
+                    {{ form_widget(form._token) }}
+                    {% if form_errors(form) %}
+                        <div class="alert alert-danger" role="alert">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
+                                &times;
+                            </button>
+                            <span class="fa fa-exclamation"
+                                  aria-hidden="true"></span>
+                            <span class="sr-only">Error:</span>
+                            {{ form_errors(form) | striptags }}
+                        </div>
+                    {% endif %}
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="col-md-4 required">
+                                <div class="form-group">
+                                    <label class="font-noraml"><strong>{{ 'backend.reportes.utilidad.fields.fechas'|trans }}</strong>:</label>
+                                    <div class="input-daterange input-group">
+                                        {{ form_widget(form.fechaInicio,{
+                                            'attr':{
+                                                'class':'form-control'
+                                            }
+                                        }) }}
+                                        <span class="input-group-addon"> - </span>
+                                        {{ form_widget(form.fechaFin,{
+                                            'attr':{
+                                                'class':'form-control'
+                                            }
+                                        }) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 required">
+                                <div class="form-group">
+                                    <label class="font-noralm">{{ form_label(form.estado)|striptags }}:</label>
+                                    <div class="col-xs-12 input-group">
+                                        {{ form_widget(form.estado,{'attr':{'class':'form-control', 'data-placeholder': "Seleccione los estados"}}) }}
+                                        {% if form_errors(form.estado) %}
+                                            <div class="alert alert-danger" role="alert">
+                                                <button type="button" class="close" data-dismiss="alert"
+                                                        aria-hidden="true">&times;
+                                                </button>
+                                                <span class="fa fa-exclamation"
+                                                      aria-hidden="true"></span>
+                                                <span class="sr-only">Error:</span>
+                                                {{ form_errors(form.estado) | striptags }}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 text-right">
+                            <div class="hr-line-dashed"></div>
+                            <button class="btn btn-primary pull-right" type="submit" style="margin-left: 5px;">
+                                <i
+                                        class="fa fa-search"></i> {{ 'backend.reportes.btn_search'|trans }}
+                            </button>
+                            {% if app.session.has('reportes/agente_utilidad_remesas') %}
+                                <a class="btn btn-primary" href="{{ path('reportes_agente_utilidades_remeas_print') }}"
+                                   style="margin-left: 5px;" target="_blank"><i
+                                            class="fa fa-print"></i> {{ 'backend.reportes.btn_export'|trans }}</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                    </form>
+                </div>
+            </div>
+            <div class="row">
+                <div id='table' class="col-md-12 table-responsive">
+                    <table id="contenedores"
+                           class="footable footable-paging footable-paging-center   table table-stripped table-hover  toggle-arrow-tiny"
+                           data-paging-size="50" data-paging="true" data-filtering="true" data-sorting="true">
+                        <thead>
+                        <tr>
+                            <th>Factura</th>
+                            <th>Fecha</th>
+                            <th>Emisor</th>
+                            <th>Destinatario</th>
+                            <th>Estado</th>
+                            <th>% Op</th>
+                            <th>Importe</th>
+                            <th>% Ag</th>
+                            <th>A pagar</th>
+                            <th>Utilidad</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% set importeTotal = 0 %}
+                        {% set totalAPagarTotal = 0 %}
+                        {% set utilidadTotal = 0 %}
+                        {% for factura in facturas %}
+                            {% if factura.agente is not null %}
+                                <tr>
+                                    <td>{{ factura.noFactura }}</td>
+                                    <td>{{ factura.fechaContable | date('d/m/Y') }}</td>
+                                    <td>{{ factura.emisor.showData() }}</td>
+                                    <td>{% for remesa in factura.remesas %}{{ remesa.destinatario }}{{ not loop.last ? ("<br>" | raw) }}{% endfor %}</td>
+                                    <td>{{ factura.estado }}</td>
+                                    <td>{{ factura.porcentajeOperaAgente }} %</td>
+                                    <td>{{ factura.total | number_format(2) }} USD</td>
+                                    <td>{{ factura.utilidadFijaAgente ? factura.porcentajeAsignadoAgente~" USD" : factura.porcentajeAsignadoAgente~" %" }} </td>
+                                    <td>{{ factura.totalPagarAgente }} USD</td>
+                                    <td>{{ (factura.total - factura.totalPagarAgente) | number_format(2) }}
+                                        USD
+                                    </td>
+                                </tr>
+                                {% set importeTotal = importeTotal + factura.total %}
+                                {% set totalAPagarTotal = totalAPagarTotal + factura.totalPagarAgente %}
+                                {% set utilidadTotal = utilidadTotal + (factura.total - factura.totalPagarAgente) %}
+                            {% endif %}
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12">
+                    <table class="table table-responsive">
+                        <tr>
+                            <td><strong>RESUMEN TOTAL:</strong></td>
+                            <td></td>
+                            <td>{{ facturas | length}} factura(s)</td>
+                            <td></td>
+                            <td><strong>TOTALES:</strong></td>
+                            <td>{{ importeTotal | number_format(2) }} USD</td>
+                            <td>{{ totalAPagarTotal | number_format(2) }} USD</td>
+                            <td>{{ utilidadTotal | number_format(2) }} USD</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+
+    <script type="application/javascript">
+        $(function () {
+            $('.input-daterange').datepicker({
+                keyboardNavigation: false,
+                forceParse: false,
+                autoclose: true,
+                format: 'dd/mm/yyyy',
+                todayBtn: true,
+                language: 'es',
+                endDate: 'today',
+                todayHighlight: true
+            }).on('keypress paste', function (e) {
+                e.preventDefault();
+                return false;
+            });
+
+            $("#{{ form.vars.id }}").validate({
+                rules: {
+                    '{{ form.fechaInicio.vars.full_name }}': {
+                        required: true
+                    },
+                    '{{ form.fechaFin.vars.full_name }}': {
+                        required: true
+                    }
+                }
+            });
+            dataLink()
+        })
+    </script>
+{% endblock %}

@@ -1,0 +1,20 @@
+<div class="panel-default">
+    <div class="panel-heading">
+        <label class="label label-success">
+            <i class="fa fa-paperclip"></i> Evidencia transferencia {{ tn_transferencia.codigo }}
+        </label>
+    </div>
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-sm-12">
+                {% if fileEvidenciaData is not null  and fileEvidenciaData.extension == "jpeg" or fileEvidenciaData.extension == "jpg"  or fileEvidenciaData.extension == "png" %}
+                    <img width="100%" src="{{ asset('uploads/evidencias/' ~ tn_transferencia.evidencia) }}"
+                         alt="Evidencia">
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+
+</script>

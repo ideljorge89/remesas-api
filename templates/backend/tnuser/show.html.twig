@@ -1,0 +1,37 @@
+{% trans_default_domain 'AppBundle' %}
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row m-b-lg m-t-lg">
+        <div class="col-xs-12">
+
+            <div class="profile-image">
+                {% set avatar = tnUser.filePath !=null ?tnUser.filePath : asset('assets/backend/img/profile_medium.jpg') %}
+                <img src="{{ asset(avatar) }}" class="img-circle circle-border m-b-md" alt="profile">
+            </div>
+            <div class="profile-info">
+                <div class="">
+                    <div>
+                        <h2 class="no-margins">
+                            <i class="fa fa-user"></i> {{ tnUser.username }}
+                        </h2>
+                        <h4><i class="fa fa-user-circle">
+                                {% if  tnUser.hasRole('ROLE_AGENCIA') %}
+                                    {{ tnUser.agencia }}
+                                {% elseif  tnUser.hasRole('ROLE_AGENTE') %}
+                                    {{ tnUser.agente }}
+                                {% endif %}
+                            </i></h4>
+                        <h4><i class="fa fa-envelope"> {{ tnUser.email }}</i></h4>
+
+                        <h4><i class="fa fa-group"></i>
+                            {% if  tnUser.hasRole('ROLE_AGENCIA') %}
+                                <span class="label label-warning">{{ 'backend.user_menu.type.agencia'|trans({},'FOSUserBundle') }}</span>
+                            {% elseif  tnUser.hasRole('ROLE_AGENTE') %}
+                                <span class="label label-primary">{{ 'backend.user_menu.type.agente'|trans({},'FOSUserBundle') }}</span>
+                            {% endif %}
+                        </h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

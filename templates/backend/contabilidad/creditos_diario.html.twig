@@ -1,0 +1,126 @@
+{% extends 'base_backend.html.twig' %}
+{% trans_default_domain 'AppBundle' %}
+
+{% block breadcrumb %}
+    <div class="col-lg-12">
+        <h2>{{ 'backend.user_menu.administrator.contabilidad.title'|trans({},'FOSUserBundle') }}</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="{{ path('homepage_backend') }}"><i
+                            class="fa fa-home"></i> {{ 'backend.user_menu.breadcrumb.home'|trans({},'FOSUserBundle') }}
+                </a>
+            </li>
+            <li class="">
+                {{ 'backend.user_menu.administrator.contabilidad.title'|trans({},'FOSUserBundle') }}
+            </li>
+            <li class="active">
+                <strong>{{ 'backend.user_menu.administrator.contabilidad.diario'|trans({},'FOSUserBundle') }}</strong>
+            </li>
+        </ol>
+    </div>
+{% endblock %}
+{% block body %}
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox">
+                <div class="ibox-content">
+                    {% for credito in creditos %}
+                        <div class="row">
+                            <div class="col-md-12 col-md-12 col-xs-12">
+                                <div align="center"><h2><strong><u>{{ credito['moneda'].simbolo }}</u></strong></h2>
+                                </div>
+                                <div id='table' class="table-responsive">
+                                    <table class="footable footable-paging footable-paging-center  footable-paging-center  table table-stripped table-hover  toggle-arrow-tiny"
+                                           data-paging-size="50" data-paging="true" data-filtering="true"
+                                           data-sorting="true">
+                                        <thead>
+                                        <tr>
+                                            <th>{{ 'backend.operacion.table.diario.distribuidor'|trans }}</th>
+                                            <th>{{ 'backend.operacion.table.diario.saldo_inicial'|trans }}</th>
+                                            <th>{{ 'backend.operacion.table.diario.recibido'|trans }}</th>
+                                            <th>{{ 'backend.operacion.table.diario.entregado'|trans }}</th>
+                                            <th>{{ 'backend.operacion.table.diario.envios'|trans }}</th>
+                                            {% if credito.moneda.comision %}
+                                                <th>{{ 'backend.operacion.table.diario.comision'|trans }}</th>
+                                            {% endif %}
+                                            <th>{{ 'backend.operacion.table.diario.cancelado'|trans }}</th>
+                                            <th>{{ 'backend.operacion.table.diario.transferido'|trans }}</th>
+                                            <th>{{ 'backend.operacion.table.diario.gastos'|trans }}</th>
+                                            <th>{{ 'backend.operacion.table.diario.credito'|trans }}</th>
+                                            <th data-breakpoints="all">{{ 'backend.operacion.table.diario.facturas'|trans }}</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        {% for distribuidor in credito['distribuidores'] %}
+                                            <tr>
+                                                <td>{{ distribuidor['distribuidor'] }}</td>
+                                                <td>
+                                                    <span class="label label-warning">$ {{ distribuidor['credito'].lastCredito ? (distribuidor['credito'].lastCredito | number_format(2, '.', ',')) : 0.00 }}</strong></span>
+                                                </td>
+                                                <td>$ {{ distribuidor['totalRecibido'] }}</td>
+                                                <td>
+                                                    <span class="label label-primary"><strong>$ {{ distribuidor['entregado'] }}</strong></span>
+                                                </td>
+                                                <td>{{ distribuidor['envios'] }}</td>
+                                                {% if credito.moneda.comision %}
+                                                    <td>$ {{ distribuidor['comision'] }}</td>
+                                                {% endif %}
+                                                <td>$ {{ distribuidor['cancelado'] }}</td>
+                                                <td>$ {{ distribuidor['totalTransferdido'] }}</td>
+                                                <td>$ {{ distribuidor['totalGastos'] }}</td>
+                                                <td>
+                                                    {% if distribuidor['credito'].credito >= 0 %}
+                                                        <span class="label label-success"><strong>$ {{ distribuidor['credito'].credito ? distribuidor['credito'].credito | number_format(2, '.', ',') : 0.00 }}</strong></span>
+                                                    {% else %}
+                                                        <span class="label label-danger"><strong>$ {{ distribuidor['credito'].credito ? distribuidor['credito'].credito | number_format(2, '.', ',') : 0.00 }}</strong></span>
+                                                    {% endif %}
+                                                </td>
+                                                <td>{{ distribuidor['facturaCanceladas'] | join(', ') }}</td>
+                                            </tr>
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <table class="table table-responsive">
+                                    <tr>
+                                        <th width="16%"><strong>RESUMEN {{ credito['moneda'].simbolo }}:</strong></th>
+                                        <th>
+                                            <span class="label label-warning">$ {{ credito['totales']['inicial']  | number_format(2) }}</span>
+                                        </th>
+                                        <th>{{ credito['totales']['recibido'] | number_format(2) }}</th>
+                                        <th>
+                                            <span class="label label-primary">$ {{ credito['totales']['entregado'] | number_format(2) }}</span>
+                                        </th>
+                                        <th>{{ credito['totales']['envios'] }}</th>
+                                        <th>$ {{ credito['totales']['comision'] | number_format(2) }}</th>
+                                        <th>$ {{ credito['totales']['cancelado'] | number_format(2) }}</th>
+                                        <th>$ {{ credito['totales']['transferido'] | number_format(2) }}</th>
+                                        <th>$ {{ credito['totales']['gastos'] | number_format(2) }}</th>
+                                        <th>
+                                            <span class="label label-success">${{ credito['totales']['disponible'] | number_format(2) }}</span>
+                                        </th>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        $(function () {
+            dataLink()
+        });
+
+    </script>
+{% endblock %}

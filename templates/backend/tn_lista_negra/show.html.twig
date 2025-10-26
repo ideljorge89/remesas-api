@@ -1,0 +1,50 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}TnListaNegra{% endblock %}
+
+{% block body %}
+    <h1>TnListaNegra</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ tn_lista_negra.id }}</td>
+            </tr>
+            <tr>
+                <th>Nombre</th>
+                <td>{{ tn_lista_negra.nombre }}</td>
+            </tr>
+            <tr>
+                <th>Apellidos</th>
+                <td>{{ tn_lista_negra.apellidos }}</td>
+            </tr>
+            <tr>
+                <th>Phone</th>
+                <td>{{ tn_lista_negra.phone }}</td>
+            </tr>
+            <tr>
+                <th>Ci</th>
+                <td>{{ tn_lista_negra.ci }}</td>
+            </tr>
+            <tr>
+                <th>Direccion</th>
+                <td>{{ tn_lista_negra.direccion }}</td>
+            </tr>
+            <tr>
+                <th>Created</th>
+                <td>{{ tn_lista_negra.created ? tn_lista_negra.created|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>Updated</th>
+                <td>{{ tn_lista_negra.updated ? tn_lista_negra.updated|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('tn_lista_negra_index') }}">back to list</a>
+
+    <a href="{{ path('tn_lista_negra_edit', {'id': tn_lista_negra.id}) }}">edit</a>
+
+    {{ include('tn_lista_negra/_delete_form.html.twig') }}
+{% endblock %}

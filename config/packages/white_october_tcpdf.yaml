@@ -1,0 +1,12 @@
+white_october_tcpdf:
+  class: App\Manager\MyTCPDFClass
+  tcpdf:
+    k_title_magnification: 2
+    k_tcpdf_external_config: false
+
+services:
+  WhiteOctober\TCPDFBundle\Controller\TCPDFController: '@white_october.tcpdf'
+  white_october.tcpdf:
+    class: WhiteOctober\TCPDFBundle\Controller\TCPDFController
+    arguments: ["%white_october_tcpdf.class%"]
+    public: true

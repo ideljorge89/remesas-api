@@ -1,0 +1,19 @@
+{% trans_default_domain 'AppBundle' %}
+<script type="application/javascript">
+    $(document).ready(function () {
+        //reload and select the new element
+        {% if is_granted("ROLE_AGENCIA") %}
+            {% set groupBy =  elem.usuario ? (elem.usuario.agencia ? elem.usuario.agencia.nombre : elem.usuario.agente.nombre) : app.user.username %}
+        {% elseif is_granted("ROLE_AGENTE") %}
+            {% set groupBy =  elem.usuario ? (elem.usuario.agencia ? elem.usuario.agencia.nombre : elem.usuario.agente.nombre): app.user.username %}
+        {% else %}
+            {% set groupBy =  elem.usuario ? (elem.usuario.agencia ? elem.usuario.agencia.nombre : elem.usuario.agente.nombre): app.user.username %}
+        {% endif %}
+        $($('#modal-form').data('target')).find('optgroup[label="{{ groupBy }}"]').append('<option value="{{ elem.id }}" >{{ elem }}</option>');
+        $($('#modal-form').data('target')).val({{ elem.id }});
+        $($('#modal-form').data('target')).trigger("chosen:updated");
+        $($('#modal-form').data('target')).trigger("change");
+
+        $('#modal-form').modal('hide')
+    })
+</script>

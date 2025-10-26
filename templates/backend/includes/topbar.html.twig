@@ -1,0 +1,37 @@
+<div class="row border-bottom">
+    <nav class="navbar navbar-static-top  " role="navigation" style="margin-bottom: 0">
+        <div class="navbar-header">
+            <a id="collapse_menu" class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i
+                        class="fa fa-bars"></i> </a>
+        </div>
+        <ul class="nav navbar-top-links navbar-left tooltip-demo">
+            {% block topbar_links_left %}
+
+            {% endblock %}
+        </ul>
+        <ul class="nav navbar-top-links navbar-right">
+            {% block topbar_links_right %}
+
+            {% endblock %}
+
+            <li>
+                <a href="{{ path('app_default_change_language', {'_locale': locale}) }}" style='text-decoration:none;' class='englishHead'>  {% if app.request.locale == 'en' %}
+                        <img src="{{ asset('assets/backend/img/flags/32/Spain.png') }}" alt="">{% else %}<img
+                        src="{{ asset('assets/backend/img/flags/32/United-States.png') }}" alt="">{% endif %}</a>
+            </li>
+            {% if is_granted('ROLE_SUPER_ADMIN') or is_granted('ROLE_ADMIN') %}
+                <li>
+                    <a href="{{ path('backend_configurations') }}">
+                        <i class="fa fa-gears"></i>
+                    </a>
+                </li>
+            {% endif %}
+            <li>
+                <a href="{{ path('fos_user_backend_security_logout') }}">
+                    <i class="fa fa-sign-out"></i> {{ 'layout.logout'|trans({},'FOSUserBundle') }}
+                </a>
+            </li>
+        </ul>
+
+    </nav>
+</div>

@@ -1,0 +1,103 @@
+{% extends 'base_backend.html.twig' %}
+{% trans_default_domain 'AppBundle' %}
+
+{% block breadcrumb %}
+    <div class="col-lg-12">
+        <h2>{{ 'backend.user_menu.administrator.nomencladores.distribuidor.title'|trans({},'FOSUserBundle') }}</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="{{ path('homepage_backend') }}"><i
+                            class="fa fa-home"></i> {{ 'backend.user_menu.breadcrumb.home'|trans({},'FOSUserBundle') }}
+                </a>
+            </li>
+            <li class="">
+                {{ 'backend.user_menu.administrator.nomencladores.title'|trans({},'FOSUserBundle') }}
+            </li>
+            <li class="active">
+                <strong>{{ 'backend.user_menu.administrator.nomencladores.distribuidor.title'|trans({},'FOSUserBundle') }}</strong>
+            </li>
+        </ol>
+    </div>
+{% endblock %}
+{% block body %}
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox">
+                <div class="ibox-content">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <a class="btn btn-primary pull-right" href="{{ path('tn_distribuidor_new') }}">
+                                <i class="fa fa-plus"></i>
+                                {{ 'backend.user_menu.administrator.nomencladores.distribuidor.add'|trans({},'FOSUserBundle') }}
+                            </a>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div id='table' class="table-responsive">
+                                <table class="footable footable-paging footable-paging-center  footable-paging-center  table table-stripped table-hover  toggle-arrow-tiny"
+                                       data-paging-size="50" data-paging="true" data-filtering="true"
+                                       data-sorting="true">
+                                    <thead>
+                                    <tr>
+                                        <th>{{ 'backend.distribuidor.table.nombre'|trans }}</th>
+                                        <th>{{ 'backend.distribuidor.table.ci'|trans }}</th>
+                                        <th>{{ 'backend.distribuidor.table.email'|trans }}</th>
+                                        <th data-breakpoints="xs">{{ 'backend.agencia.table.telefono'|trans }}</th>
+                                        <th>{{ 'backend.agencia.table.enabled'|trans }}</th>
+                                        <th>{{ 'backend.distribuidor.table.municipio'|trans }}</th>
+                                        <th>{{ 'backend.distribuidor.table.provincia'|trans }}</th>
+                                        <th data-breakpoints="all">{{ 'backend.distribuidor.table.direccion'|trans }}</th>
+                                        <th data-breakpoints="all">{{ 'backend.distribuidor.table.zonas'|trans }}</th>
+                                        <th data-breakpoints="all">{{ 'backend.distribuidor.table.licencia'|trans }}</th>
+                                        <th data-breakpoints="all">{{ 'backend.distribuidor.table.created'|trans }}</th>
+                                        <th data-breakpoints="all">{{ 'backend.distribuidor.table.updated'|trans }}</th>
+                                        <th class="text-right"
+                                            data-sort-ignore="true">{{ 'backend.comun.table.actions'|trans }}</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for distribuidor in tn_distribuidors %}
+                                        <tr>
+                                            <td>{{ distribuidor.nombre~" "~distribuidor.apellidos }}</td>
+                                            <td>{{ distribuidor.ci }}</td>
+                                            <td>{{ distribuidor.email }}</td>
+                                            <td>{{ distribuidor.phone }}</td>
+                                            <td>{{ distribuidor.enabled==true?'<i class="fa fa-check-square-o"></i>':'<i class="fa fa-square-o"></i>' }}</td>
+                                            <td>{{ distribuidor.municipio ? distribuidor.municipio.name }}</td>
+                                            <td>{{ distribuidor.provincia ? distribuidor.provincia.name }}</td>
+                                            <td>
+                                                {{ distribuidor.direccion~", "~(distribuidor.direccion1 ? (distribuidor.direccion1~", "))~distribuidor.municipio.name~", "~distribuidor.provincia.name~", "~(distribuidor.country | country) }}
+                                            </td>
+                                            <td>
+                                                {% set zonas = "" %}
+                                                {% for zona in distribuidor.zonas %}
+                                                    {% if not loop.last %}
+                                                        {% set zonas = zonas~" "~zona~", "  %}
+                                                    {% else %}
+                                                        {% set zonas = zonas~zona%}
+                                                    {% endif %}
+                                                {% endfor %}
+                                                {{ zonas }}
+                                            </td>
+                                            <td>{{ distribuidor.datosLicencia }}</td>
+                                            <td>{{ distribuidor.created ? distribuidor.created|date('Y-m-d') : '' }}</td>
+                                            <td>{{ distribuidor.updated ? distribuidor.updated|date('Y-m-d') : '' }}</td>
+                                            <td class="text-right">
+                                                <a class="btn btn-warning btn-xs"
+                                                   href="{{ path('tn_distribuidor_edit', {'token': distribuidor.token}) }}"><i
+                                                            class="fa fa-pencil-square-o"></i></a>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+{% endblock %}

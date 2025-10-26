@@ -1,0 +1,135 @@
+{% extends 'base_backend.html.twig' %}
+{% trans_default_domain 'AppBundle' %}
+
+ {% set porcentajesAgencia = form.porcentajes.children %}
+
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock %}
+{% block breadcrumb %}
+    <div class="col-lg-12">
+        <h2>{{ 'backend.user_menu.porcentajes'|trans({},'FOSUserBundle') }}</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="{{ path('homepage_backend') }}"><i
+                            class="fa fa-home"></i> {{ 'backend.user_menu.breadcrumb.home'|trans({},'FOSUserBundle') }}
+                </a>
+            </li>
+            <li class="">
+                {{ 'backend.user_menu.porcentajes'|trans({},'FOSUserBundle') }}
+            </li>
+            <li class="active">
+                <strong>{{ 'backend.user_menu.editar_porcientos'|trans({},'FOSUserBundle') }}</strong>
+            </li>
+        </ol>
+    </div>
+{% endblock %}
+{% block body %}
+    <div class="row">
+        <div class="col-md-12 col-xs-12">
+            <div class="ibox">
+                {{ form_start(form,{'attr':{
+                    'id':form.vars.id
+                }}) }}
+
+                <div class="ibox-title">
+                    <h5>
+                        {{ 'backend.user_menu.editar_porcientos' | trans({},'FOSUserBundle')|upper }}
+                        <small> {{ form_label(form.porcentajes)|striptags }} </small>
+                    </h5>
+                </div>
+                <div class="ibox-content">
+                    <div class="row">
+                        <div class="col-md-12">
+                            {% if form_errors(form.porcentajes) %}
+                                <div class="alert alert-danger" role="alert">
+                                    <button type="button" class="close" data-dismiss="alert"
+                                            aria-hidden="true">&times;
+                                    </button>
+                                    <span class="fa fa-exclamation"
+                                          aria-hidden="true"></span>
+                                    <span class="sr-only">Error:</span>
+                                    {{ form_errors(form.porcentajes) | striptags }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-12">
+                            <table class="table table-stripped table-hover toggle-arrow-tiny w-auto">
+                                <thead>
+                                <tr>
+                                    <th>{{ 'backend.agencia.form.fields.nombre'|trans }}</th>
+                                    <th>{{ 'backend.agencia.form.fields.grupo'|trans }}</th>
+                                    <th>{{ 'backend.agencia.form.fields.porciento'|trans }}</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for choice in porcentajesAgencia %}
+                                    {% set operacionAgencia = choice.vars.value %}
+                                    <tr>
+                                        <td>{{ operacionAgencia.agencia.nombre }}</td>
+                                        <td>{{ operacionAgencia.grupoPago }}</td>
+                                        <td>
+                                            {{ form_widget(choice.porcentaje,{'attr':{
+                                                'class':'form-control'
+                                            }}) }}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="col-md-12 col-xs-12">
+                            <a href="{{ path('fos_user_profile_show') }}" class="btn btn-warning pull-right"><i
+                                        class="fa fa-reply"></i> {{ 'backend.comun.table.cancel' | trans }}</a>
+                            {% if porcentajesAgencia |length > 0 %}
+                                <button type="submit" class="btn btn-success pull-right" style="margin-right: 10px">
+                                    <i class="fa fa-save"></i>
+                                    {{ 'backend.comun.table.save' | trans }}
+                                </button>
+                            {% else %}
+                                <button type="submit" class="btn btn-warning pull-right disabled" disabled
+                                        style="margin-right: 10px">
+                                    <i class="fa fa-save"></i>
+                                    {{ 'backend.comun.table.save' | trans }}
+                                </button>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {{ form_widget(form._token) }}
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        $(function () {
+            $("#{{ form.vars.id }}").validate({
+                ignore: '',
+                rules: {
+                    {% for choice in porcentajesAgencia %}
+                    "{{ choice.porcentaje.vars.full_name }}": {
+                        required: true
+                    },
+                    {% endfor %}
+                },
+                submitHandler: function (form) {
+                    form.submit();
+                },
+                errorPlacement: function (error, element) {
+                    if ($(element).data('error-to'))
+                        error.insertAfter($($(element).data('error-to')))
+                    else {
+                        error.insertAfter(element)
+                        error.insertAfter(element.closest('.input-group'))
+                    }
+                }
+            });
+
+            dataLink();
+        });
+    </script>
+{% endblock %}

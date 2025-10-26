@@ -1,0 +1,85 @@
+{% extends 'base_backend.html.twig' %}
+{% trans_default_domain 'AppBundle' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+
+    <link rel="stylesheet" type="text/css" href="{{ asset('bundles/stflagiconcss/css/flag-icon.min.css') }}"
+          xmlns="http://www.w3.org/1999/html"/>
+{% endblock %}
+{% block breadcrumb %}
+    <div class="col-lg-12">
+        <h2>Ficheros</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="{{ path('homepage_backend') }}"><i
+                            class="fa fa-home"></i> {{ 'backend.user_menu.breadcrumb.home'|trans({},'FOSUserBundle') }}
+                </a>
+            </li>
+            <li>
+                {{ 'backend.reportes.title'|trans({}) }}
+            </li>
+            <li class="active">
+                <strong>{{ 'backend.documento.invalid'|trans({}) }}</strong>
+            </li>
+        </ol>
+    </div>
+{% endblock %}
+{% block body %}
+    <div class="ibox">
+        <div class="ibox-content">
+            <div class="table table-responsive">
+                <div id='table' class="col-md-12 table-responsive">
+                    <table id="contenedores"
+                           class="footable footable-paging footable-paging-center   table table-stripped table-hover  toggle-arrow-tiny"
+                           data-paging-size="50" data-paging="true" data-filtering="true" data-sorting="true">
+                        <thead>
+                        <tr>
+                            {% if tn_documento.tipo == 'factura-TM' %}
+                                <th>CName</th>
+                            {% endif %}
+                            <th>FirstName</th>
+                            <th>LastName</th>
+                            <th>MaidenName</th>
+                            <th>Address</th>
+                            <th>CodigoMunicipio</th>
+                            <th>Phone</th>
+                            {% if tn_documento.tipo == 'factura-TP' or tn_documento.tipo == 'factura-TM' %}
+                                <th>Moneda.</th>
+                            {% endif %}
+                            <th>Monto</th>
+                            {% if tn_documento.tipo == 'factura-TE' %}
+                                <th>Refer.</th>
+                                <th>Moneda.</th>
+                            {% endif %}
+                            <th width="15%">Observ.</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for invalid in invalids %}
+                            <tr>
+                                {% for col in invalid %}
+                                    <td>{{ col }}</td>
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-md-12 col-sm-10 col-xs-12 text-right">
+                    <a class="btn btn-warning" href="{{ path('tn_documento_index') }}"><i
+                                class="fa fa-reply"></i> {{ 'backend.comun.form.to_list'|trans }}</a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+    {% block javascripts %}
+        {{ parent() }}
+
+        <script type="application/javascript">
+            $(function () {
+                dataLink()
+            })
+        </script>
+    {% endblock %}

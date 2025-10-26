@@ -1,0 +1,11 @@
+{% trans_default_domain 'AppBundle' %}
+
+{{ factura.referenciaOld }}
+<a href="{{ path('tn_factura_referencia_old_edit', {'token': factura.token }) }}"
+   data-target='#modal-form'
+   data-toggle="tooltip"
+   data-placement="right"
+   class="btn btn-xs btn-primary btn-circle btn-outline"
+   title="{{ 'backend.factura.table.edit_referencia_old'| trans }}"><i
+            class="fa fa-dollar"></i></a>
+

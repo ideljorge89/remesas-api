@@ -1,0 +1,79 @@
+{% extends 'base_backend.html.twig' %}
+{% trans_default_domain 'AppBundle' %}
+
+{% block breadcrumb %}
+    <div class="col-lg-12">
+        <h2>{{ 'backend.user_menu.administrator.nomencladores.repartidor.title'|trans({},'FOSUserBundle') }}</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="{{ path('homepage_backend') }}"><i
+                            class="fa fa-home"></i> {{ 'backend.user_menu.breadcrumb.home'|trans({},'FOSUserBundle') }}
+                </a>
+            </li>
+            <li class="">
+                {{ 'backend.user_menu.administrator.nomencladores.title'|trans({},'FOSUserBundle') }}
+            </li>
+            <li class="active">
+                <strong>{{ 'backend.user_menu.administrator.nomencladores.repartidor.title'|trans({},'FOSUserBundle') }}</strong>
+            </li>
+        </ol>
+    </div>
+{% endblock %}
+{% block body %}
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox">
+                <div class="ibox-content">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <a class="btn btn-primary pull-right" href="{{ path('tn_transferencia_repartidores_new') }}">
+                                <i class="fa fa-plus"></i>
+                                {{ 'backend.user_menu.administrator.nomencladores.repartidor.add'|trans({},'FOSUserBundle') }}
+                            </a>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div id='table' class="table-responsive">
+                                <table class="footable footable-paging footable-paging-center  footable-paging-center  table table-stripped table-hover  toggle-arrow-tiny"
+                                       data-paging-size="50" data-paging="true" data-filtering="true"
+                                       data-sorting="true">
+                                    <thead>
+                                    <tr>
+                                        <th>{{ 'backend.repartidor.table.nombre'|trans }}</th>
+                                        <th>{{ 'backend.repartidor.table.comision'|trans }}</th>
+                                        <th>{{ 'backend.repartidor.table.enabled'|trans }}</th>
+                                        <th data-breakpoints="all">{{ 'backend.repartidor.table.observacion'|trans }}</th>
+                                        <th data-breakpoints="all">{{ 'backend.repartidor.table.created'|trans }}</th>
+                                        <th data-breakpoints="all">{{ 'backend.repartidor.table.updated'|trans }}</th>
+                                        <th class="text-right"
+                                            data-sort-ignore="true">{{ 'backend.comun.table.actions'|trans }}</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for repartidor in tn_repartidores %}
+                                        <tr>
+                                            <td>{{ repartidor.nombre }}</td>
+                                            <td>{{ repartidor.comision }} CUP</td>
+                                            <td>{{ repartidor.enabled==true?'<i class="fa fa-check-square-o"></i>':'<i class="fa fa-square-o"></i>' }}</td>
+                                            <td>{{ repartidor.observacion ? repartidor.observacion }}</td>
+                                            <td>{{ repartidor.created ? repartidor.created|date('Y-m-d') : '' }}</td>
+                                            <td>{{ repartidor.updated ? repartidor.updated|date('Y-m-d') : '' }}</td>
+                                            <td class="text-right">
+                                                <a class="btn btn-warning btn-xs"
+                                                   href="{{ path('tn_transferencia_repartidores_edit', {'token': repartidor.token}) }}"><i
+                                                            class="fa fa-pencil-square-o"></i></a>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+{% endblock %}

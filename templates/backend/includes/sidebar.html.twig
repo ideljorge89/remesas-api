@@ -1,0 +1,188 @@
+<nav class="navbar-default navbar-static-side" role="navigation">
+    <div class="sidebar-collapse">
+        <ul class="nav metismenu" id="side-menu">
+            <li class="nav-header">{% set avatar =  app.user.filePath !=null ?app.user.avatar:asset('assets/backend/img/profile_small.png') %}
+                {% block sidebar_header %}
+                    <div class="dropdown profile-element"> <span>
+                        {% set avatar = app.user.filePath !=null ?app.user.filePath : asset('assets/backend/img/profile_small.png') %}
+                            <img alt="image" class="img-circle" style="width: 48px;" src="{{ asset(avatar) }}"/>
+                    </span>
+                        <a data-toggle="dropdown" class="dropdown-toggle" href="#">
+                <span class="clear"> <span class="block m-t-xs"> <strong
+                                class="font-bold">{{ app.user.username }}</strong><br>
+                        {% if not is_granted("ROLE_DISTRIBUIDOR") %}
+                            {% if is_granted("ROLE_AGENCIA") or is_granted("ROLE_AGENTE") %}
+                                {% if is_granted("ROLE_AGENTE") %}
+                                    {% for porciento in app.user.agente.porcentajes %}
+                                        {% if porciento.porcentaje is not null %}
+                                            <label class="label label-primary">{{ porciento.porcentaje }}
+                                                % {{ porciento.grupoPagoAgente.moneda.simbolo }}</label>
+                                            {% else %}
+                                            <label class="label label-danger">No definido {{ porciento.grupoPagoAgente.moneda.simbolo }}</label>
+                                        {% endif %}
+                                    {% endfor %}
+                                    {% for porciento in app.user.agente.porcentajesTransferencias %}
+                                        {% if porciento.porcentaje is not null %}
+                                            <label class="label label-warning">{{ porciento.porcentaje }}
+                                                % {{ porciento.grupoPago.moneda.simbolo }}</label>
+                                                {% else %}
+                                            <label class="label label-danger">No definido {{ porciento.grupoPago.moneda.simbolo }}</label>
+                                        {% endif %}
+                                    {% endfor %}
+                                {% else %}
+                                    {% for porciento in app.user.agencia.porcentajes %}
+                                        {% if porciento.porcentaje is not null %}
+                                            <label class="label label-primary">{{ porciento.porcentaje }}
+                                                % {{ porciento.grupoPago.moneda.simbolo }}</label>
+                                            {% else %}
+                                            <label class="label label-danger">No definido {{ porciento.grupoPago.moneda.simbolo }}</label>
+                                        {% endif %}
+                                    {% endfor %}
+                                    {% for porciento in app.user.agencia.porcentajesTransferencias %}
+                                        {% if porciento.porcentaje is not null %}
+                                            <label class="label label-warning">{{ porciento.porcentaje }}
+                                                % {{ porciento.grupoPago.moneda.simbolo }}</label>
+                                            {% else %}
+                                            <label class="label label-danger">No definido {{ porciento.grupoPago.moneda.simbolo }}</label>
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endif %}
+                                {% if app.user.auth %}
+                                    <label class="label label-primary">{{ app.user.auth ? ('<i class="fa fa-toggle-on"></i>' | raw) : ('<i class="fa fa-toggle-off"></i>' | raw) }}</label>
+                                {% else %}
+                                    <label class="label label-danger">{{ app.user.auth ? ('<i class="fa fa-toggle-on"></i>' | raw) : ('<i class="fa fa-toggle-off"></i>' | raw) }}</label>
+                                {% endif %}
+                            {% else %}
+                                {% if app.user.porcentaje %}
+                                    <label class="label label-primary">{{ app.user.porcentaje }} %</label>
+                                {% else %}
+                                    <label class="label label-danger">{{ app.user.porcentaje }} %</label>
+                                {% endif %}
+                            {% endif %}
+                        {% endif %}
+                </span>
+                <span class="text-muted text-xs block">
+                        {% block tipo_usuario %}
+
+                        {% endblock %}
+                    <b class="caret"></b></span>
+            </span> </a>
+                        <ul class="dropdown-menu animated fadeInRight m-t-xs">
+                            {% block tipo_home %}
+
+                            {% endblock %}
+                            {#<li class="divider"></li>#}
+                            {#<li><a href=""><i
+                                            class="fa fa-shopping-cart"></i> {{ 'backend.user_menu.go_to_shop'|trans({},'FOSUserBundle') }}
+                                </a>
+                            </li>#}
+                            <li class="divider"></li>
+                            <li class="{{ route in ['fos_user_profile_show'] ? 'active' }}">
+                                <a href="{{ path('fos_user_profile_show') }}">
+                                    <i class="fa fa-user"></i>
+                                    {{ 'backend.user_menu.profile_show'|trans({},'FOSUserBundle') }}</a>
+                            </li>
+                            {% if is_granted("ROLE_AGENCIA") %}
+                                <li class="{{ route in ['user_backend_editar_porcentajes'] ? 'active' }}">
+                                    <a href="{{ path('user_backend_agencia_editar_porcentajes') }}"><i
+                                                class="fa fa-percent"></i> {{ 'backend.user_menu.porcentajes'|trans({},'FOSUserBundle') }}
+                                    </a>
+                                </li>
+                                <li class="{{ route in ['user_backend_agencia_editar_porcentajes_transferencias'] ? 'active' }}">
+                                    <a href="{{ path('user_backend_agencia_editar_porcentajes_transferencias') }}"><i
+                                                class="fa fa-percent"></i> {{ 'backend.user_menu.porcentajes_transf'|trans({},'FOSUserBundle') }}
+                                    </a>
+                                </li>
+                            {% endif %}
+                            {% if is_granted("ROLE_AGENTE") %}
+                                <li class="{{ route in ['user_backend_agente_editar_porcentajes'] ? 'active' }}">
+                                    <a href="{{ path('user_backend_agente_editar_porcentajes') }}"><i
+                                                class="fa fa-percent"></i> {{ 'backend.user_menu.porcentajes'|trans({},'FOSUserBundle') }}
+                                    </a>
+                                </li>
+                                <li class="{{ route in ['user_backend_agente_editar_porcentajes_transferencias'] ? 'active' }}">
+                                    <a href="{{ path('user_backend_agente_editar_porcentajes_transferencias') }}"><i
+                                                class="fa fa-percent"></i> {{ 'backend.user_menu.porcentajes_transf'|trans({},'FOSUserBundle') }}
+                                    </a>
+                                </li>
+                            {% endif %}
+                            <li class="{{ route in ['fos_user_profile_edit'] ? 'active' }}">
+                                <a href="{{ path('fos_user_profile_edit') }}"><i
+                                            class="fa fa-pencil-square"></i> {{ 'backend.user_menu.profile_edit'|trans({},'FOSUserBundle') }}
+                                </a>
+                            </li>
+                            <li class="{{ route in ['fos_user_change_password'] ? 'active' }}">
+                                <a href="{{ path('fos_user_change_password') }}">
+                                    <i class="fa fa-key"></i>
+                                    {{ 'backend.user_menu.change_password'|trans({},'FOSUserBundle') }}</a>
+                            </li>
+                            <li class="divider"></li>
+                            <li><a href="{{ path('fos_user_backend_security_logout') }}"><i
+                                            class="fa fa-sign-out"></i> {{ 'layout.logout'|trans({},'FOSUserBundle') }}
+                                </a></li>
+                        </ul>
+                    </div>
+                {% endblock %}
+                <div class="logo-element">
+
+                    <a data-toggle="dropdown" class="dropdown-toggle" href="#">
+                                <span class="text-muted text-xs block">
+                                    <img alt="image" class="img-circle" style="width: 48px;" src="{{ avatar }}"/>
+                                    <b class="caret"></b></span>
+                        </span> </a>
+                    <ul class="dropdown-menu animated fadeInRight m-t-xs">
+                        <li class="divider"></li>
+                        <li class="{{ route in ['fos_user_profile_show'] ? 'active' }}">
+                            <a href="{{ path('fos_user_profile_show') }}">
+                                <i class="fa fa-user"></i>
+                                {{ 'backend.user_menu.profile_show'|trans({},'FOSUserBundle') }}</a>
+                        </li>
+                        {% if is_granted("ROLE_AGENCIA") %}
+                            <li class="{{ route in ['user_backend_editar_porcentajes'] ? 'active' }}">
+                                <a href="{{ path('user_backend_agencia_editar_porcentajes') }}"><i
+                                            class="fa fa-percent"></i> {{ 'backend.user_menu.porcentajes'|trans({},'FOSUserBundle') }}
+                                </a>
+                            </li>
+                            <li class="{{ route in ['user_backend_agencia_editar_porcentajes_transferencias'] ? 'active' }}">
+                                <a href="{{ path('user_backend_agencia_editar_porcentajes_transferencias') }}"><i
+                                            class="fa fa-percent"></i> {{ 'backend.user_menu.porcentajes_transf'|trans({},'FOSUserBundle') }}
+                                </a>
+                            </li>
+                        {% endif %}
+                        {% if is_granted("ROLE_AGENTE") %}
+                            <li class="{{ route in ['user_backend_agente_editar_porcentajes'] ? 'active' }}">
+                                <a href="{{ path('user_backend_agente_editar_porcentajes') }}"><i
+                                            class="fa fa-percent"></i> {{ 'backend.user_menu.porcentajes'|trans({},'FOSUserBundle') }}
+                                </a>
+                            </li>
+                            <li class="{{ route in ['user_backend_agente_editar_porcentajes_transferencias'] ? 'active' }}">
+                                <a href="{{ path('user_backend_agente_editar_porcentajes_transferencias') }}"><i
+                                            class="fa fa-percent"></i> {{ 'backend.user_menu.porcentajes_transf'|trans({},'FOSUserBundle') }}
+                                </a>
+                            </li>
+                        {% endif %}
+                        <li class="{{ route in ['fos_user_profile_edit'] ? 'active' }}">
+                            <a href="{{ path('fos_user_profile_edit') }}"><i
+                                        class="fa fa-pencil-square"></i> {{ 'backend.user_menu.profile_edit'|trans({},'FOSUserBundle') }}
+                            </a>
+                        </li>
+                        <li class="{{ route in ['fos_user_change_password'] ? 'active' }}">
+                            <a href="{{ path('fos_user_change_password') }}">
+                                <i class="fa fa-key"></i>
+                                {{ 'backend.user_menu.change_password'|trans({},'FOSUserBundle') }}</a>
+                        </li>
+                        <li class="divider"></li>
+                        <li><a href="{{ path('fos_user_security_logout') }}"><i
+                                        class="fa fa-sign-out"></i> {{ 'layout.logout'|trans({},'FOSUserBundle') }}</a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+            {% block sidebar_menu %}
+
+            {% endblock %}
+
+        </ul>
+
+    </div>
+</nav>

@@ -1,0 +1,255 @@
+{% if (factura.agencia and factura.agencia.usuario is not null and factura.agencia.usuario.filePath is not null) or (factura.agente and factura.agente.usuario is not null and factura.agente.usuario.filePath is not null) %}
+    {% if factura.agente %}
+        <table cellpadding="3px" width="785px">
+            <tr>
+                <td width="200px" align="left">
+                    <img src="{{ asset(factura.agente.usuario.filePath) }}" alt="Avatar" style="width: 70px; height: 70px;">
+                </td>
+                <td width="200px" style="font-weight: bold; font-size: 20px" align="center"><strong>FACTURA</strong></td>
+                <td width="250px" align="right">
+                    <label><strong>Nro. </strong>{{ factura.noFactura }}</label><br>
+                    <label><strong>Fecha: </strong> {{ factura.created |date('d/m/Y H:i:s') }}</label>
+                </td>
+
+            </tr>
+        </table>
+    {% else %}
+        <table cellpadding="3px" width="785px">
+            <tr>
+                <td width="200px" align="left">
+                    <img src="{{ asset(factura.agencia.usuario.filePath) }}" alt="Avatar" style="width: 70px; height: 70px;">
+                </td>
+                <td width="200px" style="font-weight: bold; font-size: 20px" align="center" ><strong>FACTURA</strong></td>
+                <td width="250px" align="right">
+                    <label><strong>Nro. </strong>{{ factura.noFactura }}</label><br>
+                    <label><strong>Fecha: </strong> {{ factura.created |date('d/m/Y H:i:s') }}</label>
+                </td>
+
+            </tr>
+        </table>
+    {% endif %}
+{% else %}
+    <table cellpadding="3px" width="785px">
+        <tr>
+            <td width="400px" style="font-weight: bold; font-size: 20px" align="left"><strong>FACTURA</strong></td>
+            <td width="250px" align="right">
+                <label><strong>Nro. </strong>{{ factura.noFactura }}</label><br>
+                <label><strong>Fecha: </strong> {{ factura.created |date('d/m/Y H:i:s') }}</label>
+            </td>
+
+        </tr>
+    </table>
+{% endif %}
+
+<table>
+    <tr>
+        <td>&nbsp;</td>
+    </tr>
+</table>
+<table cellpadding="3px" width="785px">
+    <tr>
+        <td width="250px" align="left" style="font-size: 12px"><strong>EMISOR:</strong></td>
+        <td width="150px" align="left" style="font-size: 12px"><strong>TELEFONO:</strong></td>
+        <td width="260px" align="left" style="font-size: 12px"><strong>DIRECCION:</strong></td>
+    </tr>
+    <tr>
+        <td width="250px" align="left" style="font-size: 11px">{{ emisor.nombre~" "~emisor.apellidos }}</td>
+        <td width="150px" align="left" style="font-size: 11px">{{ emisor.phone }}</td>
+        <td width="260px" align="left"
+            style="font-size: 11px">{% if emisor.dirLine1 is not null and emisor.dirLine2 is not null and emisor.dirLine3 is not null %}{{ emisor.dirLine1~", "~(emisor.dirLine2 ? (emisor.dirLine2~", "))~(emisor.dirLine3 ? emisor.dirLine3~", ")~emisor.city~", "~(emisor.state | state )~", "~(emisor.country | country) }}{% else %} - {% endif %}</td>
+    </tr>
+</table>
+<table>
+    <tr>
+        <td>&nbsp;</td>
+    </tr>
+</table>
+{% for remesa in remesas %}
+    <table cellpadding="3px" width="785px" style="border: 1px solid black">
+        {% if app.user.auth and showImporte(factura) %}
+            <tr>
+                <td width="150px" align="left" style="font-size: 11px"><strong>Destinatario</strong></td>
+                <td width="100px" align="left" style="font-size: 11px"><strong>CI</strong></td>
+                <td width="70px" align="left" style="font-size: 11px"><strong>Teléfono</strong></td>
+                <td width="180px" align="left" style="font-size: 11px"><strong>Dirección</strong></td>
+                <td width="75px" align="left" style="font-size: 11px"><strong>Importe</strong></td>
+                <td width="75px" align="left" style="font-size: 11px"><strong>Enviado</strong></td>
+            </tr>
+            <tr>
+                <td width="150px" align="left"
+                    style="font-size: 11px">{{ remesa.destinatario~( remesa.destinatario.alias ? (" ("~ remesa.destinatario.alias) ~")") }}</td>
+                <td width="100px" align="left"
+                    style="font-size: 11px">{{ remesa.destinatario.ci ? remesa.destinatario.ci : '-' }}</td>
+                <td width="70px" align="left" style="font-size: 11px">{{ remesa.destinatario.phone }}</td>
+                <td width="180px" align="left" style="font-size: 11px">{{ remesa.destinatario.direccionEntrega() }}</td>
+                <td width="75px" align="left" style="font-size: 11px">{{ remesa.totalPagar | number_format(2) }}USD
+                </td>
+                <td width="75px" align="left" style="font-size: 11px">{{ remesa.importeEntregar | number_format(2) }} {{ remesa.moneda.simbolo }}
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td width="180px" align="left" style="font-size: 11px"><strong>Destinatario</strong></td>
+                <td width="100px" align="left" style="font-size: 11px"><strong>CI</strong></td>
+                <td width="70px" align="left" style="font-size: 11px"><strong>Teléfono</strong></td>
+                <td width="225px" align="left" style="font-size: 11px"><strong>Dirección</strong></td>
+                <td width="75px" align="left" style="font-size: 11px"><strong>Enviado</strong></td>
+            </tr>
+            <tr>
+                <td width="180px" align="left"
+                    style="font-size: 11px">{{ remesa.destinatario~( remesa.destinatario.alias ? (" ("~ remesa.destinatario.alias) ~")") }}</td>
+                <td width="100px" align="left"
+                    style="font-size: 11px">{{ remesa.destinatario.ci ? remesa.destinatario.ci : '-' }}</td>
+                <td width="70px" align="left" style="font-size: 11px">{{ remesa.destinatario.phone }}</td>
+                <td width="225px" align="left" style="font-size: 11px">{{ remesa.destinatario.direccionEntrega() }}</td>
+                <td width="75px" align="left" style="font-size: 11px">{{ remesa.importeEntregar | number_format(2) }} {{ remesa.moneda.simbolo }}
+                </td>
+            </tr>
+        {% endif %}
+        {% set destinatario = remesa.destinatario %}
+        {% if (destinatario.nombreAlternativo is not null and destinatario.apellidosAlternativo is not null) or destinatario.ciAlternativo is not null or destinatario.phoneAlternativo is not null %}
+            <tr>
+                <td width="{{ app.user.auth and showImporte(factura) ? '150px' : '180px' }}" align="left"
+                    style="font-size: 11px">{{ destinatario.nombreAlternativo ~" "~ destinatario.apellidosAlternativo }}</td>
+                <td width="100px" align="left"
+                    style="font-size: 11px">{{ destinatario.ciAlternativo ? destinatario.ciAlternativo }}</td>
+                <td width="70px" align="left"
+                    style="font-size: 11px">{{ destinatario.phoneAlternativo ? destinatario.phoneAlternativo }}</td>
+                <td width="180px" align="left" style="font-size: 11px"></td>
+                <td width="75px" align="left" style="font-size: 11px"></td>
+                <td width="75px" align="left" style="font-size: 11px"></td>
+            </tr>
+        {% endif %}
+    </table>
+    <table>
+        <tr>
+            <td>&nbsp;</td>
+        </tr>
+    </table>
+{% endfor %}
+<table cellpadding="3px" width="785px" style="border: 1px solid black">
+    <tr>
+        <td width="150px" align="left" style="font-size: 11px"></td>
+        <td width="100px" align="left" style="font-size: 11px"></td>
+        <td width="70px" align="left" style="font-size: 11px"></td>
+        <td width="180px" align="center" style="font-size: 11px"><strong>TOTAL</strong></td>
+        <td width="75px" align="left"
+            style="font-size: 11px">{% if app.user.auth and showImporte(factura) %}{{ factura.total | number_format(2) }} USD{% endif %}</td>
+        <td width="75px" align="left" style="font-size: 11px">{{ factura.importe | number_format(2) }} {{ factura.moneda }}</td>
+    </tr>
+</table>
+<table>
+    <tr>
+        <td>&nbsp;</td>
+    </tr>
+</table>
+<table>
+    <tr>
+        <td>&nbsp;</td>
+    </tr>
+</table>
+{# Poniendo 2 veces para que la agencias impriman #}
+<hr>
+<table>
+    <tr>
+        <td>&nbsp;</td>
+    </tr>
+</table>
+<table>
+    <tr>
+        <td>&nbsp;</td>
+    </tr>
+</table>
+<table cellpadding="3px" width="785px">
+    <tr>
+        <td width="250px" align="left" style="font-size: 12px"><strong>EMISOR:</strong></td>
+        <td width="150px" align="left" style="font-size: 12px"><strong>TELEFONO:</strong></td>
+        <td width="260px" align="left" style="font-size: 12px"><strong>DIRECCION:</strong></td>
+    </tr>
+    <tr>
+        <td width="250px" align="left" style="font-size: 11px">{{ emisor.nombre~" "~emisor.apellidos }}</td>
+        <td width="150px" align="left" style="font-size: 11px">{{ emisor.phone }}</td>
+        <td width="260px" align="left"
+            style="font-size: 11px">{% if emisor.dirLine1 is not null and emisor.dirLine2 is not null and emisor.dirLine3 is not null %}{{ emisor.dirLine1~", "~(emisor.dirLine2 ? (emisor.dirLine2~", "))~(emisor.dirLine3 ? emisor.dirLine3~", ")~emisor.city~", "~(emisor.state | state )~", "~(emisor.country | country) }}{% else %} - {% endif %}</td>
+    </tr>
+</table>
+<table>
+    <tr>
+        <td>&nbsp;</td>
+    </tr>
+</table>
+
+{% for remesa in remesas %}
+    <table cellpadding="3px" width="785px" style="border: 1px solid black">
+        {% if app.user.auth and showImporte(factura) %}
+            <tr>
+                <td width="150px" align="left" style="font-size: 11px"><strong>Destinatario</strong></td>
+                <td width="100px" align="left" style="font-size: 11px"><strong>CI</strong></td>
+                <td width="70px" align="left" style="font-size: 11px"><strong>Teléfono</strong></td>
+                <td width="180px" align="left" style="font-size: 11px"><strong>Dirección</strong></td>
+                <td width="75px" align="left" style="font-size: 11px"><strong>Importe</strong></td>
+                <td width="75px" align="left" style="font-size: 11px"><strong>Enviado</strong></td>
+            </tr>
+            <tr>
+                <td width="150px" align="left"
+                    style="font-size: 11px">{{ remesa.destinatario~( remesa.destinatario.alias ? (" ("~ remesa.destinatario.alias) ~")") }}</td>
+                <td width="100px" align="left"
+                    style="font-size: 11px">{{ remesa.destinatario.ci ? remesa.destinatario.ci : '-' }}</td>
+                <td width="70px" align="left" style="font-size: 11px">{{ remesa.destinatario.phone }}</td>
+                <td width="180px" align="left" style="font-size: 11px">{{ remesa.destinatario.direccionEntrega() }}</td>
+                <td width="75px" align="left" style="font-size: 11px">{{ remesa.totalPagar | number_format(2) }}USD
+                </td>
+                <td width="75px" align="left" style="font-size: 11px">{{ remesa.importeEntregar | number_format(2) }} {{ remesa.moneda.simbolo }}
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td width="180px" align="left" style="font-size: 11px"><strong>Destinatario</strong></td>
+                <td width="100px" align="left" style="font-size: 11px"><strong>CI</strong></td>
+                <td width="70px" align="left" style="font-size: 11px"><strong>Teléfono</strong></td>
+                <td width="225px" align="left" style="font-size: 11px"><strong>Dirección</strong></td>
+                <td width="75px" align="left" style="font-size: 11px"><strong>Enviado</strong></td>
+            </tr>
+            <tr>
+                <td width="180px" align="left"
+                    style="font-size: 11px">{{ remesa.destinatario~( remesa.destinatario.alias ? (" ("~ remesa.destinatario.alias) ~")") }}</td>
+                <td width="100px" align="left"
+                    style="font-size: 11px">{{ remesa.destinatario.ci ? remesa.destinatario.ci : '-' }}</td>
+                <td width="70px" align="left" style="font-size: 11px">{{ remesa.destinatario.phone }}</td>
+                <td width="225px" align="left" style="font-size: 11px">{{ remesa.destinatario.direccionEntrega() }}</td>
+                <td width="75px" align="left" style="font-size: 11px">{{ remesa.importeEntregar | number_format(2) }} {{ remesa.moneda.simbolo }}
+                </td>
+            </tr>
+        {% endif %}
+        {% set destinatario = remesa.destinatario %}
+        {% if (destinatario.nombreAlternativo is not null and destinatario.apellidosAlternativo is not null) or destinatario.ciAlternativo is not null or destinatario.phoneAlternativo is not null %}
+            <tr>
+                <td width="{{ app.user.auth and showImporte(factura) ? '150px' : '180px' }}" align="left"
+                    style="font-size: 11px">{{ destinatario.nombreAlternativo ~" "~ destinatario.apellidosAlternativo }}</td>
+                <td width="100px" align="left"
+                    style="font-size: 11px">{{ destinatario.ciAlternativo ? destinatario.ciAlternativo }}</td>
+                <td width="70px" align="left"
+                    style="font-size: 11px">{{ destinatario.phoneAlternativo ? destinatario.phoneAlternativo }}</td>
+                <td width="180px" align="left" style="font-size: 11px"></td>
+                <td width="75px" align="left" style="font-size: 11px"></td>
+                <td width="75px" align="left" style="font-size: 11px"></td>
+            </tr>
+        {% endif %}
+    </table>
+    <table>
+        <tr>
+            <td>&nbsp;</td>
+        </tr>
+    </table>
+{% endfor %}
+<table cellpadding="3px" width="785px" style="border: 1px solid black">
+    <tr>
+        <td width="150px" align="left" style="font-size: 11px"></td>
+        <td width="100px" align="left" style="font-size: 11px"></td>
+        <td width="70px" align="left" style="font-size: 11px"></td>
+        <td width="180px" align="center" style="font-size: 11px"><strong>TOTAL</strong></td>
+        <td width="75px" align="left"
+            style="font-size: 11px">{% if app.user.auth and showImporte(factura) %}{{ factura.total | number_format(2) }} USD{% endif %}</td>
+        <td width="75px" align="left" style="font-size: 11px">{{ factura.importe | number_format(2) }} {{ factura.moneda }}</td>
+    </tr>
+</table>

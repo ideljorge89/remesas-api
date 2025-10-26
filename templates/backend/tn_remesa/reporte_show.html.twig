@@ -1,0 +1,62 @@
+{% trans_default_domain 'AppBundle' %}
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Cerrar</span>
+    </button>
+    <h5 class="modal-title">Remesas del Reporte de envío {{ tnReporteEnvio.created | date('d/m/Y H:i:s A') }}</h5>
+</div>
+
+<div class="modal-body">
+    <div class="row">
+        <div id='table' class="table-responsive">
+            <table class="table table-stripped table-hover toggle-arrow-tiny">
+                <thead>
+                <tr>
+                    <th>{{ 'backend.remesa.table.orden'|trans }}</th>
+                    <th width="20%">{{ 'backend.remesa.table.destinatario'|trans }}</th>
+                    <th width="20%">{{ 'backend.remesa.table.direccion'|trans }}</th>
+                    <th>{{ 'backend.remesa.table.mun'|trans }}</th>
+                    <th>{{ 'backend.remesa.table.prov'|trans }}</th>
+                    <th>{{ 'backend.factura.table.total'|trans }}</th>
+                    <th>{{ 'backend.factura.table.fecha'|trans }}</th>
+                    <th>{{ 'backend.factura.table.estado'|trans }}</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for remesa in tnReporteEnvio.remesas %}
+                    {% set factura = remesa.factura %}
+                    <tr>
+                        <td>{{ factura.noFactura }} </td>
+                        <td width="20%">
+                            {{ remesa.destinatario ~" - "~remesa.destinatario.phone }}
+                        </td>
+                        <td width="20%">{{ remesa.destinatario.direccion~( remesa.destinatario.direccion1 ? (". "~ remesa.destinatario.direccion1)) }}</td>
+                        <td>{{ remesa.destinatario.municipio }}</td>
+                        <td>{{ remesa.destinatario.provincia }}</td>
+                        <td>{{ remesa.importeEntregar | number_format(2, '.', ',') }} {{ remesa.moneda.simbolo }}</td>
+                        <td>{{ factura.created | date('d/m/Y') }}</td>
+                        <td>
+                            <div id="state_{{ remesa.id }}">
+                                {% if remesa.entregada %}
+                                    <span class="label label-primary">Entregada</span>
+                                {% else %}
+                                    {% if factura.estado.codigo == '05' %}
+                                        <span class="label label-warning">Cancelada</span>
+                                    {% else %}
+                                        <span class="label label-danger">Pendiente</span>
+                                    {% endif %}
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+
+    });
+</script>

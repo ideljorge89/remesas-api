@@ -1,0 +1,11 @@
+{% extends 'backend/includes/topbar.html.twig' %}
+
+{% block topbar_links_left %}
+{% endblock %}
+
+{% block topbar_links_right %}
+    <a class="btn btn-success m-r-sm m-b-sm" href="{{ path('entrega_distribuidor_index') }}" data-toggle="tooltip" data-placement="bottom"
+       title="{{ 'backend.user_menu.administrator.facutra.remesas.list' | trans({}, 'FOSUserBundle') }}"><i
+                class="fa fa-dollar"></i> {{ 'backend.user_menu.administrator.facutra.remesas.title' | trans({}, 'FOSUserBundle') }}
+    </a>
+{% endblock %}

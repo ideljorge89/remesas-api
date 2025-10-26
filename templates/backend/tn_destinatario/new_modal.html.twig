@@ -1,0 +1,499 @@
+{% trans_default_domain 'AppBundle' %}
+<div class="panel-default">
+    <div class="panel-heading">
+        <label class="label label-primary">{{ 'backend.user_menu.administrator.nomencladores.destinatario.add'|trans({},'FOSUserBundle') }}</label>
+    </div>
+    <div class="panel-body">
+        {{ form_start(form,{
+            'attr':{
+                'id': form.vars.id,
+                'class':'form disable-on-submit',
+                'action': path('tn_destinatario_new',{'modal':true}),
+                'novalidate':'novalidate'
+            }}) }}
+
+        {{ form_widget(form._token) }}
+
+        <p>
+            {% if form_errors(form) %}
+
+        <div class="alert alert-danger" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            <span class="fa fa-exclamation"
+                  aria-hidden="true"></span>
+            <span class="sr-only">Error:</span>
+            {{ form_errors(form) | striptags }}
+        </div>
+        {% endif %}
+        </p>
+
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="tabs-container">
+                    <ul class="nav nav-tabs">
+                        <li class="active">
+                            <a data-toggle="tab" href="#mandatory"><label
+                                        class="label label-danger">OBLIGATORIOS</label></a>
+                        </li>
+                        <li class="">
+                            <a data-toggle="tab" href="#no-mandatory"><label
+                                        class="label label-warning">OPCIONALES</label></a>
+                        </li>
+                    </ul>
+                    <div class="tab-content">
+                        <div id="mandatory" class="tab-pane active">
+                            <fieldset class="form-horizontal">
+                                <div class="panel-body">
+                                    <div class="col-md-12 col-sm-12 col-xs-12 form-group required">
+                                        <div class="col-md-6 col-sm-12 col-xs-12" style="padding: 0">
+                                            <div class="row col-md-12">
+                                                <label class="font-noralm">{{ form_label(form.emisor)|striptags }}
+                                                    <sup>*</sup></label>
+                                                {{ form_widget(form.emisor,{'attr':{'class':'form-control'}}) }}
+                                                {% if form_errors(form.emisor) %}
+                                                    <div class="alert alert-danger" role="alert">
+                                                        <button type="button" class="close" data-dismiss="alert"
+                                                                aria-hidden="true">&times;
+                                                        </button>
+                                                        <span class="fa fa-exclamation"
+                                                              aria-hidden="true"></span>
+                                                        <span class="sr-only">Error:</span>
+                                                        {{ form_errors(form.emisor) | striptags }}
+                                                    </div>
+                                                {% endif %}
+                                                {{ form_widget(form.handler,{'attr':{
+                                                    'value':'save'
+                                                }}) }}
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 col-sm-12 col-xs-12" style="padding: 0">
+                                            {% if app.user and (is_granted("ROLE_SUPER_ADMIN") or is_granted("ROLE_AGENCIA")) %}
+                                                <div class="row col-md-12">
+                                                    <label class="font-noralm">{{ form_label(form.usuario)|striptags }}</label>
+                                                    {{ form_widget(form.usuario,{'attr':{'class':'form-control'}}) }}
+                                                    {% if form_errors(form.usuario) %}
+                                                        <div class="alert alert-danger" role="alert">
+                                                            <button type="button" class="close" data-dismiss="alert"
+                                                                    aria-hidden="true">&times;
+                                                            </button>
+                                                            <span class="fa fa-exclamation"
+                                                                  aria-hidden="true"></span>
+                                                            <span class="sr-only">Error:</span>
+                                                            {{ form_errors(form.usuario) | striptags }}
+                                                        </div>
+                                                    {% endif %}
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12 col-sm-12 col-xs-12 form-group required">
+                                        <div class="col-md-6 col-sm-12 col-xs-12" style="padding: 0">
+                                            <div class="row col-md-12">
+                                                <label class="font-noralm">{{ form_label(form.nombre)|striptags }}
+                                                    <sup>*</sup></label>
+                                                {{ form_widget(form.nombre,{'attr':{'class':'form-control'}}) }}
+                                                {% if form_errors(form.nombre) %}
+                                                    <div class="alert alert-danger" role="alert">
+                                                        <button type="button" class="close" data-dismiss="alert"
+                                                                aria-hidden="true">&times;
+                                                        </button>
+                                                        <span class="fa fa-exclamation"
+                                                              aria-hidden="true"></span>
+                                                        <span class="sr-only">Error:</span>
+                                                        {{ form_errors(form.nombre) | striptags }}
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 col-sm-12 col-xs-12" style="padding: 0">
+                                            <div class="row col-md-12">
+                                                <label class="font-noralm">{{ form_label(form.apellidos)|striptags }}
+                                                    <sup>*</sup></label>
+                                                {{ form_widget(form.apellidos,{'attr':{'class':'form-control'}}) }}
+                                                {% if form_errors(form.apellidos) %}
+                                                    <div class="alert alert-danger" role="alert">
+                                                        <button type="button" class="close" data-dismiss="alert"
+                                                                aria-hidden="true">&times;
+                                                        </button>
+                                                        <span class="fa fa-exclamation"
+                                                              aria-hidden="true"></span>
+                                                        <span class="sr-only">Error:</span>
+                                                        {{ form_errors(form.apellidos) | striptags }}
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12 col-sm-12 col-xs-12 form-group">
+                                        <div class="col-md-6 col-sm-12 col-xs-12" style="padding: 0">
+                                            <div class="row col-md-12">
+                                                <label class="font-noralm">{{ form_label(form.phone)|striptags }}
+                                                    <sup>*</sup></label>
+                                                {{ form_widget(form.phone,{'attr':{'class':'form-control'}}) }}
+                                                {% if form_errors(form.phone) %}
+                                                    <div class="alert alert-danger" role="alert">
+                                                        <button type="button" class="close" data-dismiss="alert"
+                                                                aria-hidden="true">&times;
+                                                        </button>
+                                                        <span class="fa fa-exclamation"
+                                                              aria-hidden="true"></span>
+                                                        <span class="sr-only">Error:</span>
+                                                        {{ form_errors(form.phone) | striptags }}
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 col-sm-6 col-xs-6" style="padding: 0">
+                                            <div class="row col-md-12">
+                                                <label class="font-noralm">{{ form_label(form.enabled)|striptags }}</label>
+                                                {% if form.vars.data.id == null %}
+                                                    {{ form_widget(form.enabled,{'attr':{'class':'form-control js-switch', 'checked':'checked'}}) }}
+                                                {% else %}
+                                                    {{ form_widget(form.enabled,{'attr':{'class':'form-control js-switch'}}) }}
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12 col-sm-12 col-xs-12 form-group required">
+                                        <div class="col-md-6 col-sm-12 col-xs-12" style="padding: 0">
+                                            <div class="row col-lg-12">
+                                                <label class="font-noralm">{{ form_label(form.direccion)|striptags }}
+                                                    <sup>*</sup></label>
+                                                {{ form_widget(form.direccion,{'attr':{'class':'form-control'}}) }}
+                                                {% if form_errors(form.direccion) %}
+                                                    <div class="alert alert-danger" role="alert">
+                                                        <button type="button" class="close" data-dismiss="alert"
+                                                                aria-hidden="true">&times;
+                                                        </button>
+                                                        <span class="fa fa-exclamation"
+                                                              aria-hidden="true"></span>
+                                                        <span class="sr-only">Error:</span>
+                                                        {{ form_errors(form.direccion) | striptags }}
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                        {#<div class="col-md-6 col-sm-12 col-xs-12">#}
+                                        {#<label class="col-lg-3 control-label text-right">{{ form_label(form.direccion1)|striptags }}</label>#}
+
+                                        {#<div class="col-lg-9">#}
+                                        {#{{ form_widget(form.direccion1,{'attr':{'class':'form-control'}}) }}#}
+                                        {#{% if form_errors(form.direccion1) %}#}
+                                        {#<div class="alert alert-danger" role="alert">#}
+                                        {#<button type="button" class="close" data-dismiss="alert"#}
+                                        {#aria-hidden="true">&times;#}
+                                        {#</button>#}
+                                        {#<span class="fa fa-exclamation"#}
+                                        {#aria-hidden="true"></span>#}
+                                        {#<span class="sr-only">Error:</span>#}
+                                        {#{{ form_errors(form.direccion1) | striptags }}#}
+                                        {#</div>#}
+                                        {#{% endif %}#}
+                                        {#</div>#}
+                                        {#</div>#}
+                                    </div>
+                                    <div class="col-md-12 col-sm-12 col-xs-12 form-group required">
+                                        <div class="col-md-6 col-sm-12 col-xs-12  pull-right" style="padding: 0">
+                                            <div class="row col-md-12">
+                                                <label class="font-noralm">{{ form_label(form.municipio)|striptags }}
+                                                    <sup>*</sup></label>
+                                                {% if destinatario.id is not null %}
+                                                    {{ form_widget(form.municipio,{'attr':{'class':'form-control'}}) }}
+                                                {% else %}
+                                                    {{ form_widget(form.municipio,{'attr':{'class':'form-control', 'disabled': 'disabled'}}) }}
+                                                {% endif %}
+                                                {% if form_errors(form.municipio) %}
+                                                    <div class="alert alert-danger" role="alert">
+                                                        <button type="button" class="close" data-dismiss="alert"
+                                                                aria-hidden="true">&times;
+                                                        </button>
+                                                        <span class="fa fa-exclamation"
+                                                              aria-hidden="true"></span>
+                                                        <span class="sr-only">Error:</span>
+                                                        {{ form_errors(form.municipio) | striptags }}
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 col-sm-12 col-xs-12  pull-right" style="padding: 0">
+                                            <div class="row col-md-12">
+                                                <label class="font-noralm">{{ form_label(form.provincia)|striptags }}
+                                                    <sup>*</sup></label>
+                                                {{ form_widget(form.provincia,{'attr':{'class':'form-control'}}) }}
+                                                {% if form_errors(form.provincia) %}
+                                                    <div class="alert alert-danger" role="alert">
+                                                        <button type="button" class="close" data-dismiss="alert"
+                                                                aria-hidden="true">&times;
+                                                        </button>
+                                                        <span class="fa fa-exclamation"
+                                                              aria-hidden="true"></span>
+                                                        <span class="sr-only">Error:</span>
+                                                        {{ form_errors(form.provincia) | striptags }}
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12 col-sm-12 col-xs-12 form-group required">
+                                        <div class="col-md-6 col-sm-12 col-xs-12">
+                                            <div class="col-lg-9">
+                                                {{ form_widget(form.country,{'attr':{'class':'form-control'}}) }}
+                                                {% if form_errors(form.country) %}
+                                                    <div class="alert alert-danger" role="alert">
+                                                        <button type="button" class="close" data-dismiss="alert"
+                                                                aria-hidden="true">&times;
+                                                        </button>
+                                                        <span class="fa fa-exclamation"
+                                                              aria-hidden="true"></span>
+                                                        <span class="sr-only">Error:</span>
+                                                        {{ form_errors(form.country) | striptags }}
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </div>
+                        <div id="no-mandatory" class="tab-pane">
+                            <fieldset class="form-horizontal">
+                                <div class="panel-body">
+                                    <div class="col-md-12 col-sm-12 col-xs-12 form-group">
+                                        <div class="col-md-6 col-sm-12 col-xs-12" style="padding: 0">
+                                            <div class="row col-md-12">
+                                                <label class="font-noralm">{{ form_label(form.ci)|striptags }}</label>
+                                                {{ form_widget(form.ci,{'attr':{'class':'form-control'}}) }}
+                                                {% if form_errors(form.ci) %}
+                                                    <div class="alert alert-danger" role="alert">
+                                                        <button type="button" class="close" data-dismiss="alert"
+                                                                aria-hidden="true">&times;
+                                                        </button>
+                                                        <span class="fa fa-exclamation"
+                                                              aria-hidden="true"></span>
+                                                        <span class="sr-only">Error:</span>
+                                                        {{ form_errors(form.ci) | striptags }}
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 col-sm-12 col-xs-12" style="padding: 0">
+                                            <div class="row col-md-12">
+                                                <label class="font-noralm">{{ form_label(form.alias)|striptags }}</label>
+
+                                                {{ form_widget(form.alias,{'attr':{'class':'form-control'}}) }}
+                                                {% if form_errors(form.alias) %}
+                                                    <div class="alert alert-danger" role="alert">
+                                                        <button type="button" class="close" data-dismiss="alert"
+                                                                aria-hidden="true">&times;
+                                                        </button>
+                                                        <span class="fa fa-exclamation"
+                                                              aria-hidden="true"></span>
+                                                        <span class="sr-only">Error:</span>
+                                                        {{ form_errors(form.alias) | striptags }}
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-12 col-sm-12 col-xs-12 form-group">
+                                        <div class="col-md-6 col-sm-12 col-xs-12" style="padding: 0">
+                                            <div class="row col-md-12">
+                                                <label class="font-noralm">{{ form_label(form.nombreAlternativo)|striptags }}</label>
+                                                {{ form_widget(form.nombreAlternativo,{'attr':{'class':'form-control'}}) }}
+                                                {% if form_errors(form.nombreAlternativo) %}
+                                                    <div class="alert alert-danger" role="alert">
+                                                        <button type="button" class="close" data-dismiss="alert"
+                                                                aria-hidden="true">&times;
+                                                        </button>
+                                                        <span class="fa fa-exclamation"
+                                                              aria-hidden="true"></span>
+                                                        <span class="sr-only">Error:</span>
+                                                        {{ form_errors(form.nombreAlternativo) | striptags }}
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 col-sm-12 col-xs-12" style="padding: 0">
+                                            <div class="row col-md-12">
+                                                <label class="font-noralm">{{ form_label(form.apellidosAlternativo)|striptags }}</label>
+                                                {{ form_widget(form.apellidosAlternativo,{'attr':{'class':'form-control'}}) }}
+                                                {% if form_errors(form.apellidosAlternativo) %}
+                                                    <div class="alert alert-danger" role="alert">
+                                                        <button type="button" class="close" data-dismiss="alert"
+                                                                aria-hidden="true">&times;
+                                                        </button>
+                                                        <span class="fa fa-exclamation"
+                                                              aria-hidden="true"></span>
+                                                        <span class="sr-only">Error:</span>
+                                                        {{ form_errors(form.apellidosAlternativo) | striptags }}
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12 col-sm-12 col-xs-12 form-group">
+                                        <div class="col-md-6 col-sm-12 col-xs-12" style="padding: 0">
+                                            <div class="row col-md-12">
+                                                <label class="font-noralm">{{ form_label(form.ciAlternativo)|striptags }}</label>
+
+                                                {{ form_widget(form.ciAlternativo,{'attr':{'class':'form-control'}}) }}
+                                                {% if form_errors(form.ciAlternativo) %}
+                                                    <div class="alert alert-danger" role="alert">
+                                                        <button type="button" class="close" data-dismiss="alert"
+                                                                aria-hidden="true">&times;
+                                                        </button>
+                                                        <span class="fa fa-exclamation"
+                                                              aria-hidden="true"></span>
+                                                        <span class="sr-only">Error:</span>
+                                                        {{ form_errors(form.ciAlternativo) | striptags }}
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 col-sm-12 col-xs-12" style="padding: 0">
+                                            <div class="row col-md-12">
+                                                <label class="font-noralm">{{ form_label(form.phone_alternativo)|striptags }}</label>
+                                                {{ form_widget(form.phone_alternativo,{'attr':{'class':'form-control'}}) }}
+                                                {% if form_errors(form.phone_alternativo) %}
+                                                    <div class="alert alert-danger" role="alert">
+                                                        <button type="button" class="close" data-dismiss="alert"
+                                                                aria-hidden="true">&times;
+                                                        </button>
+                                                        <span class="fa fa-exclamation"
+                                                              aria-hidden="true"></span>
+                                                        <span class="sr-only">Error:</span>
+                                                        {{ form_errors(form.phone_alternativo) | striptags }}
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12 text-right">
+                <div class="hr-line-dashed"></div>
+                <button class="ladda-button btn btn-primary pull-right" type="submit" style="margin-left: 5px;"
+                        value="save"><i
+                            class="fa fa-save"></i> {{ 'backend.comun.table.save'|trans }}</button>
+
+            </div>
+        </div>
+        </form>
+    </div>
+</div>
+
+<script type="application/javascript">
+
+    $(document).ready(function () {
+        {% if app.user and (is_granted("ROLE_SUPER_ADMIN") or is_granted("ROLE_AGENCIA")) %}
+        $("#{{ form.usuario.vars.id }}").chosen({
+            allow_single_deselect: true,
+            width: "100%",
+        });
+        {% endif %}
+
+        $("#{{ form.emisor.vars.id }}").chosen({
+            allow_single_deselect: true,
+            width: "100%",
+        });
+
+        $("#{{ form.provincia.vars.id }}").chosen({
+            allow_single_deselect: true,
+            width: "100%",
+        });
+
+        $("#{{ form.municipio.vars.id }}").chosen({
+            allow_single_deselect: true,
+            width: "100%",
+        });
+
+        function load() {
+            if ($("#{{ form.provincia.vars.id }} option:selected").val() != "") {
+                updateMunicipiosProvincia($("#{{ form.provincia.vars.id }} option:selected").val());
+            }
+        }
+
+        load();
+
+        function updateMunicipiosProvincia(idProvincia) {
+            if (idProvincia != "") {
+                $.post("{{ url('admin_find_municipios_provincia') }}", {
+                    idProvincia: idProvincia,
+                }, function (data) {
+                    $('#{{ form.municipio.vars.id }}').find('option').remove();
+                    var result = $.parseJSON(data);
+                    if (result.municipios.length == 0) {
+                        showToastr('info', 'Búsqueda', 'La provicia seleccionada no tienes municipios registrados.');
+                    } else {
+                        $('#{{ form.municipio.vars.id }}').removeAttr('disabled');
+                        $('#{{ form.municipio.vars.id }}').append(($("<option></option>").attr("value", "").text("Seleccione en lista")));
+                        $.each(result.municipios, function (i, v) {
+                            var group = ($("<option></option>").attr("value", v.value).text(v.text));
+                            $('#{{ form.municipio.vars.id }}').append(group);
+                        })
+                    }
+                    $('#{{ form.municipio.vars.id }}').trigger("chosen:updated");
+                });
+            }
+        }
+
+        //Para buscar los municipios de la provincia que selecione el cliente
+        $('#{{ form.provincia.vars.id }}').change(function () {
+            updateMunicipiosProvincia($("#{{ form.provincia.vars.id }} option:selected").val());
+        });
+
+        $('form.disable-on-submit').disableOnSubmit({
+            duration: 2000,
+            buttonTemplate: '<span class="fa fa-fw fa-spinner fa-spin"></span>',
+            submitInputText: 'Por favor espere...'
+        });
+
+        $("#{{ form.vars.id }}").validate({
+            submitHandler: function (form, event) {
+                event.preventDefault(); // prevent native submit
+                if ($(form).valid())
+                    $(form).ajaxSubmit({
+                        target: '#modal-form .modal-content',
+                    });
+
+                return false;
+            },
+            rules: {
+                '{{ form.emisor.vars.full_name }}': {
+                    required: true
+                },
+                '{{ form.provincia.vars.full_name }}': {
+                    required: true
+                },
+                '{{ form.nombre.vars.full_name }}': {
+                    required: true
+                },
+                '{{ form.phone.vars.full_name }}': {
+                    required: true,
+                    number: true,
+                    digits: true,
+                    minlength: 8,
+                    maxlength: 8
+                },
+                '{{ form.ci.vars.full_name }}': {
+                    required: false,
+                    number: true,
+                    minlength: 11,
+                    maxlength: 11
+                },
+                '{{ form.ciAlternativo.vars.full_name }}': {
+                    required: false,
+                    number: true,
+                    minlength: 11,
+                    maxlength: 11
+                }
+            }
+        });
+
+    })
+</script>

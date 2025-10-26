@@ -1,0 +1,90 @@
+{% trans_default_domain 'AppBundle' %}
+
+<table class="footable footable-paging footable-paging-center  footable-paging-center  table table-stripped table-hover  toggle-arrow-tiny"
+       data-paging-size="100" data-paging="true" data-filtering="true"
+       data-sorting="true">
+    <thead>
+    <tr>
+        <th>{{ 'backend.destinatario.table.nombre'|trans }}</th>
+        <th>{{ 'backend.destinatario.table.ci'|trans }}</th>
+        <th data-breakpoints="xs">{{ 'backend.agencia.table.telefono'|trans }}</th>
+        <th>{{ 'backend.agencia.table.enabled'|trans }}</th>
+        <th>{{ 'backend.destinatario.table.municipio'|trans }}</th>
+        <th>{{ 'backend.destinatario.table.provincia'|trans }}</th>
+        <th>{{ 'backend.destinatario.table.emisor'|trans }}</th>
+        <th data-breakpoints="all">{{ 'backend.emisor.table.user'|trans }}</th>
+        <th data-breakpoints="all">{{ 'backend.destinatario.table.direccion'|trans }}</th>
+        <th data-breakpoints="all">{{ 'backend.destinatario.table.nombre_alt'|trans }}</th>
+        <th data-breakpoints="all">{{ 'backend.destinatario.table.apellidos_alt'|trans }}</th>
+        <th data-breakpoints="all">{{ 'backend.destinatario.table.ci_alt'|trans }}</th>
+        <th data-breakpoints="all">{{ 'backend.destinatario.table.phone_alt'|trans }}</th>
+        <th data-breakpoints="all">{{ 'backend.destinatario.table.created'|trans }}</th>
+        <th data-breakpoints="all">{{ 'backend.destinatario.table.updated'|trans }}</th>
+        <th class="text-right"
+            data-sort-ignore="true">{{ 'backend.comun.table.actions'|trans }}</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for destinatario in tn_destinatarios %}
+        <tr>
+            <td>{{ destinatario.nombre~" "~destinatario.apellidos~(destinatario.alias ? " ("~destinatario.alias~")") }}</td>
+            <td>{{ destinatario.ci ? destinatario.ci : '-' }}</td>
+            <td>{{ destinatario.phone }}</td>
+            <td>{{ destinatario.enabled==true?'<i class="fa fa-check-square-o"></i>':'<i class="fa fa-square-o"></i>' }}</td>
+            <td>{{ destinatario.municipio ? destinatario.municipio.name }}</td>
+            <td>{{ destinatario.provincia ? destinatario.provincia.name }}</td>
+            <td>{{ destinatario.emisor ? destinatario.emisor }}</td>
+            <td>
+                {% if destinatario.usuario %}
+                    <a data-placement="top" title="Datos usuario"
+                       data-toggle="tooltip" data-target='#modal-form'
+                       href="{{ path('home_users_show', {'token': destinatario.usuario.token }) }}">
+                        {{ destinatario.usuario.agencia ? destinatario.usuario.agencia : destinatario.usuario.agente }}
+                    </a>
+                {% endif %}
+            </td>
+            <td>
+                {{ destinatario.direccion~", "~(destinatario.direccion1 ? (destinatario.direccion1~", "))~destinatario.municipio.name~", "~destinatario.provincia.name~", "~(destinatario.country | country) }}
+            </td>
+            <td>{{ destinatario.nombreAlternativo ? destinatario.nombreAlternativo }}</td>
+            <td>{{ destinatario.apellidosAlternativo ? destinatario.apellidosAlternativo }}</td>
+            <td>{{ destinatario.ciAlternativo ? destinatario.ciAlternativo }}</td>
+            <td>{{ destinatario.phoneAlternativo ? destinatario.phoneAlternativo }}</td>
+            <td>{{ destinatario.created ? destinatario.created|date('Y-m-d') : '' }}</td>
+            <td>{{ destinatario.updated ? destinatario.updated|date('Y-m-d') : '' }}</td>
+            <td class="text-right">
+                {% if destinatario.remesas | length == 0 %}
+                    <form class="form-inline" method="post"
+                          action="{{ path('tn_destinatario_delete', {'token': destinatario.token}) }}"
+                          onsubmit="return confirm('Está seguro desea eliminar el destinatario?');">
+
+                        <a class="btn btn-warning btn-xs"
+                           href="{{ path('tn_destinatario_edit', {'token': destinatario.token}) }}"><i
+                                    class="fa fa-pencil-square-o"></i></a>
+
+                        <input type="hidden" name="_method" value="DELETE">
+                        <input type="hidden" name="_token"
+                               value="{{ csrf_token('delete' ~ destinatario.token) }}">
+                        <button class="btn btn-danger btn-xs" data-toggle="tooltip"
+                                title="Eliminar destinatario"><i
+                                    class="fa fa-times"></i>
+                        </button>
+                    </form>
+                {% else %}
+                    <a class="btn btn-warning btn-xs"
+                       href="{{ path('tn_destinatario_edit', {'token': destinatario.token}) }}"><i
+                                class="fa fa-pencil-square-o"></i></a>
+                {% endif %}
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+<script>
+    $(function () {
+        $('.footable').footable();
+
+        dataLink()
+    });
+</script>

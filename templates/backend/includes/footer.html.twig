@@ -1,0 +1,13 @@
+<div class="footer">
+    {#<div class="pull-right">
+        <strong>texto...</strong>
+    </div>#}
+    <div>
+        <!-- Matomo Image Tracker-->
+        {% if app.environment=='prod' %}
+            <img src="https://www.almendarestravel.com/matomo/matomo.php?idsite=3&amp;rec=1" style="border:0" alt=""/>
+        {% endif %}
+        <!-- End Matomo -->
+        &copy; {{ "today" | date("Y") }} <strong>Quickmoney,</strong> Todos los derechos reservados.
+    </div>
+</div>

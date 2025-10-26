@@ -1,0 +1,162 @@
+{% extends 'base_backend.html.twig' %}
+{% trans_default_domain 'AppBundle' %}
+
+{% block breadcrumb %}
+    <div class="col-lg-12">
+        <h2>{{ 'backend.user_menu.administrator.nomencladores.emisor.title'|trans({},'FOSUserBundle') }}</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="{{ path('homepage_backend') }}"><i
+                            class="fa fa-home"></i> {{ 'backend.user_menu.breadcrumb.home'|trans({},'FOSUserBundle') }}
+                </a>
+            </li>
+            <li class="">
+                {{ 'backend.user_menu.administrator.nomencladores.title'|trans({},'FOSUserBundle') }}
+            </li>
+            <li class="active">
+                <strong>{{ 'backend.user_menu.administrator.nomencladores.emisor.title'|trans({},'FOSUserBundle') }}</strong>
+            </li>
+        </ol>
+    </div>
+{% endblock %}
+{% block body %}
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox">
+                <div class="ibox-content">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <a class="btn btn-primary pull-right" href="{{ path('tn_emisor_new') }}">
+                                <i class="fa fa-plus"></i>
+                                {{ 'backend.user_menu.administrator.nomencladores.emisor.add'|trans({},'FOSUserBundle') }}
+                            </a>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div id='table' class="table-responsive">
+                                <table class="footable footable-paging footable-paging-center  footable-paging-center  table table-stripped table-hover  toggle-arrow-tiny"
+                                       data-paging-size="100" data-paging="true" data-filtering="true"
+                                       data-sorting="true">
+                                    <thead>
+                                    <tr>
+                                        <th>{{ 'backend.emisor.table.nombre'|trans }}</th>
+                                        <th>{{ 'backend.emisor.table.email'|trans }}</th>
+                                        <th data-breakpoints="xs">{{ 'backend.emisor.table.telefono'|trans }}</th>
+                                        <th>{{ 'backend.emisor.table.enabled'|trans }}</th>
+                                        <th>{{ 'backend.emisor.table.destinatarios'|trans }}</th>
+                                        <th>{{ 'backend.emisor.table.user'|trans }}</th>
+                                        <th data-breakpoints="all">{{ 'backend.emisor.table.direccion'|trans }}</th>
+                                        <th data-breakpoints="all">{{ 'backend.emisor.table.zip'|trans }}</th>
+                                        <th data-breakpoints="all">{{ 'backend.emisor.table.created'|trans }}</th>
+                                        <th data-breakpoints="all">{{ 'backend.emisor.table.updated'|trans }}</th>
+                                        <th class="text-right"
+                                            data-sort-ignore="true" width="12%">{{ 'backend.comun.table.actions'|trans }}</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for emisor in tn_emisors %}
+                                        <tr>
+                                            <td>{{ emisor.nombre~" "~emisor.apellidos }}</td>
+                                            <td>{{ emisor.email ? emisor.email: '-' }}</td>
+                                            <td>{{ emisor.phone }}</td>
+                                            <td>{{ emisor.enabled==true?'<i class="fa fa-check-square-o"></i>':'<i class="fa fa-square-o"></i>' }}</td>
+                                            <td>{{ emisor.destinatarios | length }}</td>
+                                            <td>
+                                                {% if emisor.usuario %}
+                                                    <a data-placement="top" title="Datos usuario"
+                                                       data-toggle="tooltip" data-target='#modal-form'
+                                                       href="{{ path('home_users_show', {'token': emisor.usuario.token }) }}">
+                                                        {{ emisor.usuario.agencia ? emisor.usuario.agencia : emisor.usuario.agente }}
+                                                    </a>
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                {% if emisor.dirLine1 is not null and emisor.dirLine2 is not null and emisor.dirLine3 is not null %}
+                                                    {{ emisor.dirLine1~", "~(emisor.dirLine2 ? (emisor.dirLine2~", "))~(emisor.dirLine3 ? emisor.dirLine3~", ")~emisor.city~", "~(emisor.state | state )~", "~(emisor.country | country) }}
+                                                {% else %}
+                                                    -
+                                                {% endif %}
+                                            </td>
+                                            <td>{{ emisor.zip ? emisor.zip : '-' }}</td>
+                                            <td>{{ emisor.created ? emisor.created|date('Y-m-d') : '' }}</td>
+                                            <td>{{ emisor.updated ? emisor.updated|date('Y-m-d') : '' }}</td>
+                                            <td class="text-right">
+                                                {% if emisor.facturas | length == 0 and emisor.documentos | length == 0  %}
+                                                    <form class="form-inline" method="post"
+                                                          action="{{ path('tn_emisor_delete', {'token': emisor.token}) }}"
+                                                          onsubmit="return confirm('Está seguro desea eliminar el emisor?');">
+
+                                                        <a class="btn btn-primary btn-xs" data-toggle="tooltip"
+                                                           title="Nueva factura"
+                                                           href="{{ path('tn_factura_new_emisor', {'token' : emisor.token}) }}"><i
+                                                                    class="fa fa-dollar"></i></a>
+
+                                                        <a class="btn btn-info btn-xs" data-toggle="tooltip"
+                                                           title="Nuevo destinatario"
+                                                           href="{{ path('tn_destinatario_new_emisor', {'token' : emisor.token}) }}"><i
+                                                                    class="fa fa-money"></i></a>
+
+                                                        <a class="btn btn-warning btn-xs" data-toggle="tooltip"
+                                                           title="Editar emisor"
+                                                           href="{{ path('tn_emisor_edit', {'token': emisor.token}) }}"><i
+                                                                    class="fa fa-pencil-square-o"></i></a>
+
+                                                        <input type="hidden" name="_method" value="DELETE">
+                                                        <input type="hidden" name="_token"
+                                                               value="{{ csrf_token('delete' ~ emisor.token) }}">
+                                                        <button class="btn btn-danger btn-xs" data-toggle="tooltip"
+                                                                title="Eliminar emisor"><i
+                                                                    class="fa fa-times"></i>
+                                                        </button>
+                                                    </form>
+                                                {% else %}
+                                                    <a class="btn btn-primary btn-xs" data-toggle="tooltip"
+                                                       title="Nueva factura"
+                                                       href="{{ path('tn_factura_new_emisor', {'token' : emisor.token}) }}"><i
+                                                                class="fa fa-dollar"></i></a>
+
+                                                    <a class="btn btn-info btn-xs" data-toggle="tooltip"
+                                                       title="Nuevo destinatario"
+                                                       href="{{ path('tn_destinatario_new_emisor', {'token' : emisor.token}) }}"><i
+                                                                class="fa fa-money"></i></a>
+
+                                                    <a class="btn btn-warning btn-xs" data-toggle="tooltip"
+                                                       title="Editar emisor"
+                                                       href="{{ path('tn_emisor_edit', {'token': emisor.token}) }}"><i
+                                                                class="fa fa-pencil-square-o"></i></a>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                    <tfoot class="hide-if-no-paging">
+                                    <tr>
+                                        <td colspan="7" class="text-center">
+                                            <ul class="pagination">
+
+                                            </ul>
+                                            <div class="pagination pull-right">{{ knp_pagination_render(tn_emisors,'@KnpPaginator/Pagination/sliding_backend.html.twig') }}</div>
+                                        </td>
+                                    </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        $(function () {
+            dataLink()
+        });
+
+    </script>
+{% endblock %}

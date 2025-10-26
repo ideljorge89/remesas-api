@@ -1,0 +1,87 @@
+{% trans_default_domain 'AppBundle' %}
+
+{% set distribuidor = cierre.distribuidor %}
+<table cellpadding="3px" width="785px">
+    <tr>
+        <td width="115px" align="left" style="font-size: 10px"><strong>Último cierre:</strong><br>{{ cierre.saldoInicial | number_format(2, '.', ',')  }}</td>
+        <td width="115px" align="left" style="font-size: 10px;"><strong>Entregado:</strong><br>{{ cierre.entregado | number_format(2, '.', ',')   }}</td>
+        <td width="115px" align="left" style="font-size: 10px"><strong>Recibido:</strong><br>{{ cierre.recibido | number_format(2, '.', ',') }}</td>
+        <td width="115px" align="left" style="font-size: 10px"><strong>Gastos:</strong><br>{{ cierre.gastos | number_format(2, '.', ',') }}</td>
+        <td width="115px" align="left" style="font-size: 10px"><strong>Disponible:</strong><br>{{ cierre.credito | number_format(2, '.', ',') }}</td>
+        <td width="115px" align="left" style="font-size: 10px"><strong>Fecha Cierre:</strong><br>{{ cierre.created | date('d/m/Y') }}</td>
+    </tr>
+</table>
+<table>
+    <tr>
+        <td>&nbsp;</td>
+    </tr>
+</table>
+{% set totalRemesas = 0 %}
+{% set totalComision = 0 %}
+{% set total = 0 %}
+{% set contador = 0 %}
+<table cellpadding="3px" width="785px">
+    <tr>
+        <td width="60px" align="left" style="font-size: 9px; border-top: 1px solid black; border-bottom: 1px solid black"><strong>{{ 'backend.operacion.table.historial.nro'|trans }}</strong></td>
+        <td width="300px" align="left" style="font-size: 9px;border-top: 1px solid black; border-bottom: 1px solid black"><strong>{{ 'backend.operacion.table.historial.destinatario'|trans }}</strong></td>
+        <td width="80px" align="left" style="font-size: 9px;border-top: 1px solid black; border-bottom: 1px solid black"><strong>{{ 'backend.operacion.table.historial.entregado'|trans }}</strong></td>
+        <td width="80px" align="left" style="font-size: 9px;border-top: 1px solid black; border-bottom: 1px solid black"><strong>{{ 'backend.operacion.table.historial.comision'|trans }}</strong></td>
+        <td width="80px" align="left" style="font-size: 9px;border-top: 1px solid black; border-bottom: 1px solid black"><strong>{{ 'backend.operacion.table.historial.total'|trans }}</strong></td>
+        <td width="80px" align="left" style="font-size: 9px;border-top: 1px solid black; border-bottom: 1px solid black"><strong>{{ 'backend.operacion.table.historial.estado'|trans }}</strong></td>
+    </tr>
+    {% for historial in historiales %}
+        {% set remesa = historial.remesa %}
+        {% if historial.estado == 'efectiva' %}
+            <tr>
+                <td width="60px" align="left" style="font-size: 9px;border-top: 1px solid black; border-bottom: 1px solid black">{{ remesa ? remesa.factura.noFactura: 'Eliminada' }}</td>
+                <td width="300px" align="left"
+                    style="font-size: 9px;border-top: 1px solid black; border-bottom: 1px solid black">{{ remesa ? (remesa.destinatario.nombre~" "~remesa.destinatario.apellidos~(remesa.destinatario.alias ? " ("~remesa.destinatario.alias~")")) : 'Eliminada' }}</td>
+                <td width="80px" align="left" style="font-size: 9px;border-top: 1px solid black; border-bottom: 1px solid black">{{ historial.importeRemesa }} {{ historial.monedaRemesa.simbolo }}</td>
+                <td width="80px" align="left" style="font-size: 9px;border-top: 1px solid black; border-bottom: 1px solid black">{{ historial.tasaDistrucion }} {{ historial.monedaRemesa.simbolo }}</td>
+                <td width="80px" align="left" style="font-size: 9px;border-top: 1px solid black; border-bottom: 1px solid black">{{ historial.importeRemesa + historial.tasaDistrucion }} {{ historial.monedaRemesa.simbolo }}</td>
+                <td width="80px" align="left" style="font-size: 9px;border-top: 1px solid black; border-bottom: 1px solid black">
+                    {% if historial.estado == 'efectiva' %}
+                        Efectiva
+                    {% else %}
+                        Cancelada
+                    {% endif %}
+                </td>
+            </tr>
+            {% set totalRemesas = totalRemesas +  historial.importeRemesa %}
+            {% set totalComision = totalComision + historial.tasaDistrucion %}
+            {% set total = total + (historial.importeRemesa + historial.tasaDistrucion) %}
+            {% set contador = contador + 1 %}
+        {% else %}
+            <tr>
+                <td width="60px" align="left" style="font-size: 9px;border-top: 1px solid black; border-bottom: 1px solid black"><strike>{{ remesa ? remesa.factura.noFactura: 'Eliminada' }}</strike></td>
+                <td width="300px" align="left"
+                    style="font-size: 9px;border-top: 1px solid black; border-bottom: 1px solid black"><strike>{{ remesa ? (remesa.destinatario.nombre~" "~remesa.destinatario.apellidos~(remesa.destinatario.alias ? " ("~remesa.destinatario.alias~")")) : 'Eliminada' }}</strike></td>
+                <td width="80px" align="left" style="font-size: 9px;border-top: 1px solid black; border-bottom: 1px solid black"><strike>{{ historial.importeRemesa }}</strike> {{ historial.monedaRemesa.simbolo }}</td>
+                <td width="80px" align="left" style="font-size: 9px;border-top: 1px solid black; border-bottom: 1px solid black"><strike>{{ historial.tasaDistrucion }}</strike> {{ historial.monedaRemesa.simbolo }}</td>
+                <td width="80px" align="left" style="font-size: 9px;border-top: 1px solid black; border-bottom: 1px solid black"><strike>{{ historial.importeRemesa + historial.tasaDistrucion }}</strike> {{ historial.monedaRemesa.simbolo }}</td>
+                <td width="80px" align="left" style="font-size: 9px;border-top: 1px solid black; border-bottom: 1px solid black">Cancelada</td>
+            </tr>
+            {% if historial.updated > cierre.created %}
+                {% set totalRemesas = totalRemesas +  historial.importeRemesa %}
+                {% set totalComision = totalComision + historial.tasaDistrucion %}
+                {% set total = total + (historial.importeRemesa + historial.tasaDistrucion) %}
+                {% set contador = contador + 1 %}
+            {% endif %}
+        {% endif %}
+    {% endfor %}
+</table>
+<table>
+    <tr>
+        <td>&nbsp;</td>
+    </tr>
+</table>
+<table cellpadding="3px" width="785px" style="border: 1px solid black">
+    <tr>
+        <td width="80px" align="left" style="font-size: 9px; border-top: 1px solid black; border-bottom: 1px solid black"><strong>RESUMEN</strong></td>
+        <td width="120px" align="left" style="font-size: 9px;border-top: 1px solid black; border-bottom: 1px solid black"><strong>{{  contador }} remesa(s)</strong></td>
+        <td width="160px" align="left" style="font-size: 9px;border-top: 1px solid black; border-bottom: 1px solid black"><strong>REMESAS:</strong> {{ totalRemesas | number_format(2) }} {{ cierre.moneda.simbolo }}</td>
+        <td width="160px" align="left" style="font-size: 9px;border-top: 1px solid black; border-bottom: 1px solid black"><strong>COMISIÓN:</strong> {{ totalComision | number_format(2) }} {{ cierre.moneda.simbolo }}</td>
+        <td width="160px" align="left" style="font-size: 9px;border-top: 1px solid black; border-bottom: 1px solid black"><strong>TOTAL:</strong> {{ total | number_format(2) }} {{ cierre.moneda.simbolo }}</td>
+    </tr>
+</table>
+

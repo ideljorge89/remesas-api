@@ -1,0 +1,350 @@
+{% extends 'base_backend.html.twig' %}
+{% trans_default_domain 'AppBundle' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .filter-hidden {
+            display: none;
+        }
+
+        .filter-show {
+            display: block;
+        }
+    </style>
+{% endblock %}
+
+{% block breadcrumb %}
+    <div class="col-lg-12">
+        <h2>{{ 'backend.user_menu.administrator.facutra.add'|trans({},'FOSUserBundle') }}</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="{{ path('homepage_backend') }}"><i
+                            class="fa fa-home"></i> {{ 'backend.user_menu.breadcrumb.home'|trans({},'FOSUserBundle') }}
+                </a>
+            </li>
+            <li class="">
+                {{ 'backend.user_menu.administrator.nomencladores.title'|trans({},'FOSUserBundle') }}
+            </li>
+            <li class="active">
+                <strong>{{ 'backend.user_menu.administrator.facutra.add'|trans({},'FOSUserBundle') }}</strong>
+            </li>
+        </ol>
+    </div>
+{% endblock %}
+
+{% block body %}
+    <div class="ibox">
+        {{ form_start(form,{
+            'attr':{
+                'id': form.vars.id,
+                'class':'form',
+                'novalidate':'novalidate'
+            }}) }}
+
+        {{ form_widget(form._token) }}
+        <div class="ibox-title">
+            <button type="button" id='destinatarios-filter' class="btn btn-sm btn-danger"
+                    data-toggle="tooltip" data-placement="right"
+                    title="Mostrar/Ocultar destinarios"><i class="fa fa-remove"></i></button>
+            <div class="pull-right" style="margin-top: -7px">
+                {{ form_widget(form.btnEmisor,{'attr':{'class':'form-control js-switch', 'checked': 'checked' }}) }}
+                EMISOR
+                {% if app.user.auth %}
+                    {{ form_widget(form.auth,{'attr':{'class':'form-control js-switch', 'checked': 'checked' }}) }} AUTH
+                {% endif %}
+            </div>
+        </div>
+        <div class="ibox-content">
+            {{ include('backend/tn_factura/_form.html.twig') }}
+        </div>
+    </div>
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        $(function () {
+
+            $("#destinatarios-filter").click(function (ev) {
+                if ($("#container-filter").hasClass("filter-hidden")) {
+                    $("#container-filter").removeClass("filter-hidden");
+                    $("#container-filter").addClass("filter-show");
+                    $("#destinatarios-filter").removeClass("btn-primary");
+                    $("#destinatarios-filter").addClass("btn-danger");
+                    $("#destinatarios-filter").html('<i class="fa fa-remove"></i>');
+                } else {
+                    $("#container-filter").removeClass("filter-show");
+                    $("#container-filter").addClass("filter-hidden");
+                    $("#destinatarios-filter").removeClass("btn-danger");
+                    $("#destinatarios-filter").addClass("btn-primary");
+                    $("#destinatarios-filter").html('<i class="fa fa-users"></i>');
+                }
+            });
+
+            {% if app.user and is_granted("ROLE_SUPER_ADMIN") %}
+            $({{ form.agente.vars.id }}).change(function (e) {
+                if ($(this).val() != '') {
+                    var option = $(this).find('option:selected');
+                    var porcentaje = $(option).data('porciento');
+                    if (option) {
+                        var porcentaje = $(option).data('porciento');
+                        //Quitando la seleccion de la agencia, solo puede ser 1 de los 2.
+                        var tipoAgente = $(option).data('tipoagente');
+                        if (tipoAgente == 'Interno') {
+                            var seltdAgc = $('#{{ form.agencia.vars.id }} option:selected');
+                            if (seltdAgc && seltdAgc.val() != '') {
+                                updateEmisores('agencia', seltdAgc.val());
+                            } else {
+                                var userAgencia = $(option).data('agencia');
+                                if (userAgencia != '') {
+                                    updateEmisores('agencia', userAgencia);
+                                } else {
+                                    updateEmisores('agente', option.val())
+                                }
+                            }
+
+                        } else {//Agente externo
+                            var agencia = $('#{{ form.agencia.vars.id }}');
+                            var seltd = $('#{{ form.agencia.vars.id }} option:selected');
+                            seltd.removeAttr('selected');
+                            agencia.find('option:first').attr('selected', 'selected');
+                            agencia.trigger("chosen:updated");
+
+                            updateEmisores('agente', option.val())
+                        }
+                    }
+                } else {
+                    updateEmisores('all', "user")
+                }
+            });
+
+            $({{ form.agencia.vars.id }}).change(function (e) {
+                if ($(this).val() != '') {
+                    var option = $(this).find('option:selected');
+                    var porcentaje = $(option).data('porciento');
+                    if (option) {
+                        var porcentaje = $(option).data('porciento');
+                        //Quitando la seleccion de la agente, solo puede ser 1 de los 2.
+                        var agente = $('#{{ form.agente.vars.id }}');
+                        var seltd = $('#{{ form.agente.vars.id }} option:selected');
+                        seltd.removeAttr('selected');
+                        agente.find('option:first').attr('selected', 'selected');
+                        agente.trigger("chosen:updated");
+
+                        updateEmisores('agencia', option.val())
+                    }
+                } else {
+                    updateEmisores('all', "user")
+                }
+            });
+            {% elseif app.user and is_granted("ROLE_AGENCIA") %}
+            $({{ form.agente.vars.id }}).change(function (e) {
+                var tipoAgente = $('#{{ form.agente.vars.id }} option:selected').data('tipoagente');
+                if ($(this).val() != '' && tipoAgente == 'Externo') {
+                    var option = $(this).find('option:selected');
+                    if (option) {
+                        updateEmisores('agente', option.val())
+                    }
+                } else {
+                    updateEmisores('all', "user")
+                }
+            });
+            {% endif %}
+
+            $('#tn_factura_auth').change(function (ev) {
+                if (!$(this).is(':checked')) {
+                    showToastr('warning', 'Cálculo de precios', 'Se desactivó el cálculo automático de precio, se registrarán los valores que intruduzca de forma manual.');
+                }
+            });
+
+            {% for children in form.remesas.children %}
+            globals{{ children.vars.id }}();
+            {% endfor %}
+
+            function load(emisor) {
+                $("#destinatarios").load("{{ url('tn_factura_destinatarios_emisor') }}", {
+                    emisor: emisor
+                }, function (a) {
+                });
+            }
+
+            function updateEmisores(type, obj) {
+                if (type != "" && obj != "") {
+                    $.post("{{ url('admin_reload_emisores_agencia_agente') }}", {
+                        type: type,
+                        value: obj
+                    }, function (data) {
+                        var result = $.parseJSON(data);
+                        var keys = Object.keys(result.emisores);
+                        if (keys.length > 0) {
+                            var emisorId = "";
+                            {% if form.emisor.vars.data is not null %}
+                            var emisorId = {{ form.emisor.vars.data.id }}
+                                    {% endif %}
+                                $('#{{ form.emisor.vars.id }}').find('option').remove();
+                            //Poniendo el placeholder por defecto.
+                            var group = ($("<option></option>").attr("value", "").text("Seleccione en lista"));
+                            $('#{{ form.emisor.vars.id }}').append(group);
+                            var group = ($("<option></option>").attr("value", "new").text("AÑADIR NUEVO EMISOR"));
+                            $('#{{ form.emisor.vars.id }}').append(group);
+
+
+                            $('#{{ form.emisor.vars.id }}').append(group);
+
+                            $.each(keys, function (i, key) {
+                                var groupBy = $("<optgroup></optgroup>").attr("label", key);
+                                $.each(result.emisores[key], function (i, v) {
+                                    if (emisorId != "" && v.value == emisorId) {
+                                        groupBy.append($('<option selected="selected"></option>').attr("value", v.value).text(v.text));
+                                        $('#{{ form.emisor.vars.id }}').append(groupBy);
+                                    } else {
+                                        groupBy.append($('<option></option>').attr("value", v.value).text(v.text));
+                                        $('#{{ form.emisor.vars.id }}').append(groupBy);
+                                    }
+                                });
+                            });
+
+                            $('#{{ form.emisor.vars.id }}').trigger("chosen:updated");
+                            $('#{{ form.emisor.vars.id }}').trigger("change");
+                        } else {
+                            $('#{{ form.emisor.vars.id }}').find('option').remove();
+                            $('#{{ form.emisor.vars.id }}').trigger("chosen:updated");
+                            $('#{{ form.emisor.vars.id }}').trigger("change");
+                        }
+                    });
+                } else {
+                    $('#{{ form.emisor.vars.id }}').find('option').remove();
+                    $('#{{ form.emisor.vars.id }}').trigger("chosen:updated");
+                    $('#{{ form.emisor.vars.id }}').trigger("change");
+                }
+            }
+
+            if ($('#{{ form.emisor.vars.id }} option:selected').val() != "") {
+                load($('#{{ form.emisor.vars.id }} option:selected').val());
+            }
+
+            $('#destinatarios-add').click(function (ev) {
+                var emisor = $('#{{ form.emisor.vars.id }} option:selected').val();
+                if (emisor != '' && emisor != 'new') {
+                    $("#modal-form .modal-content").load('{{ path('tn_destinatario_new',{'modal':true}) }}', {
+                        idEmisor: emisor,
+                        action: 'new'
+                    }, function () {
+                        $("#modal-form").data('target', '#{{ form.emisor.vars.id }}');
+                        $("#modal-form").modal("show");
+                    });
+                } else {
+                    showToastr('warning', 'Destinatarios', 'Debe seleccionar el emisor para el cual va a añadir el destinatario.');
+                }
+            });
+
+            $({{ form.emisor.vars.id }}).change(function () {
+                if ($(this).val() == 'new') {
+                    $('#{{ form.emisor.vars.id }}').val('');
+                    $("#modal-form .modal-content").load('{{ path('tn_emisor_new',{'modal':true}) }}', function () {
+                        $("#modal-form").data('target', '#{{ form.emisor.vars.id }}');
+                        $("#modal-form").modal("show");
+                    });
+                } else {
+                    var option = $(this).find('option:selected');
+                    if (option && option.val() != "") {
+                        load(option.val());
+
+                    } else {
+                        $("#destinatarios").html("<table class='table table-stripped table-hover  toggle-arrow-tiny'>\n" +
+                            "                            <thead>\n" +
+                            "                            <tr>\n" +
+                            "                                <th>{{ 'backend.destinatario.table.nombre'|trans }}</th>\n" +
+                            "                                <th>{{ 'backend.destinatario.table.ci'|trans }}</th>\n" +
+                            "                                <th>{{ 'backend.agencia.table.telefono'|trans }}</th>\n" +
+                            "                                <th>{{ 'backend.destinatario.table.direccion'|trans }}</th>\n" +
+                            "                            </tr>\n" +
+                            "                            </thead>\n" +
+                            "                            <tbody>\n" +
+                            "                            </tbody>\n" +
+                            "                        </table>")
+                    }
+                }
+            });
+
+            $('.btn-add-remesa').click(function (event) {
+                var collectionHolder = $('#' + $(this).attr('data-target'));
+                var prototype = collectionHolder.attr('data-prototype');
+                var form = prototype.replace(/__name__/g, index);
+                form = $(form)
+                collectionHolder.append(form);
+
+                form.find('.close-link').click(function () {
+                    var option = $(this);
+                    swal({
+                        title: "Eliminar remesa",
+                        text: "Está a punto de eliminar esta remesa, está seguro?",
+                        type: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#F8C886",
+                        confirmButtonText: "OK",
+                        cancelButtonText: "NO",
+                        closeOnConfirm: true
+                    }, function (confirmed) {
+                        if (confirmed) {
+                            var content = option.closest('div.well');
+                            content.remove();
+                        }
+                    });
+                });
+
+                // Collapse ibox function
+                form.find('.collapse-link').click(function () {
+                    var ibox = $(this).closest('div.ibox');
+                    var button = $(this).find('i');
+                    var content = ibox.find('div.ibox-content');
+                    content.slideToggle(200);
+                    button.toggleClass('fa-chevron-up').toggleClass('fa-chevron-down');
+                    ibox.toggleClass('').toggleClass('border-bottom');
+                    setTimeout(function () {
+                        ibox.resize();
+                        ibox.find('[id^=map-]').resize();
+                    }, 50);
+                });
+
+                index++;
+                return false;
+            });
+
+            $('.collapse-link').click(function () {
+                var ibox = $(this).closest('div.ibox');
+                var button = $(this).find('i');
+                var content = ibox.find('div.ibox-content');
+                content.slideToggle(200);
+                button.toggleClass('fa-chevron-up').toggleClass('fa-chevron-down');
+                ibox.toggleClass('').toggleClass('border-bottom');
+                setTimeout(function () {
+                    ibox.resize();
+                    ibox.find('[id^=map-]').resize();
+                }, 50);
+            });
+
+            $('.close-link').click(function () {
+                var option = $(this);
+                swal({
+                    title: "Eliminar remesa",
+                    text: "Está a punto de eliminar esta remesa, está seguro?",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#F8C886",
+                    confirmButtonText: "OK",
+                    cancelButtonText: "NO",
+                    closeOnConfirm: true
+                }, function (confirmed) {
+                    if (confirmed) {
+                        var content = option.closest('div.well');
+                        content.remove();
+                    }
+                });
+            });
+
+            index = $('#datos-remesa').children().length;
+        });
+
+    </script>
+{% endblock %}

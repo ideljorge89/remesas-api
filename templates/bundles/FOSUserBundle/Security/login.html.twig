@@ -1,0 +1,5 @@
+{% if app.request.get('_route') == 'fos_user_backend_security_login' %}
+    {% include "@FOSUser/Security/admin_login.html.twig" %}
+{% else %}
+    {% include "@FOSUser/Security/login.html.twig" %}
+{% endif %}

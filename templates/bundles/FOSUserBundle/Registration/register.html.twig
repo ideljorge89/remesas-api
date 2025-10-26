@@ -1,0 +1,19 @@
+{% if not app.request.isXmlHttpRequest() %}
+    {% if class(form.vars.value)=='TnUser' %}
+        {% if class(form.vars.value.profile)=='TnProfileCliente' %}
+            {% include "@FOSUser/Registration/register_content.html.twig" %}
+        {% else %}
+            {% include "@FOSUser/Registration/register_content_agency.html.twig" %}
+        {% endif %}
+    {% endif %}
+
+{% else %}
+    {% if class(form.vars.value)=='TnUser' %}
+        {% if class(form.vars.value.profile)=='TnProfileCliente' %}
+            {% include "@FOSUser/Registration/register_content_ajax.html.twig" %}
+        {% else %}
+            {% include "@FOSUser/Registration/register_content_ajax_agency.html.twig" %}
+        {% endif %}
+    {% endif %}
+
+{% endif %}

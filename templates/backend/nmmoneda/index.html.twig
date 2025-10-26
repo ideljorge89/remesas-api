@@ -1,0 +1,89 @@
+{% extends 'base_backend.html.twig' %}
+{% trans_default_domain 'AppBundle' %}
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" type="text/css" href="{{ asset('bundles/stflagiconcss/css/flag-icon.min.css') }}" />
+{% endblock %}
+{% block breadcrumb %}
+    <div class="col-lg-12">
+        <h2>{{ 'backend.user_menu.administrator.nomencladores.moneda.title'|trans({},'FOSUserBundle') }}</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="{{ path('homepage_backend') }}"><i
+                            class="fa fa-home"></i> {{ 'backend.user_menu.breadcrumb.home'|trans({},'FOSUserBundle') }}
+                </a>
+            </li>
+            <li class="">
+                {{ 'backend.user_menu.administrator.nomencladores.title'|trans({},'FOSUserBundle') }}
+            </li>
+            <li class="active">
+                <strong>{{ 'backend.user_menu.administrator.nomencladores.moneda.title'|trans({},'FOSUserBundle') }}</strong>
+            </li>
+        </ol>
+    </div>
+{% endblock %}
+{% block body %}
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox">
+                <div class="ibox-content">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <a class="btn btn-primary pull-right" href="{{ path('moneda_new') }}">
+                                <i class="fa fa-plus"></i>
+                                {{ 'backend.user_menu.administrator.nomencladores.moneda.add'|trans({},'FOSUserBundle') }}
+                            </a>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div id='table' class="table-responsive">
+                                <table class="footable footable-paging footable-paging-center   table table-stripped table-hover  toggle-arrow-tiny" data-paging-size="50" data-paging="true" data-filtering="true" data-sorting="true">
+                                    <thead>
+                                    <tr>
+                                        <th data-breakpoints="all">{{ 'backend.moneda.table.id'|trans }}</th>
+                                        <th >{{ 'backend.moneda.table.codigo'|trans }}</th>
+                                        <th>{{ 'backend.moneda.table.simbolo'|trans }}</th>
+                                        <th>{{ 'backend.moneda.table.tasa'|trans }}</th>
+                                        <th>{{ 'backend.moneda.table.enabled'|trans }}</th>
+                                        <th>{{ 'backend.moneda.table.contable'|trans }}</th>
+                                        <th>{{ 'backend.moneda.table.aviable'|trans }}</th>
+                                        <th>{{ 'backend.moneda.table.comision'|trans }}</th>
+                                        <th data-breakpoints="all">{{ 'backend.moneda.table.created'|trans }}</th>
+                                        <th data-breakpoints="all">{{ 'backend.moneda.table.updated'|trans }}</th>
+                                        <th class="text-right"
+                                            data-sort-ignore="true">{{ 'backend.comun.table.actions'|trans }}</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for moneda in monedas %}
+                                        <tr>
+                                            <td>{{ moneda.id }}</td>
+                                            <td>{{ moneda.codigo }}</td>
+                                            <td>{{ moneda.simbolo }}</td>
+                                            <td>{{ moneda.tasaCambio | number_format(2, '.', ',') }}</td>
+                                            <td>{{ moneda.enabled==true?'<i class="fa fa-check-square-o"></i>':'<i class="fa fa-square-o"></i>' }}</td>
+                                            <td>{{ moneda.contable==true?'<i class="fa fa-check-square-o"></i>':'<i class="fa fa-square-o"></i>' }}</td>
+                                            <td>{{ moneda.aviable==true?'<i class="fa fa-check-square-o"></i>':'<i class="fa fa-square-o"></i>' }}</td>
+                                            <td>{{ moneda.comision==true?'<i class="fa fa-check-square-o"></i>':'<i class="fa fa-square-o"></i>' }}</td>
+                                            <td>{{ moneda.created ? moneda.created|date('Y-m-d') : '' }}</td>
+                                            <td>{{ moneda.updated ? moneda.updated|date('Y-m-d') : '' }}</td>
+                                            <td class="text-right">
+                                                <a class="btn btn-warning btn-xs"
+                                                   href="{{ path('moneda_edit', {'id': moneda.id}) }}"><i
+                                                            class="fa fa-pencil-square-o"></i></a>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    {#<a class="btn-success btn" href="{{ path('home_users_new') }}"><i class="fa fa-plus-square"></i> {{ 'users.new_user'|trans }}</a>#}
+                </div>
+            </div>
+
+        </div>
+    </div>
+{% endblock %}

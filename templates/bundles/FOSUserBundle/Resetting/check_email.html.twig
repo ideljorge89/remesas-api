@@ -1,0 +1,23 @@
+{% extends "@FOSUser/layout.html.twig" %}
+
+{% trans_default_domain 'FOSUserBundle' %}
+{% block breadcrumbs %}
+{% endblock %}
+{% block fos_user_content %}
+<div class="row">
+    <div class="col-md-12 page-content">
+        <div class="inner-box category-content">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="well well-info well-lg">
+                        <h2 class="no-margin no-padding">✔ {{ 'resetting.check_email_title'|trans }}</h2>
+                        <p>
+                            {{ 'resetting.check_email'|trans({'%tokenLifetime%': tokenLifetime})|nl2br }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

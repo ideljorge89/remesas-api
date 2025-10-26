@@ -1,0 +1,3 @@
+recaptcha:
+  login_form_captcha:
+    invalid: Captcha Inválido

@@ -1,0 +1,152 @@
+{{ form_start(form) }}
+{% set reportesEnvio = form.reportes.children %}
+<div class="col-md-12 col-xs-12">
+    {% if form_errors(form.reportes) %}
+        <div class="alert alert-danger" role="alert">
+            <button type="button" class="close" data-dismiss="alert"
+                    aria-hidden="true">&times;
+            </button>
+            <span class="fa fa-exclamation"
+                  aria-hidden="true"></span>
+            <span class="sr-only">Error:</span>
+            {{ form_errors(form.reportes) | striptags }}
+        </div>
+    {% endif %}
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        {% if reportesEnvio |length > 0 %}
+            <i id="checkAll" class="fa fa-2x fa-check-square" data-toggle="tooltip"
+               title="Seleccionar todas"
+               data-placement="right"></i>
+            <button type="submit" class="btn btn-primary pull-right" id="export">
+                <i class="fa fa-file-excel-o"></i> Exportar mutiple
+            </button>
+            <a class="btn btn-danger pull-right" style="margin-right: 10px"
+               href="{{ path('envio_pendientes_repartidor_export_excel', {'id': repartidor}) }}"><i
+                        class="fa fa-file-excel-o"></i> {{ 'backend.user_menu.administrator.transferencia.report.btn_pend'|trans({},'FOSUserBundle') }}
+            </a>
+        {% else %}
+            <button type="submit" class="btn btn-warning pull-right disabled" disabled id="export">
+                <i class="fa fa-file-excel-o"></i> Exportar mutiple
+            </button>
+            <a class="btn btn-danger pull-right" style="margin-right: 10px"
+               href="{{ path('envio_pendientes_repartidor_export_excel', {'id': repartidor}) }}"><i
+                        class="fa fa-file-excel-o"></i> {{ 'backend.user_menu.administrator.transferencia.report.btn_pend'|trans({},'FOSUserBundle') }}
+            </a>
+        {% endif %}
+    </div>
+    <div class="col-md-12">
+        <table class="table table-stripped table-hover  toggle-arrow-tiny">
+            <thead>
+            <tr>
+                <th align="center"></th>
+                <th data-sort-ignore="true">{{ 'backend.user_menu.administrator.transferencia.report.fecha'|trans({},'FOSUserBundle') }}</th>
+                <th data-sort-ignore="true">{{ 'backend.user_menu.administrator.transferencia.report.total'|trans({},'FOSUserBundle') }}</th>
+                <th data-sort-ignore="true">{{ 'backend.user_menu.administrator.transferencia.report.importe'|trans({},'FOSUserBundle') }}</th>
+                <th data-sort-ignore="true">{{ 'backend.user_menu.administrator.transferencia.report.transf'|trans({},'FOSUserBundle') }}</th>
+                <th class="text-right"
+                    data-sort-ignore="true" align="center">Acts
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for choice in reportesEnvio %}
+                {% set reporte = form.reportes.vars.choices[choice.vars.value] is defined? form.reportes.vars.choices[choice.vars.value].data %}
+                <tr>
+                    <td align="center">
+                        {{ form_widget(choice, {'attr': {'class': 'report-check'}}) }}
+                    </td>
+                    <td>{{ reporte.created | date('d/m/Y H:i:s A') }}</td>
+                    <td>{{ reporte.transferencias | length }}</td>
+                    <td>
+                        {% set total = 0 %}
+                        {% for tranf in reporte.transferencias %}
+                            {% set total = total + tranf.importe %}
+                        {% endfor %}
+                        {{ total | number_format(2, '.', ',') }} USD
+                    </td>
+                    <td>
+                        {% if reporte.transferencias | length > 0 %}
+                            <a data-toggle="tooltip" title="Listado de transferencias"
+                               data-target="#modal-form"
+                               data-width="width-80"
+                               target="_blank"
+                               href="{{ path('transferencias_entrega_reporte_envio_show', {'token': reporte.token}) }}">
+                                <i class="fa fa-list"></i>
+                            </a> |
+                            <a href="{{ path('envio_transferencias_reporte_desasociar', {'token': reporte.token}) }}"
+                               data-toggle="tooltip" title="Desasociar tranferencias">
+                                <i class="fa fa-warning" style="color: red"></i>
+                            </a>
+                        {% else %}
+                            <a data-toggle="tooltip" title="Listado de transferencias"
+                               data-target="#modal-form"
+                               data-width="width-80"
+                               target="_blank"
+                               href="{{ path('transferencias_entrega_reporte_envio_show', {'token': reporte.token}) }}">
+                                <i class="fa fa-list"></i>
+                            </a>
+                        {% endif %}
+                    </td>
+                    <td class="text-center">
+                        <a href="{{ path('envio_transferencias_reporte_export_pdf', {'token': reporte.token}) }}"
+                           target="_blank" data-toggle="tooltip" title="Exportar reporte">
+                            <img src="{{ asset('assets/backend/img/excel.png') }}"
+                                 style="width: 25px; height: 25px" alt="">
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{{ form_widget(form._token) }}
+</form>
+
+<script type="application/javascript">
+    $(function () {
+        dataLink();
+
+        function init() {
+            $('input:checkbox.report-check').each(function (i, v) {
+                $(v).trigger("click");
+            });
+            checkAllMarks();
+        }
+
+        init();
+
+        function checkAllMarks() {
+            var total = 0;
+            $(".report-check").each(function (i, v) {
+                if ($(v).is(':checked')) {
+                    total++;
+                }
+            });
+            if (total == 0) {
+                $("#export").addClass('disabled');
+                $("#export").attr('disabled', 'disabled');
+            } else {
+                if ($("#export").hasClass('disabled')) {
+                    $("#export").removeClass('disabled');
+                    $("#export").removeAttr('disabled');
+                }
+            }
+        }
+
+        $('input:checkbox.report-check').click(function () {
+            checkAllMarks();
+        });
+
+        $("#checkAll").click(function () {
+            $('input:checkbox.report-check').each(function (i, v) {
+                $(v).trigger("click");
+            });
+
+            checkAllMarks();
+        });
+    });
+</script>

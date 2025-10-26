@@ -1,0 +1,110 @@
+{% extends 'base_backend.html.twig' %}
+{% trans_default_domain 'AppBundle' %}
+
+{% block breadcrumb %}
+    <div class="col-lg-12">
+        <h2>{{ 'backend.user_menu.administrator.nomencladores.agencia.title'|trans({},'FOSUserBundle') }}</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="{{ path('homepage_backend') }}"><i
+                            class="fa fa-home"></i> {{ 'backend.user_menu.breadcrumb.home'|trans({},'FOSUserBundle') }}
+                </a>
+            </li>
+            <li class="">
+                {{ 'backend.user_menu.administrator.nomencladores.title'|trans({},'FOSUserBundle') }}
+            </li>
+            <li class="active">
+                <strong>{{ 'backend.user_menu.administrator.nomencladores.agencia.title'|trans({},'FOSUserBundle') }}</strong>
+            </li>
+        </ol>
+    </div>
+{% endblock %}
+{% block body %}
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox">
+                <div class="ibox-content">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <a class="btn btn-primary pull-right" href="{{ path('tn_agencia_new') }}">
+                                <i class="fa fa-plus"></i>
+                                {{ 'backend.user_menu.administrator.nomencladores.agencia.add'|trans({},'FOSUserBundle') }}
+                            </a>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div id='table' class="table-responsive">
+                                <table class="footable footable-paging footable-paging-center  footable-paging-center  table table-stripped table-hover  toggle-arrow-tiny"
+                                       data-paging-size="50" data-paging="true" data-filtering="true"
+                                       data-sorting="true">
+                                    <thead>
+                                    <tr>
+                                        <th>{{ 'backend.agencia.table.nombre'|trans }}</th>
+                                        <th data-breakpoints="all">{{ 'backend.agencia.table.email'|trans }}</th>
+                                        <th data-breakpoints="all">{{ 'backend.agencia.table.telefono'|trans }}</th>
+                                        <th>{{ 'backend.agencia.table.enabled'|trans }}</th>
+                                        <th>{{ 'backend.agencia.table.retenida'|trans }}</th>
+                                        <th>{{ 'backend.agencia.table.agentes'|trans }}</th>
+                                        <th>{{ 'backend.agencia.table.grupo'|trans }}</th>
+                                        <th>{{ 'backend.agencia.table.grupo_transf'|trans }}</th>
+                                        <th data-breakpoints="all">{{ 'backend.agencia.table.direccion'|trans }}</th>
+                                        <th data-breakpoints="all">{{ 'backend.agencia.table.zip'|trans }}</th>
+                                        <th data-breakpoints="all">{{ 'backend.agencia.table.created'|trans }}</th>
+                                        <th data-breakpoints="all">{{ 'backend.agencia.table.updated'|trans }}</th>
+                                        <th class="text-right"
+                                            data-sort-ignore="true">{{ 'backend.comun.table.actions'|trans }}</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for agencia in tn_agencias %}
+                                        <tr>
+                                            <td>{{ agencia.nombre }}</td>
+                                            <td>{{ agencia.email }}</td>
+                                            <td>{{ agencia.phone }}</td>
+                                            <td>{{ agencia.enabled==true?'<i class="fa fa-check-square-o"></i>':'<i class="fa fa-square-o"></i>' }}</td>
+                                            <td>{{ agencia.retenida==true?'<i class="fa fa-check-square-o"></i>':'<i class="fa fa-square-o"></i>' }}</td>
+                                            <td>{{ agencia.agentes | length }}</td>
+                                            <td>
+                                                <ul style="list-style-type: square; position: relative; margin-left: 0; padding-left: 0">
+                                                    {% for grupo in agencia.gruposPago %}
+                                                        <li>{{ grupo }}</li>
+                                                    {% endfor %}
+                                                </ul>
+                                            </td>
+                                            <td>
+                                                <ul style="list-style-type: square; position: relative; margin-left: 0; padding-left: 0">
+                                                    {% for grupo in agencia.gruposPagoTransferencias %}
+                                                        <li>{{ grupo }}</li>
+                                                    {% endfor %}
+                                                </ul>
+                                            </td>
+                                            <td>
+                                                {{ agencia.dirLine1~", "~(agencia.dirLine2 ? (agencia.dirLine2~", "))~(agencia.dirLine3 ? agencia.dirLine3~", ")~agencia.city~", "~(agencia.state | state )~", "~(agencia.country | country) }}
+                                            </td>
+                                            <td>{{ agencia.zip ? agencia.zip }}</td>
+                                            <td>{{ agencia.created ? agencia.created|date('Y-m-d') : '' }}</td>
+                                            <td>{{ agencia.updated ? agencia.updated|date('Y-m-d') : '' }}</td>
+                                            <td class="text-right">
+                                                <a class="btn btn-success btn-xs" data-toggle="tooltip"
+                                                   title="Nuevo agente"
+                                                   href="{{ path('tn_agente_new_agencia', {'id': agencia.id}) }}"><i
+                                                            class="fa fa-adn"></i></a>
+                                                <a class="btn btn-warning btn-xs" data-toggle="tooltip"
+                                                   title="Editar agencia"
+                                                   href="{{ path('tn_agencia_edit', {'token': agencia.token}) }}"><i
+                                                            class="fa fa-pencil-square-o"></i></a>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+{% endblock %}

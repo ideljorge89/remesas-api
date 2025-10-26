@@ -1,0 +1,599 @@
+{% extends 'base_backend.html.twig' %}
+{% trans_default_domain 'AppBundle' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        label.remesas:hover {
+            cursor: pointer;
+        }
+
+        a.logs label {
+            cursor: pointer;
+        }
+
+        .filter-hidden {
+            display: none;
+        }
+
+        .filter-show {
+            display: block;
+        }
+    </style>
+{% endblock %}
+{% block breadcrumb %}
+    <div class="col-lg-12">
+        <h2>{{ 'backend.user_menu.administrator.transferencia.title'|trans({},'FOSUserBundle') }}</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="{{ path('homepage_backend') }}"><i
+                            class="fa fa-home"></i> {{ 'backend.user_menu.breadcrumb.home'|trans({},'FOSUserBundle') }}
+                </a>
+            </li>
+            <li class="">
+                {{ 'backend.user_menu.administrator.nomencladores.title'|trans({},'FOSUserBundle') }}
+            </li>
+            <li class="active">
+                <strong>{{ 'backend.user_menu.administrator.transferencia.list'|trans({},'FOSUserBundle') }}</strong>
+            </li>
+        </ol>
+    </div>
+{% endblock %}
+{% block body %}
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox advanced-filter filter-show">
+                <div class="ibox-content m-b-sm border-bottom">
+                    {{ form_start(form,{'attr':{
+                        'id':form.vars.id,
+                        'action': path('tn_transferencia_advanced_search')
+                    }}) }}
+
+                    {{ form_widget(form._token) }}
+                    {% if form_errors(form) %}
+                        <div class="alert alert-danger" role="alert">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
+                                &times;
+                            </button>
+                            <span class="fa fa-exclamation"
+                                  aria-hidden="true"></span>
+                            <span class="sr-only">Error:</span>
+                            {{ form_errors(form) | striptags }}
+                        </div>
+                    {% endif %}
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                {{ form_widget(form.codigo,{'attr':{'class':'form-control'}}) }}
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <div class="input-group">
+                                    {{ form_widget(form.tarejta,{'attr':{'class':'form-control'}}) }}
+                                    <span class="input-group-addon" data-toggle="tooltip" data-placement="bottom"
+                                          title="Número de la tarjeta que quiere buscar"><i
+                                                class="fa fa-info-circle" style="color: red"></i></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <div class="input-group">
+                                    {{ form_widget(form.titular,{'attr':{'class':'form-control'}}) }}
+                                    <span class="input-group-addon" data-toggle="tooltip" data-placement="bottom"
+                                          title="Nombre del titular o destinatario de la trasferencia"><i
+                                                class="fa fa-info-circle" style="color: red"></i></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                {{ form_widget(form.estado,{'attr':{'class':'form-control', 'data-placeholder': "Estados"}}) }}
+                            </div>
+                        </div>
+                    </div>
+                    {% if is_granted("ROLE_SUPER_ADMIN") %}
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <div class="input-daterange input-group">
+                                    {{ form_widget(form.fechaInicio,{
+                                        'attr':{
+                                            'class':'form-control', 'placeholder': "Fecha inicio"
+                                        }
+                                    }) }}
+                                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                    {{ form_widget(form.fechaFin,{
+                                        'attr':{
+                                            'class':'form-control', 'placeholder': "Fecha fin"
+                                        }
+                                    }) }}
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    {{ form_widget(form.agencia,{'attr':{'class':'form-control', 'data-placeholder': "Agencias"}}) }}
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    {{ form_widget(form.agente,{'attr':{'class':'form-control', 'data-placeholder': "Agentes"}}) }}
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    {{ form_widget(form.nota,{'attr':{'class':'form-control'}}) }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    {{ form_widget(form.repartidor,{'attr':{'class':'form-control', 'data-placeholder': "Repartidores"}}) }}
+                                </div>
+                            </div>
+                            <div class="col-sm-9">
+                                <div class="form-group">
+                                    <button type=submit class="btn btn-primary pull-right" data-toggle="tooltip"
+                                            title="Filtrar datos" data-placement="left" type="button"><i
+                                                class="fa fa-search"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    {% elseif is_granted("ROLE_AGENCIA") %}
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <div class="input-daterange input-group">
+                                    {{ form_widget(form.fechaInicio,{
+                                        'attr':{
+                                            'class':'form-control', 'placeholder': "Fecha inicio"
+                                        }
+                                    }) }}
+                                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                    {{ form_widget(form.fechaFin,{
+                                        'attr':{
+                                            'class':'form-control', 'placeholder': "Fecha fin"
+                                        }
+                                    }) }}
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    {{ form_widget(form.agente,{'attr':{'class':'form-control', 'data-placeholder': "Agentes"}}) }}
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <button type=submit class="btn btn-primary pull-right" data-toggle="tooltip"
+                                            title="Filtrar datos" data-placement="left" type="button"><i
+                                                class="fa fa-search"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    {% elseif is_granted("ROLE_AGENTE") %}
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <div class="input-daterange input-group">
+                                    {{ form_widget(form.fechaInicio,{
+                                        'attr':{
+                                            'class':'form-control', 'placeholder': "Fecha inicio"
+                                        }
+                                    }) }}
+                                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                    {{ form_widget(form.fechaFin,{
+                                        'attr':{
+                                            'class':'form-control', 'placeholder': "Fecha fin"
+                                        }
+                                    }) }}
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <button type=submit class="btn btn-primary pull-right" data-toggle="tooltip"
+                                            title="Filtrar datos" data-placement="left" type="button"><i
+                                                class="fa fa-search"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox">
+                <div class="ibox-content">
+                    <div class="row col-md-12" style="padding-right: 0">
+                        <div class="pull-right">
+                            <a href="{{ path('tn_transferencia_new') }}" class="btn btn-sm btn-info"
+                               data-toggle="tooltip"
+                               title="Nueva transferencia"> <i class="fa fa-plus"></i> <i class="fa fa-credit-card"></i>
+                            </a>
+                            <button type="button" class="filter-action btn btn-sm btn-info" data-toggle="tooltip"
+                                    title="Filtro avanzado"><i class="fa fa-filter"></i></button>
+                            <a href="{{ path('tn_transferencia_index') }}" class="btn btn-sm btn-info"
+                               data-toggle="tooltip"
+                               title="Limpiar búsqueda"> <i class="fa fa-repeat"></i> </a>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div id='table' class="table-responsive">
+                                <table class="footable footable-paging footable-paging-center  footable-paging-center  table table-stripped table-hover  toggle-arrow-tiny"
+                                       data-paging-size="100" data-paging="true" data-filtering="true"
+                                       data-sorting="true">
+                                    <thead>
+                                    <tr>
+                                        <th data-sort-ignore="true" {{ is_granted("ROLE_SUPER_ADMIN") ? "width='12%'" }}>{{ 'backend.transferencia.table.codigo'|trans }}</th>
+                                        <th data-breakpoints="all"
+                                            data-sort-ignore="true">{{ 'backend.transferencia.table.emisor'|trans }}</th>
+                                        <th data-breakpoints="all"
+                                            data-sort-ignore="true">{{ 'backend.transferencia.table.phone'|trans }}:
+                                        </th>
+                                        <th data-sort-ignore="true"
+                                            width="20%">{{ 'backend.transferencia.table.titular'|trans }}</th>
+                                        <th data-sort-ignore="true">{{ 'backend.transferencia.table.tarjeta'|trans }}</th>
+                                        {% if app.user.auth and not is_granted("ROLE_SUPER_ADMIN") %}
+                                            <th>{{ 'backend.transferencia.table.importe'|trans }}</th>
+                                        {% endif %}
+                                        <th>{{ 'backend.transferencia.table.total'|trans }}</th>
+                                        <th>{{ 'backend.transferencia.table.fecha'|trans }}</th>
+                                        {% if not is_granted("ROLE_AGENTE") %}
+                                            <th data-sort-ignore="true">{{ 'backend.transferencia.table.creador'|trans }}</th>
+                                        {% endif %}
+                                        <th data-sort-ignore="true">{{ 'backend.transferencia.table.estado'|trans }}</th>
+                                        <th class="text-right"
+                                            data-sort-ignore="true">{{ 'backend.comun.table.actions' | trans }}</th>
+                                        {% if is_granted("ROLE_SUPER_ADMIN") %}
+                                            <th data-breakpoints="all">{{ 'backend.transferencia.table.repartidor'|trans }}
+                                                :
+                                            </th>
+                                            {% if not is_granted("ROLE_ASESOR") %}
+                                                <th data-breakpoints="all">{{ 'backend.transferencia.table.fechaContable'|trans }}</th>
+                                            {% endif %}
+                                            <th data-breakpoints="all">{{ 'backend.transferencia.table.notas'|trans }}</th>
+                                            <th data-breakpoints="all">{{ 'backend.transferencia.table.logs'|trans }}</th>
+                                        {% endif %}
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for transferencia in tn_transferencias %}
+                                        <tr>
+                                            <td>{{ transferencia.codigo }} {{ is_granted("ROLE_SUPER_ADMIN") and transferencia.reporteTransferencia ? ('<i class="fa fa-file-excel-o" style="color:blue" data-toggle="tooltip" title="'~(transferencia.reporteTransferencia .created | date('d/m/Y H:i:s A'))~'"></i>') | raw }}
+                                                {% if is_granted("ROLE_SUPER_ADMIN") and transferencia.retenida %}
+                                                    <div class="retenida_{{ transferencia.id }}">
+                                                        <i class="fa fa-ban remove-retenida" data-toggle="tooltip" data-placement="right"
+                                                           title="Eliminar retenida"
+                                                           data-factura="{{ transferencia.id }}"
+                                                           style="color: red;cursor: pointer; font-size: 17px"></i>
+                                                    </div>
+                                                {% endif %}
+                                            </td>
+                                            <td>{{ transferencia.emisor ? transferencia.emisor : '-' }}</td>
+                                            <td>{{ transferencia.phone ? transferencia.phone : '-' }}</td>
+                                            <td>{{ transferencia.titularTarjeta }}</td>
+                                            <td>{{ transferencia.numeroTarjeta }}</td>
+                                            {% if app.user.auth and not is_granted("ROLE_SUPER_ADMIN") %}
+                                                <td>
+                                                    {% if showImporteTrans(transferencia) %}
+                                                        {{ transferencia.monto | number_format(2, '.', ',') }} USD
+                                                    {% endif %}
+                                                </td>
+                                            {% endif %}
+                                            <td>{{ transferencia.importe | number_format(2, '.', ',') }} {{ transferencia.moneda }}</td>
+
+                                            <td>{{ transferencia.created | date('d/m/Y') }}</td>
+                                            {% if not is_granted("ROLE_AGENTE") %}
+                                                <td align="center">
+                                                    {% if app.user and is_granted("ROLE_SUPER_ADMIN") %}
+                                                        {% if transferencia.agente is not null or transferencia.agencia is not null %}
+                                                            {% if transferencia.agente is not null %}
+                                                                {% if transferencia.agente.usuario is not null %}
+                                                                    <a data-placement="top"
+                                                                       title="Agente {{ transferencia.agente }}"
+                                                                       data-toggle="tooltip" data-target='#modal-form'
+                                                                       href="{{ path('home_users_show', {'token': transferencia.agente.usuario.token }) }}">
+                                                                        <i class="fa fa-user-circle"></i>
+                                                                    </a>
+                                                                {% endif %}
+                                                            {% else %}
+                                                                {% if transferencia.agencia.usuario is not null %}
+                                                                    <a data-placement="top"
+                                                                       title="Agencia {{ transferencia.agencia }}"
+                                                                       data-toggle="tooltip" data-target='#modal-form'
+                                                                       href="{{ path('home_users_show', {'token': transferencia.agencia.usuario.token }) }}">
+                                                                        <i class="fa fa-user-circle"></i>
+                                                                    </a>
+                                                                {% endif %}
+                                                            {% endif %}
+                                                        {% endif %}
+                                                    {% elseif app.user and is_granted("ROLE_AGENCIA") %}
+                                                        {% if transferencia.agente is not null %}
+                                                            {% if transferencia.agente.usuario is not null %}
+                                                                <a data-placement="top"
+                                                                   title="Agente {{ transferencia.agente }}"
+                                                                   data-toggle="tooltip" data-target='#modal-form'
+                                                                   href="{{ path('home_users_show', {'token': transferencia.agente.usuario.token }) }}">
+                                                                    <i class="fa fa-user-circle"></i>
+                                                                </a>
+                                                            {% endif %}
+                                                        {% endif %}
+                                                    {% endif %}
+                                                </td>
+                                            {% endif %}
+                                            <td>
+                                                <div id="state_transferencia_{{ transferencia.id }}">
+                                                    {% if transferencia.estado.codigo == '01' %}
+                                                        <span class="label label-info">Pendiente</span>
+                                                    {% elseif transferencia.estado.codigo == '02' %}
+                                                        <span class="label label-primary">Asignada</span>
+                                                    {% elseif transferencia.estado.codigo == '03' %}
+                                                        <span class="label label-warning">Enviada</span>
+                                                    {% elseif transferencia.estado.codigo == '04' %}
+                                                        <span class="label label-success">Entregada</span>
+                                                    {% else %}
+                                                        <span class="label label-danger">Cancelada</span>
+                                                    {% endif %}
+                                                </div>
+                                            </td>
+                                            <td class="text-right">
+                                                <div id="actions_{{ transferencia.id }}">
+                                                    {% if transferencia.estado.codigo != '05' %}
+                                                        <a class="btn btn-warning btn-xs" data-toggle="tooltip"
+                                                           title="Descargar tranferencia" target="_blank"
+                                                           href="{{ path('admin_tranferencia_export_pdf', {'token': transferencia.token, 'action': 'print'}) }}"><i
+                                                                    class="fa fa-print"></i></a>
+
+                                                    {% endif %}
+
+                                                    {% if is_granted("ROLE_AGENTE") or is_granted("ROLE_AGENCIA") %}
+                                                        {% if transferencia.estado.codigo == '01' %}
+                                                            <a class="btn btn-success btn-xs" data-toggle="tooltip"
+                                                               title="Editar transferencia"
+                                                               href="{{ path('tn_transferencia_edit', {'token': transferencia.token }) }}"><i
+                                                                        class="fa fa-edit"></i></a>
+
+                                                            <a class='btn btn-danger btn-xs state_option'
+                                                               data-toggle="tooltip"
+                                                               data-state='{{ constant('App\\Entity\\NmEstadoTransferencia::ESTADO_CANCELADA') }}'
+                                                               data-transferencia='{{ transferencia.id }}'
+                                                               data-msg='Estás CANCELANDO la transferencia {{ transferencia.codigo }}. Está seguro?'
+                                                               title="Cancelar transferencia"><i
+                                                                        class="fa fa-remove"></i></a>
+                                                        {% endif %}
+                                                        {% if transferencia.estado.codigo == '03' %}
+                                                            {% if transferencia.evidencia is not null and transferencia.evidencia !='' %}
+                                                                <a class="btn btn-primary btn-xs"
+                                                                   data-target="#modal-form"
+                                                                   data-toggle="tooltip"
+                                                                   title="Mostrar evidencia"
+                                                                   href="{{ path('envio_transferencias_evidencia_show', {'id': transferencia.id}) }}"><i
+                                                                            class="fa fa-file-image-o"></i></a>
+                                                            {% endif %}
+
+                                                        {% endif %}
+                                                    {% else %}
+                                                        {% if transferencia.estado.codigo == '03' %}
+                                                            <a class="btn btn-success btn-xs" data-toggle="tooltip"
+                                                               title="Agregar/editar evidencia" target="_blank"
+                                                               href="{{ path('envio_transferencias_add_evidencia', {'token': transferencia.token}) }}"><i
+                                                                        class="fa fa-paperclip"></i></a>
+
+                                                            {% if transferencia.evidencia is not null and transferencia.evidencia !='' %}
+                                                                <a class="btn btn-primary btn-xs"
+                                                                   data-target="#modal-form"
+                                                                   data-toggle="tooltip"
+                                                                   title="Mostrar evidencia"
+                                                                   href="{{ path('envio_transferencias_evidencia_show', {'id': transferencia.id}) }}"><i
+                                                                            class="fa fa-file-image-o"></i></a>
+                                                            {% endif %}
+
+                                                        {% endif %}
+                                                        {% if transferencia.estado.codigo == '01' or transferencia.estado.codigo == '02' or transferencia.estado.codigo == '03' %}
+                                                            <a class="btn btn-success btn-xs" data-toggle="tooltip"
+                                                               title="Editar transferencia"
+                                                               href="{{ path('tn_transferencia_edit', {'token': transferencia.token }) }}"><i
+                                                                        class="fa fa-edit"></i></a>
+
+                                                            <a class='btn btn-danger btn-xs state_option'
+                                                               data-toggle="tooltip"
+                                                               data-state='{{ constant('App\\Entity\\NmEstadoTransferencia::ESTADO_CANCELADA') }}'
+                                                               data-transferencia='{{ transferencia.id }}'
+                                                               data-msg='Estás CANCELANDO la transferencia {{ transferencia.codigo }}. Está seguro?'
+                                                               title="Cancelar transferencia"><i
+                                                                        class="fa fa-remove"></i></a>
+                                                        {% endif %}
+                                                    {% endif %}
+                                                </div>
+                                            </td>
+                                            {% if is_granted("ROLE_SUPER_ADMIN") %}
+                                                <td>
+                                                    <i class="fa fa-send"></i> {{ transferencia.repartidor ? transferencia.repartidor.nombre : 'Sin definir' }}
+                                                </td>
+                                                {% if not is_granted("ROLE_ASESOR") %}
+                                                    <td>
+                                                        <div id="date_contable_{{ transferencia.id }}">
+                                                            {{ transferencia.fechaContable | date('d/m/Y') }}
+                                                            <a href="{{ path('admin_transferencia_change_fecha_contable',{'id': transferencia.id}) }}"
+                                                               data-target='#modal-form'
+                                                               data-toggle="tooltip"
+                                                               class="btn btn-primary btn-xs btn-circle btn-outline"
+                                                               title="Modificar fecha contable {{ transferencia.fechaContable | date('d/m/Y') }}"><i
+                                                                        class="fa fa-calendar"></i></a>
+                                                        </div>
+                                                    </td>
+                                                {% endif %}
+                                                <td>
+                                                    <div id="notas_{{ transferencia.id }}">
+                                                        {{ transferencia.referencia ? (transferencia.referencia~" - ") : '' }}{{ transferencia.notas }}
+                                                        <a href="{{ path('tn_transferencia_notas_edit', {'token': transferencia.token }) }}"
+                                                           data-target='#modal-form'
+                                                           data-toggle="tooltip"
+                                                           data-placement="right"
+                                                           class="btn btn-xs btn-primary btn-circle btn-outline"
+                                                           title="{{ 'backend.transferencia.table.edit_note'| trans }}"><i
+                                                                    class="fa fa-comments-o"></i></a>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    {% set logs = logsTransferencia(transferencia.id) %}
+                                                    {% if logs | length > 0 %}
+                                                        <a href="{{ path('admin_transferencia_logs_show',{'token':transferencia.token}) }}"
+                                                           class="logs"
+                                                           data-placement="right"
+                                                           data-target='#modal-form' data-toggle="tooltip"
+                                                           title="{{ 'backend.transferencia.table.logs_show'| trans }}">
+                                                            <label class="label label-danger"><i
+                                                                        class="fa fa-unlock-alt"></i></label>
+                                                        </a>
+                                                    {% endif %}
+                                                </td>
+                                            {% endif %}
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                    <tfoot class="hide-if-no-paging">
+                                    <tr>
+                                        <td colspan="9" class="text-center">
+                                            <ul class="pagination">
+
+                                            </ul>
+                                            <div class="pagination pull-right">{{ knp_pagination_render(tn_transferencias,'@KnpPaginator/Pagination/sliding_backend.html.twig') }}</div>
+                                        </td>
+                                    </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        $(function () {
+            $('.input-daterange').datepicker({
+                keyboardNavigation: false,
+                forceParse: false,
+                autoclose: true,
+                format: "dd-mm-yyyy",
+                todayBtn: true,
+                language: 'es',
+                endDate: 'today',
+                todayHighlight: true,
+            }).on('keypress paste', function (e) {
+                e.preventDefault();
+                return false;
+            });
+
+            $(".filter-action").click(function (ev) {
+                if ($(".advanced-filter").hasClass("filter-hidden")) {
+                    $(".advanced-filter").removeClass("filter-hidden");
+                    $(".advanced-filter").addClass("filter-show");
+                } else {
+                    $(".advanced-filter").removeClass("filter-show");
+                    $(".advanced-filter").addClass("filter-hidden");
+                }
+            });
+
+            $("#{{ form.vars.id }}").on('submit', function (e) {
+                e.preventDefault();
+                $(this).ajaxSubmit({
+                    target: '#table',
+                    success: function () {
+                        dataLink();
+
+                        $('.state_option').click(state = function ($event) {
+                            $event.preventDefault();
+                            chageState($(this));
+                        });
+                    }
+                });
+            });
+
+            dataLink()
+
+            $('.state_option').click(state = function ($event) {
+                $event.preventDefault();
+                chageState($(this));
+            });
+
+            function chageState(object) {
+                var div_state = $('#state_transferencia_' + $(object).attr('data-transferencia'));
+                var div_actions = $('#actions_' + $(object).attr('data-transferencia'));
+                var transferencia = $(object).attr('data-transferencia');
+                var estado = $(object).attr('data-state');
+                swal({
+                    title: "Estado",
+                    text: $(object).attr('data-msg'),
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#F8C886",
+                    confirmButtonText: "SI",
+                    cancelButtonText: "NO",
+                    closeOnConfirm: true
+                }, function (confirmed) {
+                    if (confirmed) {
+                        $.post('{{ url('admin_transferencia_cancel_ajax') }}', {
+                            idTransferencia: transferencia,
+                            estado: estado
+                        }, function (data) {
+                            if (data.success) {
+                                div_state.html(data.html);
+                                div_actions.html("");
+                                showToastr('success', 'Estado transferencia', 'Transferencia cancelada correctamente.');
+                            }
+                        });
+                    }
+                });
+            }
+
+            $('.remove-retenida').click(function (ev) {
+                var factura = $(this).data('factura');
+                swal({
+                    title: "Eliminar retenida",
+                    text: "¿Está seguro desea eliminar la transferencia como retenida?",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#F8C886",
+                    confirmButtonText: "Si, confirma",
+                    cancelButtonText: "Cancelar",
+                    closeOnConfirm: true
+                }, function (confirmed) {
+                    if (confirmed) {
+                        var data = {
+                            'factura': factura,
+                        };
+                        var jqxhr = $.ajax({
+                            url: "{{ url('admin_transferencia_remove_retenida') }}",
+                            method: 'POST',
+                            data: {
+                                'datos': JSON.stringify(data)
+                            }
+                        }).done(function (data) {
+                            if (data.success) {
+                                $('.retenida_' + factura).html("");
+                            }
+                        }).fail(function () {
+
+                        }).always(function () {
+
+                        });
+                    }
+                });
+            });
+
+        });
+    </script>
+{% endblock %}

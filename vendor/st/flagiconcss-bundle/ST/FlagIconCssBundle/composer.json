@@ -1,0 +1,23 @@
+{
+  "name":        "st/flagiconcss-bundle",
+  "type":        "symfony-bundle",
+  "description": "FlagIconCss Bundle for Symfony2",
+  "keywords":    ["css", "symfony"],
+  "homepage":    "http://lipis.github.io/flag-icon-css/",
+  "license":     "MIT",
+  "authors":     [
+    {
+      "name":     "Khurshid A. Yalgashev",
+      "email":    "xurshid29@gmail.com"
+    }
+  ],
+  "require":     {
+    "symfony/framework-bundle": ">=2.1"
+  },
+  "autoload":    {
+    "psr-0": {
+      "ST\\FlagIconCssBundle": ""
+    }
+  },
+  "target-dir":  "ST/FlagIconCssBundle"
+}

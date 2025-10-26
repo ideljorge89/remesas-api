@@ -1,0 +1,35 @@
+{
+    "name":        "spraed/pdf-generator-bundle",
+    "type":        "symfony-bundle",
+    "description": "This bundle creates (multiple) PDFs in Symfony2 by converting Twig/HTML templates.",
+    "keywords":    ["spraed", "pdf", "generator", "bundle"],
+    "homepage":    "https://github.com/stedekay/SpraedPDFGeneratorBundle",
+    "license":     "MIT",
+
+    "authors": [
+        {
+            "name": "Spraed Team",
+            "homepage": "http://www.spraed-it.de"
+        },
+        {
+            "name": "Symfony Community",
+            "homepage": "https://github.com/stedekay/SpraedPDFGeneratorBundle/contributors"
+        }
+    ],
+
+    "require": {
+        "php":                      "^7.2",
+        "symfony/framework-bundle": "^4.0|^5.0"
+    },
+
+    "autoload": {
+        "psr-0": {
+            "Spraed\\PDFGeneratorBundle": ""
+        }
+    },
+
+    "target-dir": "Spraed/PDFGeneratorBundle",
+    "require-dev": {
+        "phpunit/phpunit": "^8.4"
+    }
+}
