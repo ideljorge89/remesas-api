@@ -12,26 +12,29 @@ jobs:
   deploy_main:
     if: github.ref == 'refs/heads/main' || github.event.pull_request.base.ref == 'main'
     runs-on: ubuntu-latest
+    
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-
+      
       - name: Copy code to main server
         uses: appleboy/scp-action@v0.1.4
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_PASSWORD }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          port: 22
           source: "."
           target: /var/opt/remesas-api
           strip_components: 0
-
+          overwrite: true
+      
       - name: Run deploy script on server
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_PASSWORD }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          port: 22
           script: |
             bash /var/opt/remesas-api/deploy.sh
-
