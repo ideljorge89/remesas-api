@@ -2,8 +2,5 @@
 /public/uploads/*
 /var/*
 
-/config/bootstrap.php
-
-
 /.idea/*
 /products/nbproject/private/
