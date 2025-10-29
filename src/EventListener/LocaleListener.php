@@ -20,9 +20,9 @@ class LocaleListener implements EventSubscriberInterface
     public function onKernelRequest(GetResponseEvent $event)
     {
         $request = $event->getRequest();
-        if (!$request->hasPreviousSession()) {
-            return;
-        }
+//        if (!$request->hasPreviousSession()) {
+//            return;
+//        }
 
         $globals = $this->container->getParameter('global_params');
         // try to see if the currency has been set as a _currency routing parameter
